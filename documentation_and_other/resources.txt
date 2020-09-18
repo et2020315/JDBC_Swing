@@ -1,0 +1,5 @@
+Resources:
+
+
+resolve timezone error
+https://medium.com/@FranckPachot/adding-jdbc-driver-property-in-sql-developer-connecting-to-mysql-387886a18086
