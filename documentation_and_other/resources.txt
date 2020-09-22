@@ -3,3 +3,5 @@ Resources:
 
 resolve timezone error
 https://medium.com/@FranckPachot/adding-jdbc-driver-property-in-sql-developer-connecting-to-mysql-387886a18086
+
+https://www.javatpoint.com/example-to-connect-to-the-mysql-database
