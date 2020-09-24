@@ -6,3 +6,18 @@ https://stackoverflow.com/questions/4197657/i-want-to-show-all-tables-that-have-
 https://sqlzoo.net/wiki/AdventureWorks
 https://stackoverflow.com/questions/40841078/how-to-get-primary-keys-for-all-tables-in-jdbc
 https://stackoverflow.com/questions/696782/retrieve-column-names-from-java-sql-resultset
+https://www.geeksforgeeks.org/mysql-group_concat-function/
+https://www.tutorialspoint.com/what-happens-when-we-try-to-add-a-duplicate-key-into-a-hashmap-object-in-java
+https://stackoverflow.com/questions/960807/hashmapkey-string-value-arraylist-returns-an-object-instead-of-arraylist
+https://www.w3schools.com/sql/sql_groupby.asp
+https://stackoverflow.com/questions/16584948/how-to-create-weighted-adjacency-list-matrix-from-edge-list
+https://stackoverflow.com/questions/16584948/how-to-create-weighted-adjacency-list-matrix-from-edge-list
+
+http://porthos.ist.utl.pt/docs/mySQL/information-schema.html#columns-table
+https://stackoverflow.com/questions/24932374/java-how-to-print-the-rows-from-database/24932538
+https://stackoverflow.com/questions/5648420/how-to-get-all-columns-names-for-all-the-tables-in-mysql
+
+
+At the beginning, i was planning to use adjacency matrix using 2d arraylist structure.
+ but arraylist might have o(n^2) performance so i switch to 2d hashmap. However, I found out that the order was not
+ preserved in the hashmap, and I need 

@@ -136,9 +136,10 @@ public class MainInterface {
     // helper function build a map
     public static void database_meta(Connection conn, Statement stmt){
       try{
-        ArrayList<ArrayList<String>> adjmatx = new ArrayList<ArrayList<String>>();
+        // ArrayList<ArrayList<String>> adjmatx = new ArrayList<ArrayList<String>>();
         ArrayList<String> column_name = new ArrayList<String>(); // if not convinient, change to map
         ArrayList<ArrayList<String>> tbl_col = new ArrayList<ArrayList<String>>();
+        Map<String,ArrayList<String>> adj_list_by_column = new HashMap<String,ArrayList<String>>();
         // Integer count = 0;
         String tablename;
 
@@ -154,13 +155,13 @@ public class MainInterface {
         }
 
         // checking
-        for(int i = 0; i < column_name.size();i++){
-          System.out.println(column_name.get(i));
-        }
+        // for(int i = 0; i < column_name.size();i++){
+        //   System.out.println(column_name.get(i));
+        // }
 
         System.out.println("***************************************");
         System.out.println("***************************************");
-        //
+
         String query1 = "select table_name,column_name from information_schema.columns where table_schema = 'adventureworks' order by table_name,column_name";
 
         stmt = conn.createStatement();
@@ -169,20 +170,57 @@ public class MainInterface {
         rs1 = stmt.executeQuery(query1);
         rsmd1 = rs1.getMetaData();
         while(rs1.next()){
-          System.out.println("---------");
+          // System.out.println("---------");
           ArrayList<String> temp1 = new ArrayList<String>();
           for(int j=1;j <= rsmd1.getColumnCount();j++){
             temp1.add(rs1.getString(j));
           }
-          adjmatx.add(temp1);
+          tbl_col.add(temp1);
         }
 
-        for(int i = 0; i < adjmatx.size();i++){
-          for(int k=0;k < adjmatx.get(i).size();k++){
-            System.out.print(adjmatx.get(i).get(k) + " ");
+        // // prinout to check built table
+        // for(int i = 0; i < tbl_col.size();i++){
+        //   for(int k=0;k < tbl_col.get(i).size();k++){
+        //     System.out.print(tbl_col.get(i).get(k) + " ");
+        //   }
+        //   System.out.println();
+        // }
+
+
+
+        // building adj list
+        for(int i=0;i<tbl_col.size();i++){
+          // ith item's 2nd column
+          String colstr = tbl_col.get(i).get(1);
+          String curr_tbl = tbl_col.get(i).get(0);
+          // not being added
+          if(adj_list_by_column.get(colstr)==null){
+            // ith item's 1st column, make a new array
+            ArrayList<String> temp2 = new ArrayList<String>();
+            temp2.add(curr_tbl);
+            adj_list_by_column.put(colstr,temp2);
+            temp2 = null;
+          } else {
+            // System.out.println(adj_list.get(colstr).getClass
+            // System.out.println(curr_tbl);
+            ArrayList<String> temp2 = adj_list_by_column.get(colstr);
+            temp2.add(curr_tbl); // append
+            adj_list_by_column.replace(colstr,temp2); // update
+            // System.out.println(colstr + temp2.size());
+
           }
-          System.out.println();
         }
+
+
+        // print for checking
+        for(String k: adj_list_by_column.keySet()){
+          System.out.println("******************* "+ k +" ******************");
+          for(int j=0;j<adj_list_by_column.get(k).size();j++){
+            System.out.println(adj_list_by_column.get(k).get(j));
+          }
+        }
+
+
 
 
 
