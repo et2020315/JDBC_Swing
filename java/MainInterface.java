@@ -138,6 +138,7 @@ public class MainInterface {
       try{
         ArrayList<ArrayList<String>> adjmatx = new ArrayList<ArrayList<String>>();
         ArrayList<String> column_name = new ArrayList<String>(); // if not convinient, change to map
+        ArrayList<ArrayList<String>> tbl_col = new ArrayList<ArrayList<String>>();
         // Integer count = 0;
         String tablename;
 
@@ -159,7 +160,7 @@ public class MainInterface {
 
         System.out.println("***************************************");
         System.out.println("***************************************");
-
+        //
         String query1 = "select table_name,column_name from information_schema.columns where table_schema = 'adventureworks' order by table_name,column_name";
 
         stmt = conn.createStatement();
@@ -169,9 +170,18 @@ public class MainInterface {
         rsmd1 = rs1.getMetaData();
         while(rs1.next()){
           System.out.println("---------");
+          ArrayList<String> temp1 = new ArrayList<String>();
           for(int j=1;j <= rsmd1.getColumnCount();j++){
-            System.out.println(rs1.getString(j));
+            temp1.add(rs1.getString(j));
           }
+          adjmatx.add(temp1);
+        }
+
+        for(int i = 0; i < adjmatx.size();i++){
+          for(int k=0;k < adjmatx.get(i).size();k++){
+            System.out.print(adjmatx.get(i).get(k) + " ");
+          }
+          System.out.println();
         }
 
 
