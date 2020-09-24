@@ -41,7 +41,7 @@ public class MainInterface {
             Scanner sc = new Scanner(System.in);
             boolean loop = true;
 
-            database_meta(conn);
+            database_meta(conn,stmt);
 
 
             //
@@ -134,10 +134,10 @@ public class MainInterface {
     }// end main
 
     // helper function build a map
-    public static void database_meta(Connection conn){
+    public static void database_meta(Connection conn, Statement stmt){
       try{
-        // Map<String,Integer> table_name_map = new HashMap<String,Integer>();
-        HashMap<String,HashMap<String,String>> adj_matrix = new HashMap<String,HashMap<String,String>>();
+        ArrayList<ArrayList<String>> adjmatx = new ArrayList<ArrayList<String>>();
+        ArrayList<String> column_name = new ArrayList<String>(); // if not convinient, change to map
         // Integer count = 0;
         String tablename;
 
@@ -149,24 +149,30 @@ public class MainInterface {
         while (tables.next()) {
          tablename = tables.getString("TABLE_NAME");
          // table_name_map.put(tablename,count);
-         adj_matrix.put(tablename,null);
-         count += 1;
+         column_name.add(tablename);
         }
 
         // checking
-        // for(int i = 0; i < table_name_map.size();i++){
-        //   System.out.println(table_name_map.get(i));
-        // }
-        // for(String k:table_name_map.keySet()){
-        for(String k:adj_matrix.keySet()){
-          System.out.println(k + " " + adj_matrix.get(k));
+        for(int i = 0; i < column_name.size();i++){
+          System.out.println(column_name.get(i));
         }
-        // System.out.println("\n end of printing.\n
 
+        System.out.println("***************************************");
+        System.out.println("***************************************");
 
+        String query1 = "select table_name,column_name from information_schema.columns where table_schema = 'adventureworks' order by table_name,column_name";
 
-
-
+        stmt = conn.createStatement();
+        ResultSet rs1;
+        ResultSetMetaData rsmd1;
+        rs1 = stmt.executeQuery(query1);
+        rsmd1 = rs1.getMetaData();
+        while(rs1.next()){
+          System.out.println("---------");
+          for(int j=1;j <= rsmd1.getColumnCount();j++){
+            System.out.println(rs1.getString(j));
+          }
+        }
 
 
 
