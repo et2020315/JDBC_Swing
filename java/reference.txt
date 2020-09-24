@@ -1,0 +1,8 @@
+https://www.javatpoint.com/ResultSet-interface
+https://www.geeksforgeeks.org/arraylist-in-java/
+https://www.javatpoint.com/DatabaseMetaData-interface
+https://stackoverflow.com/questions/12599412/getting-a-tables-metadata-without-using-resultset-in-java
+https://stackoverflow.com/questions/4197657/i-want-to-show-all-tables-that-have-specified-column-name
+https://sqlzoo.net/wiki/AdventureWorks
+https://stackoverflow.com/questions/40841078/how-to-get-primary-keys-for-all-tables-in-jdbc
+https://stackoverflow.com/questions/696782/retrieve-column-names-from-java-sql-resultset
