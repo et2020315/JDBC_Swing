@@ -99,16 +99,17 @@ public class MainInterface {
 					if (counting) {
 						query += parsed_command[parsed_command.length - 1] + ",Count(*) ";
 					} else {
-						query += "customer.CustomerID, TerritoryID, AccountNumber, CustomerType, "
-								+ "AddressLine1, AddressLine2, City, StateProvinceID, PostalCode ";
+						query += "AccountNumber, CustomerType, "
+								+ "AddressLine1, AddressLine2, City, stateprovince.Name, PostalCode ";
 					}
 					
 					query += "FROM customer "
-							+ "JOIN customeraddress ON (customer.CustomerID=customeraddress.CustomerID) "
-							+ "JOIN address ON (customeraddress.AddressID=address.AddressID) ";
+							+ "INNER JOIN customeraddress ON (customer.CustomerID=customeraddress.CustomerID) "
+							+ "INNER JOIN address ON (customeraddress.AddressID=address.AddressID) "
+							+ "INNER JOIN stateprovince ON (address.StateProvinceID=stateprovince.StateProvinceID) ";
 					
 					if (parsed_command.length > 1 && !parsed_command[1].equalsIgnoreCase("groupby")) {
-						query += "WHERE " + parsed_command[1] + " ";
+						query += "WHERE " + parsed_command[1] + " LIMIT 1000";
 					}
 					
 					if (counting) {
