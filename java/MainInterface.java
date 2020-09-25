@@ -33,9 +33,8 @@ public class MainInterface {
 			conn = DriverManager.getConnection(DB_URL,USER,PASS);
 			stmt = conn.createStatement();
 
-			String query = "USE adventureworks;";
 			ResultSet rs;
-			rs = stmt.executeQuery(query);
+			rs = stmt.executeQuery("USE adventureworks;");
 
 			Pattern spaceSplit = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'"); // splits by space, but not inside quotes
 
@@ -93,13 +92,30 @@ public class MainInterface {
 					System.out.println("jdb-stat");
 					break;
 				case "jdb-customer-info": // jdb-customer-info "conditions" count? groupBy
-					String localQuery = "SELECT ";
-					if ((parsed_command[1].equalsIgnoreCase("count") && parsed_command.length == 3) 
-						|| (parsed_command[2].equalsIgnoreCase("count") && parsed_command.length == 4)) {
-						localQuery += "Count(*) ";
+					String query = "SELECT ";
+					boolean counting = (parsed_command.length == 3 && parsed_command[1].equalsIgnoreCase("groupby")) 
+							|| parsed_command.length == 4 && (parsed_command[2].equalsIgnoreCase("groupby"));
+					
+					if (counting) {
+						query += parsed_command[parsed_command.length - 1] + ",Count(*) ";
 					} else {
-						localQuery += "* ";
+						query += "customer.CustomerID, TerritoryID, AccountNumber, CustomerType, "
+								+ "AddressLine1, AddressLine2, City, StateProvinceID, PostalCode ";
 					}
+					
+					query += "FROM customer "
+							+ "JOIN customeraddress ON (customer.CustomerID=customeraddress.CustomerID) "
+							+ "JOIN address ON (customeraddress.AddressID=address.AddressID) ";
+					
+					if (parsed_command.length > 1 && !parsed_command[1].equalsIgnoreCase("groupby")) {
+						query += "WHERE " + parsed_command[1] + " ";
+					}
+					
+					if (counting) {
+						query += "GROUP BY " + parsed_command[parsed_command.length - 1];
+					}
+					rs = stmt.executeQuery(query);
+					printResults(rs);
 					break;
 				default: // basic sql commands 
 					rs = stmt.executeQuery(command);
@@ -135,7 +151,7 @@ public class MainInterface {
 
 	public static boolean validateCommand(String command) {
 		command = command.toUpperCase();
-		return !(command.contains("CREATE") || command.contains("DROP") || // CREATE VIEW should be allowed
+		return !(command.contains("CREATE") || command.contains("DROP") ||
 				command.contains("ALTER") || command.contains("DELETE") || 
 				command.contains("INSERT"));
 	}
