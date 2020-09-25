@@ -22,6 +22,12 @@ class Edge{
     s1 = t1;
     s2 = t2;
   }
+
+  public Edge(Edge e){
+    this.s1 = e.s1;
+    this.s2 = e.s2;
+    this.edgelabel = e.edgelabel;
+  }
   public boolean equaledge(Edge e){
     if((e.s1).equals(this.s1) && (e.s2).equals(this.s2)){
       return true;
@@ -74,6 +80,34 @@ public class MainInterface {
       return found;
     }
 
+    // public static ArrayList<Edge> remove_edge(ArrayList<Edge> edgelist, Edge e){
+    //   for(int i = 0; i < edgelist.size();i++){
+    //     if(edgelist.get(i).equaledge(e)){
+    //       edgelist.remove(e);
+    //       break;
+    //     }
+    //   }
+    //   return edgelist;
+    // }
+
+    public static ArrayList<Edge> set_edge_label(ArrayList<Edge> edgelist, Edge e, Integer num){
+      for(int i = 0; i < edgelist.size();i++){
+        if(edgelist.get(i).equaledge(e)){
+          edgelist.get(i).edgelabel = num;
+          break;
+        }
+      }
+      return edgelist;
+    }
+
+    public static Edge get_edge(ArrayList<Edge> edgelist, Edge e){
+      for(int i = 0; i < edgelist.size();i++){
+        if(edgelist.get(i).equaledge(e)){
+          return edgelist.get(i);
+        }
+      }
+      return null;
+    }
 
 
     public static void main(String[] args) {
@@ -104,12 +138,12 @@ public class MainInterface {
             Edge e2 = new Edge("n3","n2");
             Edge e3 = new Edge("n2","n4");
             Edge e4 = new Edge("n3","n5");
-            Edge e5 = new Edge("n1","n4");
+            Edge e5 = new Edge(e4);
             ArrayList<Edge> sampleEdgelist = new ArrayList<Edge>(Arrays.asList(e1,e2,e3,e4,e5));
 
 
-            e2.edgelabel = 1;
-            e5.edgelabel = 1;
+            set_edge_label(sampleEdgelist,e2,1);
+            set_edge_label(sampleEdgelist,e5,1);
             for(int i =0; i < sampleEdgelist.size();i++){
               sampleEdgelist.get(i).printEdge();
             }
@@ -394,7 +428,17 @@ public class MainInterface {
         ArrayList<String> node_s_columes = adj_list_by_table.get(tb_start);
         for(int j=0;j<node_s_columes.size();j++){
           Edge curr_edge = new Edge(tb_start,node_s_columes.get(j));
-          // if(curr_edge.equaledge())
+          if(find_edge(column_name,curr_edge)){
+            Edge tempEdge = new Edge(get_edge(column_name,curr_edge));
+            if(tempEdge.edgelabel == 0){ // unexplored
+              // String other_side_node = tempEdge.s2;
+            }
+          }else {
+            System.out.println("wrong in finding dfs edge line 420");
+          }
+
+
+
         }
 
 
