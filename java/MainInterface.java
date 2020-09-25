@@ -9,36 +9,59 @@ import java.sql.*;
 import java.util.*;
 import java.lang.*;
 
+// class Node{
+//   public String n;
+//   public Integer visitedlabel = 0;
+//
+//   Node(){
+//     t = "";
+//     visitedlabel = 0;
+//   }
+//
+//   Node(Node n){
+//     this.t = n.t;
+//     this.visitedlabel = n.visitedlabel;
+//   }
+//
+//   Node(String tb){
+//     this.t = tb;
+//   }
+//
+// };
 
-class Edge{
-  public String s1;
-  public String s2;
-  public Integer edgelabel = 0;
-  public Edge(){
-    s1 = "";
-    s2 = "";
-  }
-  public Edge(String t1, String t2){
-    s1 = t1;
-    s2 = t2;
-  }
 
-  public Edge(Edge e){
-    this.s1 = e.s1;
-    this.s2 = e.s2;
-    this.edgelabel = e.edgelabel;
-  }
-  public boolean equaledge(Edge e){
-    if((e.s1).equals(this.s1) && (e.s2).equals(this.s2)){
-      return true;
-    }
-    return false;
-  }
+// class Edge{
+//   public Node n1;
+//   public String s2;
+//   public Integer edgelabel = 0;
+//   public String edgeval = "";
 
-  public void printEdge(){
-    System.out.println("s1:"+s1+" s2:"+s2+" "+"edgelabel:"+edgelabel);
-  }
-};
+//   public Edge(){
+//     s1 = "";
+//     s2 = "";
+//   }
+//   public Edge(String t1, String t2){
+//     s1 = t1;
+//     s2 = t2;
+//   }
+//
+//   public Edge(Edge e){
+//     this.s1 = e.s1;
+//     this.s2 = e.s2;
+//     this.edgelabel = e.edgelabel;
+//     this.edgeval = e.edgeval;
+//   }
+//   public boolean equaledge(Edge e){
+//     if((e.s1).equals(this.s1) && (e.s2).equals(this.s2)){
+//       return true;
+//     }
+//     return false;
+//   }
+//
+//   public void printEdge(){
+//     System.out.println("s1:"+s1+" s2:"+s2+" "+"edgelabel:"+edgelabel);
+//   }
+// };
 
 
 public class MainInterface {
@@ -59,26 +82,26 @@ public class MainInterface {
     static ArrayList<String> table_name = new ArrayList<String>();
     static Map<String,Integer> visitedNode = new HashMap<String,Integer>();
     // static Map<Edge,Integer> visitedEdge = new HashMap<String,Integer>();
-    static Stack<String> stk = new Stack<String>();
+    // static Stack<String> stk = new Stack<String>();
     // main loop to log into and interact with database
 
-    public static ArrayList<Edge> reset_edge(ArrayList<Edge> edgelist){
-      for(int i = 0; i < edgelist.size();i++){
-        edgelist.get(i).edgelabel = 0; // set to unexplored
-      }
-      return edgelist;
-    }
-
-    public static boolean find_edge(ArrayList<Edge> edgelist, Edge e){
-      boolean found = false;
-      for(int i = 0; i < edgelist.size();i++){
-        if(edgelist.get(i).equaledge(e)){
-          found = true;
-          break;
-        }
-      }
-      return found;
-    }
+    // public static ArrayList<Edge> reset_edge(ArrayList<Edge> edgelist){
+    //   for(int i = 0; i < edgelist.size();i++){
+    //     edgelist.get(i).edgelabel = 0; // set to unexplored
+    //   }
+    //   return edgelist;
+    // }
+    //
+    // public static boolean find_edge(ArrayList<Edge> edgelist, Edge e){
+    //   boolean found = false;
+    //   for(int i = 0; i < edgelist.size();i++){
+    //     if(edgelist.get(i).equaledge(e)){
+    //       found = true;
+    //       break;
+    //     }
+    //   }
+    //   return found;
+    // }
 
     // public static ArrayList<Edge> remove_edge(ArrayList<Edge> edgelist, Edge e){
     //   for(int i = 0; i < edgelist.size();i++){
@@ -89,25 +112,25 @@ public class MainInterface {
     //   }
     //   return edgelist;
     // }
-
-    public static ArrayList<Edge> set_edge_label(ArrayList<Edge> edgelist, Edge e, Integer num){
-      for(int i = 0; i < edgelist.size();i++){
-        if(edgelist.get(i).equaledge(e)){
-          edgelist.get(i).edgelabel = num;
-          break;
-        }
-      }
-      return edgelist;
-    }
-
-    public static Edge get_edge(ArrayList<Edge> edgelist, Edge e){
-      for(int i = 0; i < edgelist.size();i++){
-        if(edgelist.get(i).equaledge(e)){
-          return edgelist.get(i);
-        }
-      }
-      return null;
-    }
+    //
+    // public static ArrayList<Edge> set_edge_label(ArrayList<Edge> edgelist, Edge e, Integer num){
+    //   for(int i = 0; i < edgelist.size();i++){
+    //     if(edgelist.get(i).equaledge(e)){
+    //       edgelist.get(i).edgelabel = num;
+    //       break;
+    //     }
+    //   }
+    //   return edgelist;
+    // }
+    //
+    // public static Edge get_edge(ArrayList<Edge> edgelist, Edge e){
+    //   for(int i = 0; i < edgelist.size();i++){
+    //     if(edgelist.get(i).equaledge(e)){
+    //       return edgelist.get(i);
+    //     }
+    //   }
+    //   return null;
+    // }
 
 
     public static void main(String[] args) {
@@ -131,38 +154,38 @@ public class MainInterface {
             boolean loop = true;
 
 
-// ------------ DO NOT DELETE THE CODE BELOW -------------------------
-
-            // test cases passed find_edge and reset_edge
-            Edge e1 = new Edge("n1","n2");
-            Edge e2 = new Edge("n3","n2");
-            Edge e3 = new Edge("n2","n4");
-            Edge e4 = new Edge("n3","n5");
-            Edge e5 = new Edge(e4);
-            ArrayList<Edge> sampleEdgelist = new ArrayList<Edge>(Arrays.asList(e1,e2,e3,e4,e5));
-
-
-            set_edge_label(sampleEdgelist,e2,1);
-            set_edge_label(sampleEdgelist,e5,1);
-            for(int i =0; i < sampleEdgelist.size();i++){
-              sampleEdgelist.get(i).printEdge();
-            }
-
-            System.out.println(find_edge(sampleEdgelist,e2));
-
-            sampleEdgelist = reset_edge(sampleEdgelist);
-            for(int i =0; i < sampleEdgelist.size();i++){
-              sampleEdgelist.get(i).printEdge();
-            }
-
-
+// // ------------ DO NOT DELETE THE CODE BELOW -------------------------
+//
+//             // test cases passed find_edge and reset_edge
+//             Edge e1 = new Edge("n1","n2");
+//             Edge e2 = new Edge("n3","n2");
+//             Edge e3 = new Edge("n2","n4");
+//             Edge e4 = new Edge("n3","n5");
+//             Edge e5 = new Edge(e4);
+//             ArrayList<Edge> sampleEdgelist = new ArrayList<Edge>(Arrays.asList(e1,e2,e3,e4,e5));
+//
+//
+//             set_edge_label(sampleEdgelist,e2,1);
+//             set_edge_label(sampleEdgelist,e5,1);
+//             for(int i =0; i < sampleEdgelist.size();i++){
+//               sampleEdgelist.get(i).printEdge();
+//             }
+//
+//             System.out.println(find_edge(sampleEdgelist,e2));
+//
+//             sampleEdgelist = reset_edge(sampleEdgelist);
+//             for(int i =0; i < sampleEdgelist.size();i++){
+//               sampleEdgelist.get(i).printEdge();
+//             }
 
 
 
 
 
 
-            // database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_name,column_name);
+
+
+            database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_name,column_name);
 
             // intialized , none of them is visited ------------ move this into while loop later
             for(int i = 0; i < table_name.size();i++){
@@ -276,14 +299,14 @@ public class MainInterface {
         // O(n)
         while (tables.next()) {
          tablename = tables.getString("TABLE_NAME");
-         // table_name_map.put(tablename,count);
+         System.out.println("table:"+tablename);
          table_name.add(tablename);
         }
 
         // checking
-        // for(int i = 0; i < column_name.size();i++){
-        //   System.out.println(column_name.get(i));
-        // }
+        for(int i = 0; i < table_name.size();i++){
+          System.out.println(table_name.get(i));
+        }
 
         // System.out.println("***************************************");
         // System.out.println("***************************************");
@@ -381,25 +404,15 @@ public class MainInterface {
         //   }
         // }
 
-        // // initialize matrix
-        // for(int i=0; i < column_name.size();i++){
-        //   String row_table = column_name.get(i);
-        //   for(int j = 0; j < column_name.size();j++){
-        //     String table_temp = column_name.get(j);
-        //     Map<String,Integer> temp3 = new HashMap<String,Integer>()
-        //     temp3.put(table_temp,0);
-        //     matrix.put(row_table,temp3);
+
+
+        // // get edges ------! edges shouldbe  between two tables instead of table column pair
+        // for(String k : adj_list_by_column.keySet()){
+        //   ArrayList<String> temp5 = adj_list_by_column.get(k);
+        //   for(int j = 0; j < temp5.size();j++){
+        //     column_name.add(new Edge(k,temp5.get(j)));
         //   }
         // }
-
-
-        // get edges
-        for(String k : adj_list_by_column.keySet()){
-          ArrayList<String> temp5 = adj_list_by_column.get(k);
-          for(int j = 0; j < temp5.size();j++){
-            column_name.add(new Edge(k,temp5.get(j)));
-          }
-        }
 
 
 
@@ -415,42 +428,36 @@ public class MainInterface {
 
 
     // search path, print out path
-    public void path_finding_DFS(Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,String tb_start, String tb_end,Map<String,Integer> visitedNode,ArrayList<Edge> column_name,Stack<String> stk){
-      try{
-        // set viisted
-        visitedNode.replace(tb_start,1);
-        stk.push(tb_start);
-
-        if((tb_start.toLowerCase()).equals((tb_end.toLowerCase()))){
-          return; // return to previous level
-        }
-
-        ArrayList<String> node_s_columes = adj_list_by_table.get(tb_start);
-        for(int j=0;j<node_s_columes.size();j++){
-          Edge curr_edge = new Edge(tb_start,node_s_columes.get(j));
-          if(find_edge(column_name,curr_edge)){
-            Edge tempEdge = new Edge(get_edge(column_name,curr_edge));
-            if(tempEdge.edgelabel == 0){ // unexplored
-              // String other_side_node = tempEdge.s2;
-            }
-          }else {
-            System.out.println("wrong in finding dfs edge line 420");
-          }
-
-
-
-        }
-
-
-
-
-      } catch(Exception e){
-        System.out.println("Something wrong in search_path() function");
-        e.printStackTrace();
-      }
-
-      return;
-    }// end search_path
+    // public void path_finding_DFS(Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,String tb_start, String tb_end,Map<String,Integer> visitedNode,ArrayList<Edge> column_name,Stack<String> stk){
+    //   try{
+    //     // set viisted
+    //     visitedNode.replace(tb_start,1);
+    //     stk.push(tb_start);
+    //
+    //     if((tb_start.toLowerCase()).equals((tb_end.toLowerCase()))){
+    //       return; // return to previous level
+    //     }
+    //
+    //     ArrayList<String> node_s_columes = adj_list_by_table.get(tb_start);
+    //     for(int j=0;j<node_s_columes.size();j++){
+    //       Edge curr_edge = new Edge(tb_start,node_s_columes.get(j));
+    //       if(find_edge(column_name,curr_edge)){
+    //         Edge tempEdge = new Edge(get_edge(column_name,curr_edge));
+    //         if(tempEdge.edgelabel == 0){ // unexplored
+    //           // String other_side_node = tempEdge.s2;
+    //         }
+    //       }else {
+    //         System.out.println("wrong in finding dfs edge line 420");
+    //       }
+    //     }
+    //
+    //   } catch(Exception e){
+    //     System.out.println("Something wrong in search_path() function");
+    //     e.printStackTrace();
+    //   }
+    //
+    //   return;
+    // }// end search_path
 
     // search and join tables
     public ArrayList<String> get_views(String view_name, String view_content){

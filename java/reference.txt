@@ -20,4 +20,50 @@ https://stackoverflow.com/questions/5648420/how-to-get-all-columns-names-for-all
 
 At the beginning, i was planning to use adjacency matrix using 2d arraylist structure.
  but arraylist might have o(n^2) performance so i switch to 2d hashmap. However, I found out that the order was not
- preserved in the hashmap, and I need 
+ preserved in the hashmap, and I need
+
+
+
+https://stackoverflow.com/questions/3626752/key-existence-check-in-hashmap
+
+
+
+
+
+
+https://www.geeksforgeeks.org/java-integer-compare-method/
+https://howtodoinjava.com/java/collections/arraylist/arraylist-remove-example/#:~:text=ArrayList%20remove()%20method,-The%20remove()&text=Object%20remove(int%20index)%20throws,removed%20element%20from%20the%20list.
+https://math.stackexchange.com/questions/1890620/finding-path-lengths-by-the-power-of-adjacency-matrix-of-an-undirected-graph
+https://stackoverflow.com/questions/26999663/hashmap-initialization-in-java
+https://www.geeksforgeeks.org/hashmap-replacekey-value-method-in-java-with-examples/#:~:text=The%20replace(K%20key%2C%20V,previously%20mapped%20with%20some%20value.&text=Parameters%3A%20This%20method%20accepts%20two,value%20has%20to%20be%20replaced.
+https://www.geeksforgeeks.org/initialize-an-arraylist-in-java/
+https://stackoverflow.com/questions/3626752/key-existence-check-in-hashmap
+
+
+
+
+
+
+
+
+
+
+
+https://stackoverflow.com/questions/3637936/java-integer-equals-vs
+https://www.geeksforgeeks.org/stack-class-in-java/
+https://docs.oracle.com/javame/config/cldc/ref-impl/cldc1.0/jsr030/java/util/Stack.html
+https://www.geeksforgeeks.org/hashmap-methods-java-examples-set-2-keyset-values-containskey/
+https://www.geeksforgeeks.org/difference-equals-method-java/#:~:text=In%20Java%2C%20string%20equals(),matched%20then%20it%20returns%20false.
+https://docs.oracle.com/middleware/11119/jdev/api-reference-esdk/javax/ide/util/Graph.html
+https://course.ccs.neu.edu/cs2510h/lecture30.html
+https://stackoverflow.com/questions/1383797/java-hashmap-how-to-get-key-from-value/1383830
+https://javatutorial.net/graphs-java-example
+https://stackoverflow.com/questions/44366664/error-occurs-class-subclassinsamepackage-is-public-should-be-declared-in-a-fil
+https://www.tutorialspoint.com/java/java_stack_class.htm
+
+
+
+
+
+
+Dr. Leyk's course material 221
