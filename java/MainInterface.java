@@ -75,78 +75,77 @@ public class MainInterface {
             database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_matrix);
 
 
+            //
+            // // test
+            // print_shortest_path(table_matrix,"employee","vendorcontact");
+            // get_view_for_user(conn,stmt,"howdy1","select employee.EmployeeID,purchaseorderheader.TotalDue from employee INNER JOIN purchaseorderheader ON (employee.EmployeeID=purchaseorderheader.EmployeeID) INNER JOIN vendorcontact ON (purchaseorderheader.VendorID=vendorcontact.VendorID) where TotalDue < 581",view_def_map);
+            //
+            // print_join_table(conn,stmt,table_matrix,"employee","vendorcontact",edgeName);
 
 
-            // test
-            print_shortest_path(table_matrix,"employee","vendorcontact");
-            get_view_for_user(conn,stmt,"howdy1","select employee.EmployeeID,purchaseorderheader.TotalDue from employee INNER JOIN purchaseorderheader ON (employee.EmployeeID=purchaseorderheader.EmployeeID) INNER JOIN vendorcontact ON (purchaseorderheader.VendorID=vendorcontact.VendorID) where TotalDue < 581",view_def_map);
+            while (loop) {
+                System.out.print("jdb> ");
+                String command = sc.nextLine();
+                String parsed_command[] = command.split(" ");
 
-            print_join_table(conn,stmt,table_matrix,"employee","vendorcontact",edgeName);
+                if (!command.contains("create")) {
+                    switch (parsed_command[0]) {
+                        case "q":
+                            loop = false;
+                            break;
+                        case "quit":
+                            loop = false;
+                            break;
+                        case "jdb-show-related-tables":
+                            System.out.println("jdb-show-related-tables");
+                            break;
+                        case "jdb-show-all-primary-keys":
+                            System.out.println("Show primary keys");
+                            break;
+                        case "jdb-find-column":
+                            System.out.println("Find column");
+                            break;
+                        case "jdb-search-path":
+                            System.out.println("Search path");
+                            break;
+                        case "jdb-search-and-join":
+                            System.out.println("Search and join");
+                            break;
+                        case "jdb-get-view":
+                            System.out.println("Get view");
+                            break;
+                        case "jdb-stat":
+                            System.out.println("jdb-stat");
+                            break;
+                        default: // basic sql commands
+                            rs = stmt.executeQuery(command);
+                            rsmd = rs.getMetaData();
+                            int cols = rsmd.getColumnCount();
 
-            //
-            // while (loop) {
-            //     System.out.print("jdb> ");
-            //     String command = sc.nextLine();
-            //     String parsed_command[] = command.split(" ");
-            //
-            //     if (!command.contains("create")) {
-            //         switch (parsed_command[0]) {
-            //             case "q":
-            //                 loop = false;
-            //                 break;
-            //             case "quit":
-            //                 loop = false;
-            //                 break;
-            //             case "jdb-show-related-tables":
-            //                 System.out.println("jdb-show-related-tables");
-            //                 break;
-            //             case "jdb-show-all-primary-keys":
-            //                 System.out.println("Show primary keys");
-            //                 break;
-            //             case "jdb-find-column":
-            //                 System.out.println("Find column");
-            //                 break;
-            //             case "jdb-search-path":
-            //                 System.out.println("Search path");
-            //                 break;
-            //             case "jdb-search-and-join":
-            //                 System.out.println("Search and join");
-            //                 break;
-            //             case "jdb-get-view":
-            //                 System.out.println("Get view");
-            //                 break;
-            //             case "jdb-stat":
-            //                 System.out.println("jdb-stat");
-            //                 break;
-            //             default: // basic sql commands
-            //                 rs = stmt.executeQuery(command);
-            //                 rsmd = rs.getMetaData();
-            //                 int cols = rsmd.getColumnCount();
-            //
-            //                 // Printing column names
-            //                 for (int i = 1; i <= cols; i++) {
-            //                     if (i > 1)
-            //                         System.out.print(", ");
-            //                     System.out.print(rsmd.getColumnName(i));
-            //                 }
-            //                 System.out.println("");
-            //
-            //                 // Printing query contents
-            //                 while (rs.next()) {
-            //                     for (int i = 1; i <= cols; i++) {
-            //                         if (i > 1)
-            //                             System.out.print(", ");
-            //                         String colVal = rs.getString(i);
-            //                         System.out.print(colVal);
-            //                     }
-            //                     System.out.println("");
-            //                 }
-            //                 break;
-            //         }
-            //     } else {
-            //         System.out.println("Cannot edit database.");
-            //     }
-            // }
+                            // Printing column names
+                            for (int i = 1; i <= cols; i++) {
+                                if (i > 1)
+                                    System.out.print(", ");
+                                System.out.print(rsmd.getColumnName(i));
+                            }
+                            System.out.println("");
+
+                            // Printing query contents
+                            while (rs.next()) {
+                                for (int i = 1; i <= cols; i++) {
+                                    if (i > 1)
+                                        System.out.print(", ");
+                                    String colVal = rs.getString(i);
+                                    System.out.print(colVal);
+                                }
+                                System.out.println("");
+                            }
+                            break;
+                    }
+                } else {
+                    System.out.println("Cannot edit database.");
+                }
+            }
 
             // Closing scanner
             sc.close();
