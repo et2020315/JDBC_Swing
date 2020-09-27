@@ -54,57 +54,6 @@ public class MainInterface {
 
         try {
 
-        //   Graph<String, DefaultEdge> directedGraph =
-        //     new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
-        // directedGraph.addVertex("a");
-        // directedGraph.addVertex("b");
-        // directedGraph.addVertex("c");
-        // directedGraph.addVertex("d");
-        // directedGraph.addVertex("e");
-        // directedGraph.addVertex("f");
-        // directedGraph.addVertex("g");
-        // directedGraph.addVertex("h");
-        // directedGraph.addVertex("i");
-        // directedGraph.addEdge("a", "b");
-        // directedGraph.addEdge("b", "d");
-        // directedGraph.addEdge("d", "c");
-        // directedGraph.addEdge("c", "a");
-        // directedGraph.addEdge("e", "d");
-        // directedGraph.addEdge("e", "f");
-        // directedGraph.addEdge("f", "g");
-        // directedGraph.addEdge("g", "e");
-        // directedGraph.addEdge("h", "e");
-        // directedGraph.addEdge("i", "h");
-        //
-        //
-        // // computes all the strongly connected components of the directed graph
-        // StrongConnectivityAlgorithm<String, DefaultEdge> scAlg =
-        //     new KosarajuStrongConnectivityInspector<>(directedGraph);
-        // List<Graph<String, DefaultEdge>> stronglyConnectedSubgraphs =
-        //     scAlg.getStronglyConnectedComponents();
-        //
-        // // prints the strongly connected components
-        // System.out.println("Strongly connected components:");
-        // for (int i = 0; i < stronglyConnectedSubgraphs.size(); i++) {
-        //     System.out.println(stronglyConnectedSubgraphs.get(i));
-        // }
-        // System.out.println();
-        //
-        // // Prints the shortest path from vertex i to vertex c. This certainly
-        // // exists for our particular directed graph.
-        // System.out.println("Shortest path from i to c:");
-        // DijkstraShortestPath<String, DefaultEdge> dijkstraAlg =
-        //     new DijkstraShortestPath<>(directedGraph);
-        // SingleSourcePaths<String, DefaultEdge> iPaths = dijkstraAlg.getPaths("i");
-        // System.out.println(iPaths.getPath("c") + "\n");
-        //
-        //
-        // System.out.println("Shortest path from c to i:");
-        // SingleSourcePaths<String, DefaultEdge> cPaths = dijkstraAlg.getPaths("c");
-        // System.out.println(cPaths.getPath("i"));
-        //
-
-
 
             // Connection stuff
             Class.forName("com.mysql.jdbc.Driver");
@@ -125,10 +74,14 @@ public class MainInterface {
 
             database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_matrix);
 
-            print_shortest_path(table_matrix,"employee","vendorcontact");
 
-            // create_or_update_view(conn,stmt,"hhhone","select EmployeeID from employee",0);
-            // print_join_table(conn,stmt,table_matrix,"employee","vendorcontact",edgeName);
+
+
+            // test
+            print_shortest_path(table_matrix,"employee","vendorcontact");
+            get_view_for_user(conn,stmt,"howdy1","select employee.EmployeeID,purchaseorderheader.TotalDue from employee INNER JOIN purchaseorderheader ON (employee.EmployeeID=purchaseorderheader.EmployeeID) INNER JOIN vendorcontact ON (purchaseorderheader.VendorID=vendorcontact.VendorID) where TotalDue < 581",view_def_map);
+
+            print_join_table(conn,stmt,table_matrix,"employee","vendorcontact",edgeName);
 
             //
             // while (loop) {
@@ -458,9 +411,7 @@ public class MainInterface {
 
         }// end forloop
         System.out.println("*******************************************************");
-        if(countloop == 1000){
-          break;
-        }
+
       }
 
 
@@ -472,30 +423,52 @@ public class MainInterface {
     }// print join table
 
 
-    public static void get_view_for_user(Connection conn, Statement stmt,String view_name,String view_def){
+    public static void get_view_for_user(Connection conn, Statement stmt,String view_name,String view_def,Map<String,String> view_def_map){
       try{
 
+        view_name = view_name.trim();
+        String qry = "";
+
+        // if esist in map
+        if(view_def_map.containsKey(view_name) && view_def.equals("")){
+          qry = view_def_map.get(view_name);
+        }
+        // if does not exist in map, a new qry comes in
+        else if(!view_def_map.containsKey(view_name) && (!view_def.equals(""))) {
+          qry = view_def;
+          create_or_update_view(view_name,view_def,0);
+        }
+        // if exist and also new query, update
+        else if(view_def_map.containsKey(view_name) && (!view_def.equals(""))) {
+          qry = view_def;
+          create_or_update_view(view_name,view_def,1);
+        }
+        else {
+          System.out.println("third 489");
+        }
+
+        stmt = conn.createStatement();
+        ResultSet rs;
+        ResultSetMetaData rsmd;
+        rs = stmt.executeQuery(qry);
+        rsmd = rs.getMetaData();
+
+        while(rs.next()){
+
+          for(int j=1;j <= rsmd.getColumnCount();j++){
+            String type = rsmd.getColumnTypeName(j);
+
+            if(type.toLowerCase().contains("binary")){
+              System.out.println(rsmd.getColumnName(j)+": "+"some binary, print out make a noise");
+            }else {
+              System.out.println(rsmd.getColumnName(j)+": "+rs.getString(j));
+            }
+          }
+          System.out.println("*******************************************************");
+        }// end while
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // while(rs.next()){
-        //   for(int j=1;j <= rsmd.getColumnCount();j++){
-        //     System.out.println(rs.getString(j));
-        //   }
-        // }
 
       }catch(Exception e){
         System.out.println("get-view-for-user");
@@ -525,29 +498,6 @@ public class MainInterface {
       }
     }
 
-
-    public static void retrive_view_table(Connection conn, Statement stmt,String tb){
-      try{
-        stmt = conn.createStatement();
-
-
-        // String query = "SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_NAME = '"+tb+"'";
-        // ResultSet rs;
-        // ResultSetMetaData rsmd;
-        // rs = stmt.executeQuery(query);
-        // rsmd = rs.getMetaData();
-        // String select_q = "";
-        // while(rs.next()){
-        //   select_q = rs.getString(0);
-        //   System.out.println("get-view!!");
-        // }
-        //
-        // System.out.println("CURR VIEW:"+select_q);
-      } catch(Exception e){
-        System.out.println("in retrive_view_table");
-        e.printStackTrace();
-      }
-    }
 
 
 
