@@ -45,6 +45,7 @@ public class MainInterface {
 
     static Double ind = 0.0;
     static ArrayList<String> edgeName = new ArrayList<String>(); // weight == index
+    static Map<String,String> view_def_map = new HashMap<String,String>();
 
 
     public static void main(String[] args) {
@@ -126,8 +127,8 @@ public class MainInterface {
 
             print_shortest_path(table_matrix,"employee","vendorcontact");
 
-            print_join_table(conn,stmt,table_matrix,"employee","vendorcontact",edgeName);
-
+            // create_or_update_view(conn,stmt,"hhhone","select EmployeeID from employee",0);
+            // print_join_table(conn,stmt,table_matrix,"employee","vendorcontact",edgeName);
 
             //
             // while (loop) {
@@ -457,7 +458,7 @@ public class MainInterface {
 
         }// end forloop
         System.out.println("*******************************************************");
-        if(countloop == 100){
+        if(countloop == 1000){
           break;
         }
       }
@@ -471,48 +472,84 @@ public class MainInterface {
     }// print join table
 
 
+    public static void get_view_for_user(Connection conn, Statement stmt,String view_name,String view_def){
+      try{
 
 
 
 
 
-    // search path, print out path
-    // public void path_finding_DFS(Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,String tb_start, String tb_end,Map<String,Integer> visitedNode,ArrayList<Edge> column_name,Stack<String> stk){
-    //   try{
-    //     // set viisted
-    //     visitedNode.replace(tb_start,1);
-    //     stk.push(tb_start);
-    //
-    //     if((tb_start.toLowerCase()).equals((tb_end.toLowerCase()))){
-    //       return; // return to previous level
-    //     }
-    //
-    //     ArrayList<String> node_s_columes = adj_list_by_table.get(tb_start);
-    //     for(int j=0;j<node_s_columes.size();j++){
-    //       Edge curr_edge = new Edge(tb_start,node_s_columes.get(j));
-    //       if(find_edge(column_name,curr_edge)){
-    //         Edge tempEdge = new Edge(get_edge(column_name,curr_edge));
-    //         if(tempEdge.edgelabel == 0){ // unexplored
-    //           // String other_side_node = tempEdge.s2;
-    //         }
-    //       }else {
-    //         System.out.println("wrong in finding dfs edge line 420");
-    //       }
-    //     }
-    //
-    //   } catch(Exception e){
-    //     System.out.println("Something wrong in search_path() function");
-    //     e.printStackTrace();
-    //   }
-    //
-    //   return;
-    // }// end search_path
 
-    // search and join tables
-    public ArrayList<String> get_views(String view_name, String view_content){
 
-      return new ArrayList<String>();
+
+
+
+
+
+
+
+
+
+
+        // while(rs.next()){
+        //   for(int j=1;j <= rsmd.getColumnCount();j++){
+        //     System.out.println(rs.getString(j));
+        //   }
+        // }
+
+      }catch(Exception e){
+        System.out.println("get-view-for-user");
+        e.printStackTrace();
+      }
     }
+
+
+    // update or create view locally
+
+    public static void create_or_update_view(String view_name,String view_def,int choice){
+      try{
+
+        if(choice == 0){
+          view_def_map.put(view_name,view_def);
+          System.out.println("create locally");
+        } else {
+          view_def_map.replace(view_name,view_def);
+          System.out.println("update locally");
+        }
+
+        System.out.println("create/update view successfully");
+
+      }catch(Exception e){
+        System.out.println("in create_update_view");
+        e.printStackTrace();
+      }
+    }
+
+
+    public static void retrive_view_table(Connection conn, Statement stmt,String tb){
+      try{
+        stmt = conn.createStatement();
+
+
+        // String query = "SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_NAME = '"+tb+"'";
+        // ResultSet rs;
+        // ResultSetMetaData rsmd;
+        // rs = stmt.executeQuery(query);
+        // rsmd = rs.getMetaData();
+        // String select_q = "";
+        // while(rs.next()){
+        //   select_q = rs.getString(0);
+        //   System.out.println("get-view!!");
+        // }
+        //
+        // System.out.println("CURR VIEW:"+select_q);
+      } catch(Exception e){
+        System.out.println("in retrive_view_table");
+        e.printStackTrace();
+      }
+    }
+
+
 
 
 

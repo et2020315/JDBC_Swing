@@ -49,9 +49,15 @@ https://www.geeksforgeeks.org/initialize-an-arraylist-in-java/
 https://stackoverflow.com/questions/3626752/key-existence-check-in-hashmap
 
 
+https://stackoverflow.com/questions/696782/retrieve-column-names-from-java-sql-resultset
 
+https://stackoverflow.com/questions/34282583/what-is-rowid-rownum-rowid-vs-rownum
+https://docs.oracle.com/cd/B19306_01/java.102/b14355/datacc.htm#i1044552
+https://dev.mysql.com/doc/refman/8.0/en/binary-varbinary.html
 
-
+https://www.mysqltutorial.org/mysql-data-types.aspx/
+http://www.java2s.com/Code/Java/Database-SQL-JDBC/Getallviewsinadatabase.html
+https://stackoverflow.com/questions/21024224/fetch-an-entire-row-with-jdbc-as-a-list
 
 
 
