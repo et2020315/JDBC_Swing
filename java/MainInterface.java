@@ -28,7 +28,7 @@ public class MainInterface {
 
     // driver and docker url
     static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost:3306/?serverTimezone=UTC#/";
+    static final String DB_URL = "jdbc:mysql://localhost:3306/?serverTimezone=UTC#/adventureworks";
 
     // Database credentials
     // going to be static for now, maybe we can implement a login later
@@ -53,55 +53,55 @@ public class MainInterface {
 
         try {
 
-          Graph<String, DefaultEdge> directedGraph =
-            new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
-        directedGraph.addVertex("a");
-        directedGraph.addVertex("b");
-        directedGraph.addVertex("c");
-        directedGraph.addVertex("d");
-        directedGraph.addVertex("e");
-        directedGraph.addVertex("f");
-        directedGraph.addVertex("g");
-        directedGraph.addVertex("h");
-        directedGraph.addVertex("i");
-        directedGraph.addEdge("a", "b");
-        directedGraph.addEdge("b", "d");
-        directedGraph.addEdge("d", "c");
-        directedGraph.addEdge("c", "a");
-        directedGraph.addEdge("e", "d");
-        directedGraph.addEdge("e", "f");
-        directedGraph.addEdge("f", "g");
-        directedGraph.addEdge("g", "e");
-        directedGraph.addEdge("h", "e");
-        directedGraph.addEdge("i", "h");
-
-
-        // computes all the strongly connected components of the directed graph
-        StrongConnectivityAlgorithm<String, DefaultEdge> scAlg =
-            new KosarajuStrongConnectivityInspector<>(directedGraph);
-        List<Graph<String, DefaultEdge>> stronglyConnectedSubgraphs =
-            scAlg.getStronglyConnectedComponents();
-
-        // prints the strongly connected components
-        System.out.println("Strongly connected components:");
-        for (int i = 0; i < stronglyConnectedSubgraphs.size(); i++) {
-            System.out.println(stronglyConnectedSubgraphs.get(i));
-        }
-        System.out.println();
-
-        // Prints the shortest path from vertex i to vertex c. This certainly
-        // exists for our particular directed graph.
-        System.out.println("Shortest path from i to c:");
-        DijkstraShortestPath<String, DefaultEdge> dijkstraAlg =
-            new DijkstraShortestPath<>(directedGraph);
-        SingleSourcePaths<String, DefaultEdge> iPaths = dijkstraAlg.getPaths("i");
-        System.out.println(iPaths.getPath("c") + "\n");
-
-
-        System.out.println("Shortest path from c to i:");
-        SingleSourcePaths<String, DefaultEdge> cPaths = dijkstraAlg.getPaths("c");
-        System.out.println(cPaths.getPath("i"));
-
+        //   Graph<String, DefaultEdge> directedGraph =
+        //     new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
+        // directedGraph.addVertex("a");
+        // directedGraph.addVertex("b");
+        // directedGraph.addVertex("c");
+        // directedGraph.addVertex("d");
+        // directedGraph.addVertex("e");
+        // directedGraph.addVertex("f");
+        // directedGraph.addVertex("g");
+        // directedGraph.addVertex("h");
+        // directedGraph.addVertex("i");
+        // directedGraph.addEdge("a", "b");
+        // directedGraph.addEdge("b", "d");
+        // directedGraph.addEdge("d", "c");
+        // directedGraph.addEdge("c", "a");
+        // directedGraph.addEdge("e", "d");
+        // directedGraph.addEdge("e", "f");
+        // directedGraph.addEdge("f", "g");
+        // directedGraph.addEdge("g", "e");
+        // directedGraph.addEdge("h", "e");
+        // directedGraph.addEdge("i", "h");
+        //
+        //
+        // // computes all the strongly connected components of the directed graph
+        // StrongConnectivityAlgorithm<String, DefaultEdge> scAlg =
+        //     new KosarajuStrongConnectivityInspector<>(directedGraph);
+        // List<Graph<String, DefaultEdge>> stronglyConnectedSubgraphs =
+        //     scAlg.getStronglyConnectedComponents();
+        //
+        // // prints the strongly connected components
+        // System.out.println("Strongly connected components:");
+        // for (int i = 0; i < stronglyConnectedSubgraphs.size(); i++) {
+        //     System.out.println(stronglyConnectedSubgraphs.get(i));
+        // }
+        // System.out.println();
+        //
+        // // Prints the shortest path from vertex i to vertex c. This certainly
+        // // exists for our particular directed graph.
+        // System.out.println("Shortest path from i to c:");
+        // DijkstraShortestPath<String, DefaultEdge> dijkstraAlg =
+        //     new DijkstraShortestPath<>(directedGraph);
+        // SingleSourcePaths<String, DefaultEdge> iPaths = dijkstraAlg.getPaths("i");
+        // System.out.println(iPaths.getPath("c") + "\n");
+        //
+        //
+        // System.out.println("Shortest path from c to i:");
+        // SingleSourcePaths<String, DefaultEdge> cPaths = dijkstraAlg.getPaths("c");
+        // System.out.println(cPaths.getPath("i"));
+        //
 
 
 
@@ -126,6 +126,7 @@ public class MainInterface {
 
             print_shortest_path(table_matrix,"employee","vendorcontact");
 
+            print_join_table(conn,stmt,table_matrix,"employee","vendorcontact",edgeName);
 
 
             //
@@ -358,13 +359,13 @@ public class MainInterface {
           }
         }
 
-        // test:
-        int stopping = 0;
-        for(DefaultWeightedEdge e : table_matrix.edgeSet()){
-          System.out.println(table_matrix.getEdgeSource(e) + " --> " + table_matrix.getEdgeTarget(e));
-          System.out.println(edgeName.get((int)table_matrix.getEdgeWeight(e))); // Note: double cannot be dereferebced error --  canot use intValue()
-          if(stopping == 10){break;}
-        }
+        // // test:
+        // int stopping = 0;
+        // for(DefaultWeightedEdge e : table_matrix.edgeSet()){
+        //   System.out.println(table_matrix.getEdgeSource(e) + " --> " + table_matrix.getEdgeTarget(e));
+        //   System.out.println(edgeName.get((int)table_matrix.getEdgeWeight(e))); // Note: double cannot be dereferebced error --  canot use intValue()
+        //   if(stopping == 10){break;}
+        // }
 
 
 
@@ -388,7 +389,8 @@ public class MainInterface {
 
 
 
-    public static void print_join_table(Connection conn, Statement stmt,Graph<String, DefaultWeightedEdge> table_matrix,String tb1, String tb2){
+    public static void print_join_table(Connection conn, Statement stmt,Graph<String, DefaultWeightedEdge> table_matrix,String tb1, String tb2, ArrayList<String>edgeName){
+      try{
       System.out.println("Shortest path from tb1 to tb2:");
       DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg =
           new DijkstraShortestPath<>(table_matrix);
@@ -396,27 +398,77 @@ public class MainInterface {
 
       System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
       System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+      List<String> tablelist = iPaths.getPath(tb2).getVertexList();
 
 
-      // String query2 = "select * from ";
-      //
-      // stmt = conn.createStatement();
-      // ResultSet rs1;
-      // ResultSetMetaData rsmd1;
-      // rs1 = stmt.executeQuery(query2);
-      // rsmd1 = rs1.getMetaData();
-      // while(rs1.next()){
-      //   // System.out.println("---------");
-      //   ArrayList<String> temp1 = new ArrayList<String>();
-      //   for(int j=1;j <= rsmd1.getColumnCount();j++){
-      //     temp1.add(rs1.getString(j));
-      //   }
-      //   tbl_col.add(temp1);
-      // }
+      // retrieve on what columns into arraylist
+      ArrayList<String> onclauseEdge = new ArrayList<String>();
+      // retrieve edge string by weight of edge
+      for(int j = 0; j < tablelist.size()-1;j++){
+        // get edge name weight in graph
+        double wt = table_matrix.getEdgeWeight(table_matrix.getEdge(tablelist.get(j),tablelist.get(j+1)));
+        // get the string by weight/index in edgename
+        int index = (int)wt;
+        String columnName1 = edgeName.get(index);
+        System.out.println("index:"+index);
+        System.out.println("columnName1:"+columnName1);
+        // append it to oncluaseEdge
+        onclauseEdge.add(columnName1);
+      }
 
+
+      String query = "select * from ";
+      System.out.println("tblistsize:"+tablelist.size());
+      System.out.println("oncluasesize:"+onclauseEdge.size());
+      // contruct tables names and inner join strings
+      String middle = "";
+      for(int j=0;j<tablelist.size();j++){
+
+        if(j==0){
+          query = query + tablelist.get(j);
+        } else{
+          String currT = tablelist.get(j);
+          String prevT = tablelist.get(j-1);
+          String col = onclauseEdge.get(j-1);
+          query = query+" INNER JOIN "+currT+" ON ("+prevT+"."+col+"="+currT+"."+col+")";
+        }
+      }
+
+
+      System.out.println(query);
+      stmt = conn.createStatement();
+      ResultSet rs2;
+      ResultSetMetaData rsmd2;
+      rs2 = stmt.executeQuery(query);
+      rsmd2 = rs2.getMetaData();
+      System.out.println("hellow");
+      int countloop = 0;
+      while(rs2.next()){
+
+        for(int j=1;j <= rsmd2.getColumnCount();j++){
+          String type = rsmd2.getColumnTypeName(j);
+
+          // System.out.println("type:"+type);
+          if(type.toLowerCase().contains("binary")){
+            System.out.println(rsmd2.getColumnName(j)+": "+"some binary, print out make a noise");
+          }else {
+            System.out.println(rsmd2.getColumnName(j)+": "+rs2.getString(j));
+          }
+
+        }// end forloop
+        System.out.println("*******************************************************");
+        if(countloop == 100){
+          break;
+        }
+      }
+
+
+    }catch(Exception e){
+      System.out.println("Something wrong in join table.");
+      e.printStackTrace();
+    }
 
     }// print join table
-
 
 
 

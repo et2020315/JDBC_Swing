@@ -16,18 +16,27 @@ https://stackoverflow.com/questions/16584948/how-to-create-weighted-adjacency-li
 http://porthos.ist.utl.pt/docs/mySQL/information-schema.html#columns-table
 https://stackoverflow.com/questions/24932374/java-how-to-print-the-rows-from-database/24932538
 https://stackoverflow.com/questions/5648420/how-to-get-all-columns-names-for-all-the-tables-in-mysql
+https://sqlzoo.net/wiki/AdventureWorks
+https://stackoverflow.com/questions/12367828/how-can-i-get-different-datatypes-from-resultsetmetadata-in-java
 
-
+https://stackoverflow.com/questions/696782/retrieve-column-names-from-java-sql-resultset
 At the beginning, i was planning to use adjacency matrix using 2d arraylist structure.
  but arraylist might have o(n^2) performance so i switch to 2d hashmap. However, I found out that the order was not
  preserved in the hashmap, and I need
 
-
+https://alvinalexander.com/java/edu/pj/jdbc/jdbc0003/
+https://www.tutorialspoint.com/jdbc/jdbc-select-records.htm
+https://stackoverflow.com/questions/21024224/fetch-an-entire-row-with-jdbc-as-a-list
 
 https://stackoverflow.com/questions/3626752/key-existence-check-in-hashmap
+https://mode.com/sql-tutorial/sql-joins-where-vs-on/
+https://stackoverflow.com/questions/28004790/mysql-natural-join-not-working
+https://www.w3resource.com/mysql/advance-query-in-mysql/mysql-natural-join.php
 
 
-
+https://www.tutorialspoint.com/what-is-resultsetmetadata-in-jdbc-what-is-its-significance
+https://stackoverflow.com/questions/3709560/joining-three-tables-using-mysql
+https://jgrapht.org/javadoc-1.4.0/org/jgrapht/Graph.html
 
 
 
