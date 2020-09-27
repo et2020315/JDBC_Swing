@@ -90,7 +90,114 @@ public class MainInterface {
 					System.out.println("Get view");
 					break;
 				case "jdb-stat":
-					System.out.println("jdb-stat");
+					if (parsed_command.length != 3) {
+						System.out.println("Incorrect amount of arguments");
+						break;
+					}
+					
+					// get index of the column chosen in command
+					rs = stmt.executeQuery("SELECT column_name FROM information_schema.columns where table_name='" + parsed_command[1] + "'");
+					int index_of_column = 0;
+					boolean name_found = false;
+					while (rs.next()) {
+						String colName = rs.getString(1);
+						if (colName.equalsIgnoreCase(parsed_command[2])) {
+							name_found = true;
+							break;
+						}
+						index_of_column++;
+					}
+					if (!name_found) {
+						System.out.println("Table or Column name not found.");
+						break;
+					}
+					
+					// make sure data type is numeric
+					rs = stmt.executeQuery("SELECT data_type FROM information_schema.columns where table_name='" + parsed_command[1] + "'");
+					rs.next();
+					for (int i = 0; i < index_of_column; i++) {
+						rs.next();
+					}
+					String datatype = rs.getString(1);
+					if (!(datatype.contains("int") || datatype.contains("dec") || datatype.contains("num") || datatype.contains("float") || datatype.contains("double"))) {
+						System.out.println("Column must contain a numeric data type.");
+						break;
+					}
+					
+					// now that query is valid, generate a list of the values in that column
+					rs = stmt.executeQuery("SELECT " + parsed_command[2] + " FROM " + parsed_command[1]);
+					List<Double> list = new ArrayList<Double>();
+					while (rs.next()) {
+						list.add(rs.getDouble(1));
+					}
+					
+					// going through list and getting stats
+					double min = list.get(0);
+					double max = list.get(0);
+					double sum = 0;
+					double median = 0;
+					if (list.size()%2 == 0)
+						median = (list.get(list.size()/2) + list.get(list.size()/2 - 1))/2;
+					else
+						median = list.get(list.size()/2);
+					
+					for (int i = 0; i < list.size(); i++) {
+						if (list.get(i) < min)
+							min = list.get(i);
+						if (list.get(i) > max)
+							max = list.get(i);
+						sum += list.get(i);
+					}
+					double avg = sum/list.size();
+					
+					System.out.format("Min value: %.2f\n", min);
+					System.out.format("Max value: %.2f\n", max);
+					System.out.format("Average: %.2f\n", avg);
+					System.out.format("Median: %.2f\n", median);
+					
+					// plotting histogram
+					// first get number of bins and bin width
+					int num_bins = (int)Math.ceil(Math.sqrt(list.size()));
+					double bin_width = (max - min)/num_bins;
+					int[] bins = new int[num_bins];
+					
+					// bins[i] = (min + i*bin_width) - (min + (i+1)*bin_width)
+					// populating each bin and scaling them properly
+					int max_count = 0;
+					for (int index = 0; index < list.size(); index++) { // populating each bin with quantity in that bin
+						int i = (int)(Math.floor((list.get(index) - min)/bin_width));
+						i = Math.min(i, bins.length - 1);
+						bins[i]++;
+						if (bins[i] > max_count)
+							max_count = bins[i];
+					}
+					int y_scale = 1;
+					while (max_count/y_scale > 50) // get scale for y axis
+						y_scale *= 10;
+					for (int i = 0; i < bins.length; i++) { // divide each quantity in bins by y_scale 
+						bins[i] = (int)Math.round(bins[i]/(double)y_scale);
+					}
+					
+					// displaying bins
+					// printing y-axis
+					int offset = String.format("%.2f", max).length() * 2 + 3; // how long the header for each bin should be when displaying
+					System.out.println();
+					System.out.format("%-" + (offset + 1) + "s", "");
+					int max_count_scaled = max_count/y_scale;
+					for (int count = 0; count <= max_count_scaled; count++) // printing y-axis labels
+						System.out.print(count + "___");
+					System.out.format("(Each star and each y-axis label represents %d counts)\n", y_scale);
+					
+					// printing each bin
+					for (int i = 0; i < bins.length; i++) {
+						String range = String.format("%.2f - %.2f", min + i*bin_width, min + (i+1)*bin_width);
+						System.out.format("%-" + offset + "s |", range);
+						for (int j = 0; j < bins[i]; j++) {
+							System.out.print("*");
+						}
+						System.out.println();
+					}
+					
 					break;
 				case "jdb-customer-info": // jdb-customer-info "conditions" groupby? columnName // displays individual customers line by line that match "conditions", can group by column name, e.g. how many customers in this state
 					createTempAggregateSalesTables(stmt);
@@ -237,7 +344,7 @@ public class MainInterface {
 				if (i > 1) 
 					System.out.print(", ");
 				String colVal = rs.getString(i);
-				if (colVal.contains(","))
+				if (colVal != null && colVal.contains(","))
 					System.out.print('"' + colVal + '"');
 				else
 					System.out.print(colVal);
