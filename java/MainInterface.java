@@ -387,6 +387,43 @@ public class MainInterface {
     }
 
 
+
+    public static void print_join_table(Connection conn, Statement stmt,Graph<String, DefaultWeightedEdge> table_matrix,String tb1, String tb2){
+      System.out.println("Shortest path from tb1 to tb2:");
+      DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg =
+          new DijkstraShortestPath<>(table_matrix);
+      SingleSourcePaths<String, DefaultWeightedEdge> iPaths = dijkstraAlg.getPaths(tb1);
+
+      System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
+      System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+
+
+      // String query2 = "select * from ";
+      //
+      // stmt = conn.createStatement();
+      // ResultSet rs1;
+      // ResultSetMetaData rsmd1;
+      // rs1 = stmt.executeQuery(query2);
+      // rsmd1 = rs1.getMetaData();
+      // while(rs1.next()){
+      //   // System.out.println("---------");
+      //   ArrayList<String> temp1 = new ArrayList<String>();
+      //   for(int j=1;j <= rsmd1.getColumnCount();j++){
+      //     temp1.add(rs1.getString(j));
+      //   }
+      //   tbl_col.add(temp1);
+      // }
+
+
+    }// print join table
+
+
+
+
+
+
+
+
     // search path, print out path
     // public void path_finding_DFS(Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,String tb_start, String tb_end,Map<String,Integer> visitedNode,ArrayList<Edge> column_name,Stack<String> stk){
     //   try{
