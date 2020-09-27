@@ -8,60 +8,20 @@
 import java.sql.*;
 import java.util.*;
 import java.lang.*;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
-// class Node{
-//   public String n;
-//   public Integer visitedlabel = 0;
-//
-//   Node(){
-//     t = "";
-//     visitedlabel = 0;
-//   }
-//
-//   Node(Node n){
-//     this.t = n.t;
-//     this.visitedlabel = n.visitedlabel;
-//   }
-//
-//   Node(String tb){
-//     this.t = tb;
-//   }
-//
-// };
-
-
-// class Edge{
-//   public Node n1;
-//   public String s2;
-//   public Integer edgelabel = 0;
-//   public String edgeval = "";
-
-//   public Edge(){
-//     s1 = "";
-//     s2 = "";
-//   }
-//   public Edge(String t1, String t2){
-//     s1 = t1;
-//     s2 = t2;
-//   }
-//
-//   public Edge(Edge e){
-//     this.s1 = e.s1;
-//     this.s2 = e.s2;
-//     this.edgelabel = e.edgelabel;
-//     this.edgeval = e.edgeval;
-//   }
-//   public boolean equaledge(Edge e){
-//     if((e.s1).equals(this.s1) && (e.s2).equals(this.s2)){
-//       return true;
-//     }
-//     return false;
-//   }
-//
-//   public void printEdge(){
-//     System.out.println("s1:"+s1+" s2:"+s2+" "+"edgelabel:"+edgelabel);
-//   }
-// };
+import org.jgrapht.*;
+import org.jgrapht.graph.*;
+import org.jgrapht.nio.*;
+import org.jgrapht.nio.dot.*;
+import org.jgrapht.traverse.*;
+import org.jgrapht.alg.connectivity.*;
+import org.jgrapht.alg.interfaces.ShortestPathAlgorithm.*;
+import org.jgrapht.alg.interfaces.*;
+import org.jgrapht.alg.shortestpath.*;
+import org.jgrapht.graph.*;
 
 
 public class MainInterface {
@@ -78,65 +38,73 @@ public class MainInterface {
 
     static Map<String,ArrayList<String>> adj_list_by_column = new HashMap<String,ArrayList<String>>();
     static Map<String,ArrayList<String>> adj_list_by_table = new HashMap<String,ArrayList<String>>();
-    static ArrayList<Edge> column_name = new ArrayList<Edge>(); // store visied info
+
     static ArrayList<String> table_name = new ArrayList<String>();
-    static Map<String,Integer> visitedNode = new HashMap<String,Integer>();
-    // static Map<Edge,Integer> visitedEdge = new HashMap<String,Integer>();
-    // static Stack<String> stk = new Stack<String>();
-    // main loop to log into and interact with database
+    static Graph<String, DefaultWeightedEdge> table_matrix =
+      new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 
-    // public static ArrayList<Edge> reset_edge(ArrayList<Edge> edgelist){
-    //   for(int i = 0; i < edgelist.size();i++){
-    //     edgelist.get(i).edgelabel = 0; // set to unexplored
-    //   }
-    //   return edgelist;
-    // }
-    //
-    // public static boolean find_edge(ArrayList<Edge> edgelist, Edge e){
-    //   boolean found = false;
-    //   for(int i = 0; i < edgelist.size();i++){
-    //     if(edgelist.get(i).equaledge(e)){
-    //       found = true;
-    //       break;
-    //     }
-    //   }
-    //   return found;
-    // }
-
-    // public static ArrayList<Edge> remove_edge(ArrayList<Edge> edgelist, Edge e){
-    //   for(int i = 0; i < edgelist.size();i++){
-    //     if(edgelist.get(i).equaledge(e)){
-    //       edgelist.remove(e);
-    //       break;
-    //     }
-    //   }
-    //   return edgelist;
-    // }
-    //
-    // public static ArrayList<Edge> set_edge_label(ArrayList<Edge> edgelist, Edge e, Integer num){
-    //   for(int i = 0; i < edgelist.size();i++){
-    //     if(edgelist.get(i).equaledge(e)){
-    //       edgelist.get(i).edgelabel = num;
-    //       break;
-    //     }
-    //   }
-    //   return edgelist;
-    // }
-    //
-    // public static Edge get_edge(ArrayList<Edge> edgelist, Edge e){
-    //   for(int i = 0; i < edgelist.size();i++){
-    //     if(edgelist.get(i).equaledge(e)){
-    //       return edgelist.get(i);
-    //     }
-    //   }
-    //   return null;
-    // }
+    static Double ind = 0.0;
+    static ArrayList<String> edgeName = new ArrayList<String>(); // weight == index
 
 
     public static void main(String[] args) {
         Connection conn = null;
         Statement stmt = null;
+
         try {
+
+          Graph<String, DefaultEdge> directedGraph =
+            new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
+        directedGraph.addVertex("a");
+        directedGraph.addVertex("b");
+        directedGraph.addVertex("c");
+        directedGraph.addVertex("d");
+        directedGraph.addVertex("e");
+        directedGraph.addVertex("f");
+        directedGraph.addVertex("g");
+        directedGraph.addVertex("h");
+        directedGraph.addVertex("i");
+        directedGraph.addEdge("a", "b");
+        directedGraph.addEdge("b", "d");
+        directedGraph.addEdge("d", "c");
+        directedGraph.addEdge("c", "a");
+        directedGraph.addEdge("e", "d");
+        directedGraph.addEdge("e", "f");
+        directedGraph.addEdge("f", "g");
+        directedGraph.addEdge("g", "e");
+        directedGraph.addEdge("h", "e");
+        directedGraph.addEdge("i", "h");
+
+
+        // computes all the strongly connected components of the directed graph
+        StrongConnectivityAlgorithm<String, DefaultEdge> scAlg =
+            new KosarajuStrongConnectivityInspector<>(directedGraph);
+        List<Graph<String, DefaultEdge>> stronglyConnectedSubgraphs =
+            scAlg.getStronglyConnectedComponents();
+
+        // prints the strongly connected components
+        System.out.println("Strongly connected components:");
+        for (int i = 0; i < stronglyConnectedSubgraphs.size(); i++) {
+            System.out.println(stronglyConnectedSubgraphs.get(i));
+        }
+        System.out.println();
+
+        // Prints the shortest path from vertex i to vertex c. This certainly
+        // exists for our particular directed graph.
+        System.out.println("Shortest path from i to c:");
+        DijkstraShortestPath<String, DefaultEdge> dijkstraAlg =
+            new DijkstraShortestPath<>(directedGraph);
+        SingleSourcePaths<String, DefaultEdge> iPaths = dijkstraAlg.getPaths("i");
+        System.out.println(iPaths.getPath("c") + "\n");
+
+
+        System.out.println("Shortest path from c to i:");
+        SingleSourcePaths<String, DefaultEdge> cPaths = dijkstraAlg.getPaths("c");
+        System.out.println(cPaths.getPath("i"));
+
+
+
+
             // Connection stuff
             Class.forName("com.mysql.jdbc.Driver");
 
@@ -154,43 +122,10 @@ public class MainInterface {
             boolean loop = true;
 
 
-// // ------------ DO NOT DELETE THE CODE BELOW -------------------------
-//
-//             // test cases passed find_edge and reset_edge
-//             Edge e1 = new Edge("n1","n2");
-//             Edge e2 = new Edge("n3","n2");
-//             Edge e3 = new Edge("n2","n4");
-//             Edge e4 = new Edge("n3","n5");
-//             Edge e5 = new Edge(e4);
-//             ArrayList<Edge> sampleEdgelist = new ArrayList<Edge>(Arrays.asList(e1,e2,e3,e4,e5));
-//
-//
-//             set_edge_label(sampleEdgelist,e2,1);
-//             set_edge_label(sampleEdgelist,e5,1);
-//             for(int i =0; i < sampleEdgelist.size();i++){
-//               sampleEdgelist.get(i).printEdge();
-//             }
-//
-//             System.out.println(find_edge(sampleEdgelist,e2));
-//
-//             sampleEdgelist = reset_edge(sampleEdgelist);
-//             for(int i =0; i < sampleEdgelist.size();i++){
-//               sampleEdgelist.get(i).printEdge();
-//             }
+            database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_matrix);
 
+            print_shortest_path(table_matrix,"employee","vendorcontact");
 
-
-
-
-
-
-
-            database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_name,column_name);
-
-            // intialized , none of them is visited ------------ move this into while loop later
-            for(int i = 0; i < table_name.size();i++){
-              visitedNode.put(table_name.get(i),0);
-            }
 
 
             //
@@ -283,13 +218,11 @@ public class MainInterface {
     }// end main
 
     // helper function build a map
-    public static void database_meta(Connection conn, Statement stmt,Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table, ArrayList<String> table_name, ArrayList<Edge> column_name){
+    public static void database_meta(Connection conn, Statement stmt,Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,Graph<String, DefaultWeightedEdge> table_matrix){
       try{
-        // ArrayList<ArrayList<String>> adjmatx = new ArrayList<ArrayList<String>>();
 
         ArrayList<ArrayList<String>> tbl_col = new ArrayList<ArrayList<String>>();
-        // Map<String,Map<String,Integer>> matrix = new HashMap<String,HashMap<String,Integer>>();
-        // Integer count = 0;
+
         String tablename;
 
         DatabaseMetaData metaData = conn.getMetaData();
@@ -299,14 +232,15 @@ public class MainInterface {
         // O(n)
         while (tables.next()) {
          tablename = tables.getString("TABLE_NAME");
-         System.out.println("table:"+tablename);
-         table_name.add(tablename);
+         // System.out.println("table:"+tablename);
+         // table_name.add(tablename);
+         table_matrix.addVertex(tablename); // add table node to graph
         }
 
         // checking
-        for(int i = 0; i < table_name.size();i++){
-          System.out.println(table_name.get(i));
-        }
+        // for(int i = 0; i < table_name.size();i++){
+        //   System.out.println(table_name.get(i));
+        // }
 
         // System.out.println("***************************************");
         // System.out.println("***************************************");
@@ -357,7 +291,7 @@ public class MainInterface {
           }
         }
 
-        // // print for checking
+        // print for checking
         // for(String k: adj_list_by_column.keySet()){
         //   System.out.println("******************* "+ k +" ******************");
         //   for(int j=0;j<adj_list_by_column.get(k).size();j++){
@@ -371,7 +305,7 @@ public class MainInterface {
           String colstr = tbl_col.get(i).get(1);
           String curr_tbl = tbl_col.get(i).get(0);
 
-          if(!colstr.toLowerCase().endsWith("id")){
+          if(!colstr.endsWith("ID")){
             // System.out.println("Does not contain");
             continue;
           }
@@ -404,18 +338,33 @@ public class MainInterface {
         //   }
         // }
 
+        for(String k: adj_list_by_column.keySet()){
+          // currently , id only
+          if(!k.contains("ID")){
+            continue;
+          }
+          ArrayList<String> temp3 = adj_list_by_column.get(k);
+          for(int j =0;j< temp3.size();j++){
+            for(int q=0;q<temp3.size();q++){
+              if(q != j){
+                DefaultWeightedEdge ee =  table_matrix.addEdge(temp3.get(j),temp3.get(q));
+                table_matrix.setEdgeWeight(table_matrix.getEdge(temp3.get(j),temp3.get(q)), ind); // nullptrException if ee to set
+                // System.out.println("index at: " + ind.toString() + " col:" + k + " j:" + temp3.get(j) + " q:" + temp3.get(q));
+                // edgeName add the string, this could be either map or arraylist
+                edgeName.add(k);
+                ind += 1.0;
+              }
+            }
+          }
+        }
 
-
-        // // get edges ------! edges shouldbe  between two tables instead of table column pair
-        // for(String k : adj_list_by_column.keySet()){
-        //   ArrayList<String> temp5 = adj_list_by_column.get(k);
-        //   for(int j = 0; j < temp5.size();j++){
-        //     column_name.add(new Edge(k,temp5.get(j)));
-        //   }
-        // }
-
-
-
+        // test:
+        int stopping = 0;
+        for(DefaultWeightedEdge e : table_matrix.edgeSet()){
+          System.out.println(table_matrix.getEdgeSource(e) + " --> " + table_matrix.getEdgeTarget(e));
+          System.out.println(edgeName.get((int)table_matrix.getEdgeWeight(e))); // Note: double cannot be dereferebced error --  canot use intValue()
+          if(stopping == 10){break;}
+        }
 
 
 
@@ -425,6 +374,17 @@ public class MainInterface {
       }
     }
 
+
+
+    public static void print_shortest_path(Graph<String, DefaultWeightedEdge> table_matrix,String tb1, String tb2){
+      System.out.println("Shortest path from tb1 to tb2:");
+      DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg =
+          new DijkstraShortestPath<>(table_matrix);
+      SingleSourcePaths<String, DefaultWeightedEdge> iPaths = dijkstraAlg.getPaths(tb1);
+
+      System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
+      System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+    }
 
 
     // search path, print out path
