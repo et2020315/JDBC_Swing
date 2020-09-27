@@ -36,6 +36,9 @@ public class MainInterface {
 			ResultSet rs;
 			rs = stmt.executeQuery("USE adventureworks;");
 
+			ResultSet tables;
+			tables = stmt.executeQuery("USE adventureworks;");
+
 			Pattern spaceSplit = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'"); // splits by space, but not inside quotes
 
 			// for basic SQL commands and calling custom functions
@@ -80,7 +83,12 @@ public class MainInterface {
 						System.out.println("Incorrect amount of arguments");
 						break;
 					}
-					t_name = parsed_command[1];
+					String t_name = parsed_command[1];
+
+					query = "SHOW KEYS FROM " + t_name +" WHERE Key_name = 'PRIMARY'";
+					pk = stmt.executeQuery(query);
+
+
 					break;
 				case "jdb-show-all-primary-keys":
 				// Show all primary keys from all tables. Print the list of (table_name, column_name).
@@ -105,11 +113,11 @@ public class MainInterface {
 						System.out.println("Incorrect amount of arguments");
 						break;
 					}
-					c_name = parsed_command[1];
+					String c_name = parsed_command[1];
 
 					query = "SELECT Table_name FROM INFORMATION_SCHEMA.COLUMNS
 					WHERE TABLE_SCHEMA = 'adventureworks' AND COLUMN_NAME LIKE '%" + c_name +"'%";
-					tables = stmt.executeQuery(query);
+					rs = stmt.executeQuery(query);
 					for (int i = 0; i < tables.length; i++) {
 						System.out.println(tables[i]);
 					}
