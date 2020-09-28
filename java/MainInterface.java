@@ -36,9 +36,6 @@ public class MainInterface {
 			ResultSet rs;
 			rs = stmt.executeQuery("USE adventureworks;");
 
-			ResultSet tables;
-			tables = stmt.executeQuery("USE adventureworks;");
-
 			Pattern spaceSplit = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'"); // splits by space, but not inside quotes
 
 			// for basic SQL commands and calling custom functions
@@ -93,19 +90,19 @@ public class MainInterface {
 					break;
 				case "jdb-show-all-primary-keys":
 				// Show all primary keys from all tables. Print the list of (table_name, column_name).
-				// SHOW tables
-				// SHOW KEYS FROM (table name) WHERE Key_name = 'PRIMARY'
 					if (parsed_command.length != 1) {
 						System.out.println("Incorrect amount of arguments");
 						break;
 					}
 
-					query = "SELECT Table_name, Column_name FROM INFORMATION_SCHEMA.COLUMNS
-					WHERE TABLE_SCHEMA = 'adventureworks' AND Key_name = 'PRIMARY'";
-					tables = stmt.executeQuery(query);
-					for (int i = 0; i < tables.length; i++) {
-						System.out.println(tables[i]);
-					}
+					String sql="select TABLE_NAME, COLUMN_NAME from information_schema.columns where Key_name = 'PRIMARY'";
+					conn = DriverManager.getConnection(DB_URL,USER,PASS);
+					PreparedStatement statement =conn.prepareStatement(sql);
+					ResultSet resultSet=statement.executeQuery();
+					displayResultSet(resultSet,'-',150);
+					System.out.println();
+					resultSet.close();
+					statement.close();
 
 					break;
 				case "jdb-find-column":
