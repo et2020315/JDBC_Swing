@@ -329,11 +329,98 @@ public class MainInterface {
 					break;
 
         case "CREATE":
-          System.out.println(command);
+            // create view satement
+            if(command.contains("CREATE VIEW") && command.contains("AS")){
+              System.out.println(command);
+              String cv1[] = command.split(" AS ");
+              String viewName = cv1[0].replace("CREATE VIEW","").trim().toLowerCase();
+              System.out.println("v:"+viewName);
+              String qy = cv1[1].replace("(","").replace(")","").replace(";","").trim();
+              System.out.println("qy:"+qy);
+
+              if(qy.equals("")){
+                System.out.println("empty view def, try again");
+                break;
+              }
+              if(view_def_map.containsKey(viewName)){
+                System.out.println("THE view "+viewName+" has already existed. use replace view command");
+                break;
+              }
+              // call create view function
+              else {
+                create_or_update_view(viewName,qy,0);
+                for(String ttt: view_def_map.keySet()){
+                  System.out.println(ttt + "-> " + view_def_map.get(ttt));
+                }
+              }
+            }
+            // missing as keyword
+            else if (command.contains("CREATE VIEW") && (!command.contains("AS"))){
+              System.out.println("something wrong, missing AS keyword");
+            }
+            // other create mysql statement
+            else {
+              rs = stmt.executeQuery(command);
+              printResults(rs);
+              break;
+            }
           break;
 
-        case "UPDATE":
+        case "REPLACE":
           System.out.println(command);
+          if(command.contains("REPLACE VIEW") && command.contains("AS")){
+            System.out.println(command);
+            String cv1[] = command.split(" AS ");
+            String viewName = cv1[0].replace("REPLACE VIEW","").trim().toLowerCase();
+            System.out.println("v:"+viewName);
+            String qy = cv1[1].replace("(","").replace(")","").replace(";","").trim();
+            System.out.println("qy:"+qy);
+
+            // empty query, break
+            if(qy.equals("")){
+              System.out.println("empty view def, try again");
+              break;
+            }
+            // call create_update view
+            if(view_def_map.containsKey(viewName)){
+              create_or_update_view(viewName,qy,1);
+              for(String ttt: view_def_map.keySet()){
+                System.out.println(ttt + "-> " + view_def_map.get(ttt));
+              }
+            }
+            else{
+              System.out.println("the view is not created yet, cannot replace.");
+            }
+
+          }
+          // error
+          else {
+            System.out.println("Something wrong, try again");
+          }
+          break;
+
+        case "DROP":
+          if (command.contains("DROP VIEW")) {
+            String viewName = command.replace("DROP VIEW","").replace(";","").trim().toLowerCase();
+            System.out.println("table in drop:" + viewName);
+            // remove from map
+            if(view_def_map.containsKey(viewName)){
+              view_def_map.remove(viewName);
+              System.out.println(viewName + " removed");
+              for(String ttt: view_def_map.keySet()){
+                System.out.println(ttt + "-> " + view_def_map.get(ttt));
+              }
+            }
+            else{
+              System.out.println("the view is not created yet, cannot drop.");
+            }
+
+          }
+          // other mysql drop commands
+          else{
+            rs = stmt.executeQuery(command);
+  					printResults(rs);
+          }
           break;
 
 				default: // basic sql commands
@@ -374,7 +461,8 @@ public class MainInterface {
 		return !(command.contains("CREATE") || command.contains("DROP") ||
 				command.contains("ALTER") || command.contains("DELETE") ||
 				command.contains("INSERT")) || command.contains("CREATE VIEW")||
-        command.contains("UPDATE VIEW") ||command.contains("UPDATE");
+        command.contains("UPDATE") ||
+        command.contains("REPLACE VIEW") || command.contains("DROP VIEW");
 	}
 
 	public static void printResults(ResultSet rs) throws SQLException {
