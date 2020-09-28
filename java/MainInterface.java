@@ -122,9 +122,27 @@ public class MainInterface {
 					break;
 				case "jdb-search-path":
 					System.out.println("Search path");
-          
+          command = command.trim();
+          command = command.replace(";","");
+          String tbarr1[] = command.split(" ");
+          if(tbarr1.length!= 3 || !tbarr1[0].equals("jdb-search-path")){
+            System.out.println("Something wrong in syntax. try again");
+            break;
+          } else {
+            String tb11 = tbarr1[1].trim().toLowerCase();
+            String tb12 = tbarr1[2].trim().toLowerCase();
+            // if table not in graph
+            if(!table_name.contains(tb11) || !table_name.contains(tb12)){
+              System.out.println("one of the table not in schema, enter table in schema");
+              break;
+            } else{
+              print_shortest_path(table_matrix,tb11,tb12);
+            }
+          }
+
 					break;
 				case "jdb-search-and-join":
+          command = command.trim();
 					System.out.println("Search and join");
           command = command.replace(";","");
           String tbarr[] = command.split(" ");
@@ -140,10 +158,14 @@ public class MainInterface {
               break;
             } else{
               print_join_table(conn,stmt,table_matrix,tb1,tb2,edgeName);
+              // for(int p=0;p<table_name.size();p++){
+              //   System.out.println("table_name:"+table_name.get(p));
+              // }
             }
           }
 					break;
 				case "jdb-get-view":
+          command = command.trim();
 					System.out.println("Get view");
           // System.out.println("command:"+command);
           String query11 = "";
