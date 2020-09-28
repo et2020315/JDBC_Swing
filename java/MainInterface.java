@@ -225,7 +225,7 @@ public class MainInterface {
 					get_view_for_user(conn,stmt,viewName1,query11,view_def_map);
 
 					break;
-				case "jdb-show-best-Salesperson": {
+				case "jdb-show-best-salesperson": {
 					int num =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;
 					jdbShowBestSalesperson(num, conn);
 					break;
@@ -240,6 +240,11 @@ public class MainInterface {
 					break;
 				}
 				case "jdb-stat": {
+					if (parsed_command.length != 3) {
+						System.out.println("Incorrect amount of arguments");
+						break;
+					}
+
 					// get index of the column chosen in command
 					rs = stmt.executeQuery("SELECT column_name FROM information_schema.columns where table_name='" + parsed_command[1] + "'");
 					int index_of_column = 0;
@@ -433,7 +438,6 @@ public class MainInterface {
 					rs = stmt.executeQuery(query);
 					printResults(rs);
 					break;
-
 				case "CREATE":
 					// create view satement
 					if(command.contains("CREATE VIEW") && command.contains("AS")){
@@ -466,9 +470,7 @@ public class MainInterface {
 					}
 					// other create mysql statement
 					else {
-						rs = stmt.executeQuery(command);
-						printResults(rs);
-						break;
+
 					}
 					break;
 
@@ -523,10 +525,7 @@ public class MainInterface {
 
 					}
 					// other mysql drop commands
-					else{
-						rs = stmt.executeQuery(command);
-						printResults(rs);
-					}
+					else{ }
 					break;
 
 				default: // basic sql commands
@@ -990,7 +989,7 @@ public class MainInterface {
 				"from (select SalesPersonID, SalesYTD as bestYTD from salesperson order by SalesYTD desc limit ?) " +
 				"as bestEmployeeYTD inner join " +
 				"employee e on bestEmployeeYTD.SalesPersonID = e.EmployeeID inner join " +
-				"Contact c on e.ContactID = c.ContactID;" ;
+				"contact c on e.ContactID = c.ContactID;" ;
 
 		PreparedStatement statement =conn.prepareStatement(sql);
 		statement.setInt(1, num);
