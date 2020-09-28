@@ -65,7 +65,7 @@ public class MainInterface {
 			ResultSet rs;
 			rs = stmt.executeQuery("USE adventureworks;");
 
-      database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_matrix);
+      database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_matrix,table_name);
 
 
 
@@ -162,12 +162,68 @@ public class MainInterface {
 					break;
 				case "jdb-search-path":
 					System.out.println("Search path");
+          command = command.trim();
+          command = command.replace(";","");
+          String tbarr1[] = command.split(" ");
+          if(tbarr1.length!= 3 || !tbarr1[0].equals("jdb-search-path")){
+            System.out.println("Something wrong in syntax. try again");
+            break;
+          } else {
+            String tb11 = tbarr1[1].trim().toLowerCase();
+            String tb12 = tbarr1[2].trim().toLowerCase();
+            // if table not in graph
+            if(!table_name.contains(tb11) || !table_name.contains(tb12)){
+              System.out.println("one of the table not in schema, enter table in schema");
+              break;
+            } else{
+              print_shortest_path(table_matrix,tb11,tb12);
+            }
+          }
+
 					break;
 				case "jdb-search-and-join":
+          command = command.trim();
 					System.out.println("Search and join");
+          command = command.replace(";","");
+          String tbarr[] = command.split(" ");
+          if(tbarr.length!= 3 || !tbarr[0].equals("jdb-search-and-join")){
+            System.out.println("Something wrong in syntax. try again");
+            break;
+          } else {
+            String tb1 = tbarr[1].trim().toLowerCase();
+            String tb2 = tbarr[2].trim().toLowerCase();
+            // if table not in graph
+            if(!table_name.contains(tb1) || !table_name.contains(tb2)){
+              System.out.println("one of the table not in schema, enter table in schema");
+              break;
+            } else{
+              print_join_table(conn,stmt,table_matrix,tb1,tb2,edgeName);
+              // for(int p=0;p<table_name.size();p++){
+              //   System.out.println("table_name:"+table_name.get(p));
+              // }
+            }
+          }
 					break;
 				case "jdb-get-view":
+          command = command.trim();
 					System.out.println("Get view");
+          // System.out.println("command:"+command);
+          String query11 = "";
+          if(command.contains("(") && command.contains(")")){
+            int indl = command.indexOf("(");
+            int indr = command.indexOf(")");
+            if(indl == indr -1){
+              System.out.println("empty, something wrong");
+              break;
+            }
+            query11 = command.substring(indl+1,indr);
+            // System.out.println("query11:"+query11);
+          }
+
+          // make all view name keys lowercase
+          String viewName1 = command.split(" ")[1].toLowerCase();
+          get_view_for_user(conn,stmt,viewName1,query11,view_def_map);
+
 					break;
 				case "jdb-show-best-Salesperson": {
 					int num =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;					
@@ -377,7 +433,104 @@ public class MainInterface {
 					rs = stmt.executeQuery(query);
 					printResults(rs);
 					break;
+
+        case "CREATE":
+            // create view satement
+            if(command.contains("CREATE VIEW") && command.contains("AS")){
+              System.out.println(command);
+              String cv1[] = command.split(" AS ");
+              String viewName = cv1[0].replace("CREATE VIEW","").trim().toLowerCase();
+              System.out.println("v:"+viewName);
+              String qy = cv1[1].replace("(","").replace(")","").replace(";","").trim();
+              System.out.println("qy:"+qy);
+
+              if(qy.equals("")){
+                System.out.println("empty view def, try again");
+                break;
+              }
+              if(view_def_map.containsKey(viewName)){
+                System.out.println("THE view "+viewName+" has already existed. use replace view command");
+                break;
+              }
+              // call create view function
+              else {
+                create_or_update_view(viewName,qy,0);
+                for(String ttt: view_def_map.keySet()){
+                  System.out.println(ttt + "-> " + view_def_map.get(ttt));
+                }
+              }
+            }
+            // missing as keyword
+            else if (command.contains("CREATE VIEW") && (!command.contains("AS"))){
+              System.out.println("something wrong, missing AS keyword");
+            }
+            // other create mysql statement
+            else {
+              rs = stmt.executeQuery(command);
+              printResults(rs);
+              break;
+            }
+          break;
+
+        case "REPLACE":
+          System.out.println(command);
+          if(command.contains("REPLACE VIEW") && command.contains("AS")){
+            System.out.println(command);
+            String cv1[] = command.split(" AS ");
+            String viewName = cv1[0].replace("REPLACE VIEW","").trim().toLowerCase();
+            System.out.println("v:"+viewName);
+            String qy = cv1[1].replace("(","").replace(")","").replace(";","").trim();
+            System.out.println("qy:"+qy);
+
+            // empty query, break
+            if(qy.equals("")){
+              System.out.println("empty view def, try again");
+              break;
+            }
+            // call create_update view
+            if(view_def_map.containsKey(viewName)){
+              create_or_update_view(viewName,qy,1);
+              for(String ttt: view_def_map.keySet()){
+                System.out.println(ttt + "-> " + view_def_map.get(ttt));
+              }
+            }
+            else{
+              System.out.println("the view is not created yet, cannot replace.");
+            }
+
+          }
+          // error
+          else {
+            System.out.println("Something wrong, try again");
+          }
+          break;
+
+        case "DROP":
+          if (command.contains("DROP VIEW")) {
+            String viewName = command.replace("DROP VIEW","").replace(";","").trim().toLowerCase();
+            System.out.println("table in drop:" + viewName);
+            // remove from map
+            if(view_def_map.containsKey(viewName)){
+              view_def_map.remove(viewName);
+              System.out.println(viewName + " removed");
+              for(String ttt: view_def_map.keySet()){
+                System.out.println(ttt + "-> " + view_def_map.get(ttt));
+              }
+            }
+            else{
+              System.out.println("the view is not created yet, cannot drop.");
+            }
+
+          }
+          // other mysql drop commands
+          else{
+            rs = stmt.executeQuery(command);
+  					printResults(rs);
+          }
+          break;
+
 				default: // basic sql commands
+
 					rs = stmt.executeQuery(command);
 					printResults(rs);
 					break;
@@ -413,7 +566,9 @@ public class MainInterface {
 		command = command.toUpperCase();
 		return !(command.contains("CREATE") || command.contains("DROP") ||
 				command.contains("ALTER") || command.contains("DELETE") ||
-				command.contains("INSERT"));
+				command.contains("INSERT")) || command.contains("CREATE VIEW")||
+        command.contains("UPDATE") ||
+        command.contains("REPLACE VIEW") || command.contains("DROP VIEW");
 	}
 
 	public static void printResults(ResultSet rs) throws SQLException {
@@ -464,7 +619,7 @@ public class MainInterface {
 	}
 
   // helper function build a map
-  public static void database_meta(Connection conn, Statement stmt,Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,Graph<String, DefaultWeightedEdge> table_matrix){
+  public static void database_meta(Connection conn, Statement stmt,Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,Graph<String, DefaultWeightedEdge> table_matrix,ArrayList<String>table_name){
     try{
 
       ArrayList<ArrayList<String>> tbl_col = new ArrayList<ArrayList<String>>();
@@ -479,7 +634,7 @@ public class MainInterface {
       while (tables.next()) {
        tablename = tables.getString("TABLE_NAME");
        // System.out.println("table:"+tablename);
-       // table_name.add(tablename);
+       table_name.add(tablename);
        table_matrix.addVertex(tablename); // add table node to graph
       }
 
@@ -722,20 +877,24 @@ public class MainInterface {
 
       // if esist in map
       if(view_def_map.containsKey(view_name) && view_def.equals("")){
+        System.out.println("view exist");
         qry = view_def_map.get(view_name);
       }
       // if does not exist in map, a new qry comes in
-      else if(!view_def_map.containsKey(view_name) && (!view_def.equals(""))) {
+      else if(!view_def_map.containsKey(view_name)) {
+        System.out.println("view created");
         qry = view_def;
         create_or_update_view(view_name,view_def,0);
       }
       // if exist and also new query, update
       else if(view_def_map.containsKey(view_name) && (!view_def.equals(""))) {
+        System.out.println("view update");
         qry = view_def;
         create_or_update_view(view_name,view_def,1);
       }
       else {
-        System.out.println("third 489");
+        System.out.println("something wrong");
+        return;
       }
 
       stmt = conn.createStatement();
