@@ -816,4 +816,12 @@ public class MainInterface {
 				statement.close();		
 	}
 	
+	private static String removeSemicolon(String str) {
+		String result = str;
+		if (str.charAt(str.length() - 1) == ';') {
+			result = str.substring(0, str.length() - 1);
+		}
+		
+		return result;
+	}
 }
