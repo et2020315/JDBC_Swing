@@ -112,13 +112,52 @@ public class MainInterface {
 					loop = false;
 					break;
 				case "jdb-show-related-tables":
-					System.out.println("jdb-show-related-tables");
+					// Given the table <table-name>, list all other tables that have in their
+					// column one or more of the primary keys of the table <table-name>.
+					// SHOW KEYS FROM <table name> WHERE Key_name = 'PRIMARY'
+					if (parsed_command.length != 2) {
+						System.out.println("Incorrect amount of arguments");
+						break;
+					}
+					String t_name = parsed_command[1];
+
+					query = "SHOW KEYS FROM " + t_name +" WHERE Key_name = 'PRIMARY'";
+					rs = stmt.executeQuery(query);
+
 					break;
 				case "jdb-show-all-primary-keys":
-					System.out.println("Show primary keys");
+					// Show all primary keys from all tables. Print the list of (table_name, column_name).
+					if (parsed_command.length != 1) {
+						System.out.println("Incorrect amount of arguments");
+						break;
+					}
+
+					String sql="select TABLE_NAME, COLUMN_NAME from information_schema.columns where Key_name = 'PRIMARY'";
+					conn = DriverManager.getConnection(DB_URL,USER,PASS);
+					PreparedStatement statement =conn.prepareStatement(sql);
+					ResultSet resultSet=statement.executeQuery();
+					displayResultSet(resultSet,'-',150);
+					System.out.println();
+					resultSet.close();
+					statement.close();
 					break;
 				case "jdb-find-column":
-					System.out.println("Find column");
+					// Find all tables that have <column-name>
+					if (parsed_command.length != 2) {
+						System.out.println("Incorrect amount of arguments");
+						break;
+					}
+					String c_name = parsed_command[1];
+
+					query ="select TABLE_NAME from information_schema.columns where column_name like ?";
+					conn = DriverManager.getConnection(DB_URL,USER,PASS);
+					PreparedStatement prepstatement =conn.prepareStatement(query);
+					prepstatement.setString(1, c_name);
+					ResultSet resultSet2=prepstatement.executeQuery();
+					displayResultSet(resultSet2,'-',150);
+					System.out.println();
+					resultSet2.close();
+					prepstatement.close();
 					break;
 				case "jdb-search-path":
 					System.out.println("Search path");
@@ -129,27 +168,21 @@ public class MainInterface {
 				case "jdb-get-view":
 					System.out.println("Get view");
 					break;
-				case "jdb-stat":
-					if (parsed_command.length != 3) {
-						System.out.println("Incorrect amount of arguments");
-						break;
-					}
 				case "jdb-show-best-Salesperson": {
-					int num =Integer.parseInt( removeSemicolon( arr[1].trim())) ;					
-					MysqlDBAccess.jdbShowBestSalesperson(num, conn);
+					int num =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;					
+					jdbShowBestSalesperson(num, conn);
 					break;
 				}
 				case "jdb-show-reason-count": {										
-					MysqlDBAccess.jdbShowReasonCount(conn);
+					jdbShowReasonCount(conn);
 					break;
 				}
 				case "jdb-show-sales-monthly": {
-					int year =Integer.parseInt( removeSemicolon( arr[1].trim())) ;					
-					
-					MysqlDBAccess.jdbShowSalesMonthly (year, conn);
+					int year =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;					
+					jdbShowSalesMonthly (year, conn);
 					break;
 				}
-
+				case "jdb-stat": {
 					// get index of the column chosen in command
 					rs = stmt.executeQuery("SELECT column_name FROM information_schema.columns where table_name='" + parsed_command[1] + "'");
 					int index_of_column = 0;
@@ -254,6 +287,7 @@ public class MainInterface {
 					}
 
 					break;
+				}
 				case "jdb-customer-info": // jdb-customer-info "conditions" groupby? columnName // displays individual customers line by line that match "conditions", can group by column name, e.g. how many customers in this state
 					createTempAggregateSalesTables(stmt);
 					query = "SELECT ";
@@ -765,6 +799,31 @@ public class MainInterface {
 		resultSet.close();
 		statement.close();			
 	}
+
+	private static void displayResultSet(ResultSet resultSet, char symbol, int width) throws SQLException 
+	{
+	    ResultSetMetaData rsmd = resultSet.getMetaData();
+	    int columnsNumber = rsmd.getColumnCount();	    
+
+	    for(int i = 1; i <= columnsNumber; i++)
+	    {
+	    	System.out.printf("| %-20.20s",rsmd.getColumnLabel(i));
+	    }	    	
+	    System.out.println();
+	    for(int i = 0; i < width; ++i)
+	        System.out.printf("%c", symbol);
+	    
+	    System.out.println();
+	    while (resultSet.next()) {
+			// Print one row
+	    	
+			for (int i = 1; i <= columnsNumber; i++) {
+				System.out.printf("| %-20.20s",resultSet.getString(i));				
+			}
+			
+			System.out.println();// Move to the next line to print the next row.
+		}
+	}
 	
 	public static void jdbShowBestSalesperson(int num, Connection conn) throws SQLException {
 		String sql="SELECT c.FirstName, c.LastName, bestEmployeeYTD.bestYTD " + 
@@ -814,6 +873,15 @@ public class MainInterface {
 				System.out.println();
 				resultSet.close();
 				statement.close();		
+	}
+
+	private static String removeSemicolon(String str) {
+		String result = str;
+		if (str.charAt(str.length() - 1) == ';') {
+			result = str.substring(0, str.length() - 1);
+		}
+		
+		return result;
 	}
 	
 }
