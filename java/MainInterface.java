@@ -816,28 +816,4 @@ public class MainInterface {
 				statement.close();		
 	}
 	
-	private static void displayResultSet(ResultSet resultSet, char symbol, int width) throws SQLException 
-	{
-	    ResultSetMetaData rsmd = resultSet.getMetaData();
-	    int columnsNumber = rsmd.getColumnCount();	    
-
-	    for(int i = 1; i <= columnsNumber; i++)
-	    {
-	    	System.out.printf("| %-20.20s",rsmd.getColumnLabel(i));
-	    }	    	
-	    System.out.println();
-	    for(int i = 0; i < width; ++i)
-	        System.out.printf("%c", symbol);
-	    
-	    System.out.println();
-	    while (resultSet.next()) {
-			// Print one row
-	    	
-			for (int i = 1; i <= columnsNumber; i++) {
-				System.out.printf("| %-20.20s",resultSet.getString(i));				
-			}
-			
-			System.out.println();// Move to the next line to print the next row.
-		}
-	}
 }
