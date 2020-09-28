@@ -123,6 +123,7 @@ public class MainInterface {
 
 					query = "SHOW KEYS FROM " + t_name +" WHERE Key_name = 'PRIMARY'";
 					rs = stmt.executeQuery(query);
+					printResults(rs);
 
 					break;
 				case "jdb-show-all-primary-keys":
@@ -154,7 +155,7 @@ public class MainInterface {
 					PreparedStatement prepstatement =conn.prepareStatement(query);
 					prepstatement.setString(1, c_name);
 					ResultSet resultSet2=prepstatement.executeQuery();
-					displayResultSet(resultSet2,'-',150);
+					displayResultSet(resultSet2 ,'-', 150);
 					System.out.println();
 					resultSet2.close();
 					prepstatement.close();
