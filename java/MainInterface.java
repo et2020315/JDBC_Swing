@@ -739,5 +739,73 @@ public class MainInterface {
     }
   }
 
+	public static void jdbFindColumn (String columnName, Connection conn) throws SQLException {
+		
+		String sql="select TABLE_NAME from information_schema.columns where column_name like ?";
+		PreparedStatement statement =conn.prepareStatement(sql);
+		statement.setString(1, columnName );		
+		ResultSet resultSet=statement.executeQuery();
+		displayResultSet(resultSet,'-',150);
+		System.out.println();
+		resultSet.close();
+		statement.close();			
+	}
+	
+	public static void jdbShowReasonCount (Connection conn) throws SQLException {
+		
+		String sql="select sr.Name as reason, count(*) as orderCount  from " + 
+				"salesorderheader sh inner join\r\n" + 
+				"salesorderheadersalesreason shr using(SalesOrderID) inner join " + 
+				"salesreason sr using(SalesReasonID) " + 
+				"group by sr.Name " + 
+				"order by count(*) desc;";
+		Statement statement =conn.createStatement();				
+		ResultSet resultSet=statement.executeQuery(sql);
+		displayResultSet(resultSet,'-',150);
+		System.out.println();
+		resultSet.close();
+		statement.close();			
+	}
+	
+	public static void jdbShowSalesMonthly(int year, Connection conn) throws SQLException {
+		String sql="select  month(OrderDate) as month, sum(SubTotal) as sales  from " + 
+				"salesorderheader " + 
+				"where year(OrderDate)= ? " + 
+				"group by year(OrderDate) ,month(OrderDate) " + 
+				"order by month(OrderDate)";		
+				
+				PreparedStatement statement =conn.prepareStatement(sql);
+				statement.setInt(1, year);
+				
+				ResultSet resultSet=statement.executeQuery();
+				displayResultSet(resultSet,'-',150);
+				System.out.println();
+				resultSet.close();
+				statement.close();		
+	}
+	
+	private static void displayResultSet(ResultSet resultSet, char symbol, int width) throws SQLException 
+	{
+	    ResultSetMetaData rsmd = resultSet.getMetaData();
+	    int columnsNumber = rsmd.getColumnCount();	    
 
+	    for(int i = 1; i <= columnsNumber; i++)
+	    {
+	    	System.out.printf("| %-20.20s",rsmd.getColumnLabel(i));
+	    }	    	
+	    System.out.println();
+	    for(int i = 0; i < width; ++i)
+	        System.out.printf("%c", symbol);
+	    
+	    System.out.println();
+	    while (resultSet.next()) {
+			// Print one row
+	    	
+			for (int i = 1; i <= columnsNumber; i++) {
+				System.out.printf("| %-20.20s",resultSet.getString(i));				
+			}
+			
+			System.out.println();// Move to the next line to print the next row.
+		}
+	}
 }
