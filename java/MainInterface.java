@@ -565,7 +565,6 @@ public class MainInterface {
 		return !(command.contains("CREATE") || command.contains("DROP") ||
 				command.contains("ALTER") || command.contains("DELETE") ||
 				command.contains("INSERT")) || command.contains("CREATE VIEW")||
-				command.contains("UPDATE") ||
 				command.contains("REPLACE VIEW") || command.contains("DROP VIEW");
 	}
 
