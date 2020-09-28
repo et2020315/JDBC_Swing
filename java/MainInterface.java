@@ -86,7 +86,8 @@ public class MainInterface {
 					String t_name = parsed_command[1];
 
 					query = "SHOW KEYS FROM " + t_name +" WHERE Key_name = 'PRIMARY'";
-					pk = stmt.executeQuery(query);
+					rs = stmt.executeQuery(query);
+
 
 
 					break;
@@ -115,12 +116,15 @@ public class MainInterface {
 					}
 					String c_name = parsed_command[1];
 
-					query = "SELECT Table_name FROM INFORMATION_SCHEMA.COLUMNS
-					WHERE TABLE_SCHEMA = 'adventureworks' AND COLUMN_NAME LIKE '%" + c_name +"'%";
-					rs = stmt.executeQuery(query);
-					for (int i = 0; i < tables.length; i++) {
-						System.out.println(tables[i]);
-					}
+					String sql="select TABLE_NAME from information_schema.columns where column_name like ?";
+					conn = DriverManager.getConnection(DB_URL,USER,PASS);
+					PreparedStatement statement =conn.prepareStatement(sql);
+					statement.setString(1, c_name);
+					ResultSet resultSet=statement.executeQuery();
+					displayResultSet(resultSet,'-',150);
+					System.out.println();
+					resultSet.close();
+					statement.close();
 					break;
 				case "jdb-search-path":
 					System.out.println("Search path");
