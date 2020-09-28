@@ -21,7 +21,8 @@ public class TableEdge{
     s2 = t2;
   }
 
-  public TableEdge(Edge e){
+  // commenting this out because there is no working Edge class right now
+  /*public TableEdge(Edge e){
     this.s1 = e.s1;
     this.s2 = e.s2;
     this.edgelabel = e.edgelabel;
@@ -33,7 +34,7 @@ public class TableEdge{
       return true;
     }
     return false;
-  }
+  }*/
 
   public void printEdge(){
     System.out.println("s1:"+s1+" s2:"+s2+" "+"edgelabel:"+edgelabel);
