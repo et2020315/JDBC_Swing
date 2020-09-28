@@ -30,25 +30,25 @@ public class MainInterface {
 
 
 
-  static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-  static final String DB_URL = "jdbc:mysql://localhost:3306/?serverTimezone=UTC#/adventureworks";
+	static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+	static final String DB_URL = "jdbc:mysql://localhost:3306/?serverTimezone=UTC#/adventureworks";
 
-  // Database credentials
-  // going to be static for now, maybe we can implement a login later
-  static final String USER = "root";
-  static final String PASS = "password";
+	// Database credentials
+	// going to be static for now, maybe we can implement a login later
+	static final String USER = "root";
+	static final String PASS = "password";
 
 
-  static Map<String,ArrayList<String>> adj_list_by_column = new HashMap<String,ArrayList<String>>();
-  static Map<String,ArrayList<String>> adj_list_by_table = new HashMap<String,ArrayList<String>>();
+	static Map<String,ArrayList<String>> adj_list_by_column = new HashMap<String,ArrayList<String>>();
+	static Map<String,ArrayList<String>> adj_list_by_table = new HashMap<String,ArrayList<String>>();
 
-  static ArrayList<String> table_name = new ArrayList<String>();
-  static Graph<String, DefaultWeightedEdge> table_matrix =
-    new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+	static ArrayList<String> table_name = new ArrayList<String>();
+	static Graph<String, DefaultWeightedEdge> table_matrix =
+			new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 
-  static Double ind = 0.0;
-  static ArrayList<String> edgeName = new ArrayList<String>(); // weight == index
-  static Map<String,String> view_def_map = new HashMap<String,String>();
+	static Double ind = 0.0;
+	static ArrayList<String> edgeName = new ArrayList<String>(); // weight == index
+	static Map<String,String> view_def_map = new HashMap<String,String>();
 
 	// main loop to log into and interact with database
 	public static void main(String[] args) {
@@ -65,15 +65,15 @@ public class MainInterface {
 			ResultSet rs;
 			rs = stmt.executeQuery("USE adventureworks;");
 
-      database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_matrix,table_name);
+			database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_matrix,table_name);
 
 
 
-      // test
-      print_shortest_path(table_matrix,"employee","vendorcontact");
-      // get_view_for_user(conn,stmt,"howdy1","select employee.EmployeeID,purchaseorderheader.TotalDue from employee INNER JOIN purchaseorderheader ON (employee.EmployeeID=purchaseorderheader.EmployeeID) INNER JOIN vendorcontact ON (purchaseorderheader.VendorID=vendorcontact.VendorID) where TotalDue < 581",view_def_map);
+			// test
+			// print_shortest_path(table_matrix,"employee","vendorcontact");
+			// get_view_for_user(conn,stmt,"howdy1","select employee.EmployeeID,purchaseorderheader.TotalDue from employee INNER JOIN purchaseorderheader ON (employee.EmployeeID=purchaseorderheader.EmployeeID) INNER JOIN vendorcontact ON (purchaseorderheader.VendorID=vendorcontact.VendorID) where TotalDue < 581",view_def_map);
 
-      // print_join_table(conn,stmt,table_matrix,"employee","vendorcontact",edgeName);
+			// print_join_table(conn,stmt,table_matrix,"employee","vendorcontact",edgeName);
 
 
 			Pattern spaceSplit = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'"); // splits by space, but not inside quotes
@@ -112,85 +112,134 @@ public class MainInterface {
 					loop = false;
 					break;
 				case "jdb-show-related-tables":
-					System.out.println("jdb-show-related-tables");
+					// Given the table <table-name>, list all other tables that have in their
+					// column one or more of the primary keys of the table <table-name>.
+					// SHOW KEYS FROM <table name> WHERE Key_name = 'PRIMARY'
+					if (parsed_command.length != 2) {
+						System.out.println("Incorrect amount of arguments");
+						break;
+					}
+					String t_name = parsed_command[1];
+
+					query = "SHOW KEYS FROM " + t_name +" WHERE Key_name = 'PRIMARY'";
+					rs = stmt.executeQuery(query);
+					printResults(rs);
+
 					break;
 				case "jdb-show-all-primary-keys":
-					System.out.println("Show primary keys");
-					break;
-				case "jdb-find-column":
-					System.out.println("Find column");
-					break;
-				case "jdb-search-path":
-					System.out.println("Search path");
-          command = command.trim();
-          command = command.replace(";","");
-          String tbarr1[] = command.split(" ");
-          if(tbarr1.length!= 3 || !tbarr1[0].equals("jdb-search-path")){
-            System.out.println("Something wrong in syntax. try again");
-            break;
-          } else {
-            String tb11 = tbarr1[1].trim().toLowerCase();
-            String tb12 = tbarr1[2].trim().toLowerCase();
-            // if table not in graph
-            if(!table_name.contains(tb11) || !table_name.contains(tb12)){
-              System.out.println("one of the table not in schema, enter table in schema");
-              break;
-            } else{
-              print_shortest_path(table_matrix,tb11,tb12);
-            }
-          }
-
-					break;
-				case "jdb-search-and-join":
-          command = command.trim();
-					System.out.println("Search and join");
-          command = command.replace(";","");
-          String tbarr[] = command.split(" ");
-          if(tbarr.length!= 3 || !tbarr[0].equals("jdb-search-and-join")){
-            System.out.println("Something wrong in syntax. try again");
-            break;
-          } else {
-            String tb1 = tbarr[1].trim().toLowerCase();
-            String tb2 = tbarr[2].trim().toLowerCase();
-            // if table not in graph
-            if(!table_name.contains(tb1) || !table_name.contains(tb2)){
-              System.out.println("one of the table not in schema, enter table in schema");
-              break;
-            } else{
-              print_join_table(conn,stmt,table_matrix,tb1,tb2,edgeName);
-              // for(int p=0;p<table_name.size();p++){
-              //   System.out.println("table_name:"+table_name.get(p));
-              // }
-            }
-          }
-					break;
-				case "jdb-get-view":
-          command = command.trim();
-					System.out.println("Get view");
-          // System.out.println("command:"+command);
-          String query11 = "";
-          if(command.contains("(") && command.contains(")")){
-            int indl = command.indexOf("(");
-            int indr = command.indexOf(")");
-            if(indl == indr -1){
-              System.out.println("empty, something wrong");
-              break;
-            }
-            query11 = command.substring(indl+1,indr);
-            // System.out.println("query11:"+query11);
-          }
-
-          // make all view name keys lowercase
-          String viewName1 = command.split(" ")[1].toLowerCase();
-          get_view_for_user(conn,stmt,viewName1,query11,view_def_map);
-
-					break;
-				case "jdb-stat":
-					if (parsed_command.length != 3) {
+					// Show all primary keys from all tables. Print the list of (table_name, column_name).
+					if (parsed_command.length != 1) {
 						System.out.println("Incorrect amount of arguments");
 						break;
 					}
 
+					String sql="select TABLE_NAME, COLUMN_NAME from information_schema.columns where Key_name = 'PRIMARY'";
+					conn = DriverManager.getConnection(DB_URL,USER,PASS);
+					PreparedStatement statement =conn.prepareStatement(sql);
+					ResultSet resultSet=statement.executeQuery();
+					displayResultSet(resultSet,'-',150);
+					System.out.println();
+					resultSet.close();
+					statement.close();
+					break;
+				case "jdb-find-column":
+					// Find all tables that have <column-name>
+					if (parsed_command.length != 2) {
+						System.out.println("Incorrect amount of arguments");
+						break;
+					}
+					String c_name = parsed_command[1];
+
+					query ="select TABLE_NAME from information_schema.columns where column_name like ?";
+					conn = DriverManager.getConnection(DB_URL,USER,PASS);
+					PreparedStatement prepstatement =conn.prepareStatement(query);
+					prepstatement.setString(1, c_name);
+					ResultSet resultSet2=prepstatement.executeQuery();
+					displayResultSet(resultSet2 ,'-', 150);
+					System.out.println();
+					resultSet2.close();
+					prepstatement.close();
+					break;
+				case "jdb-search-path":
+					System.out.println("Search path");
+					command = command.trim();
+					command = command.replace(";","");
+					String tbarr1[] = command.split(" ");
+					if(tbarr1.length!= 3 || !tbarr1[0].equals("jdb-search-path")){
+						System.out.println("Something wrong in syntax. try again");
+						break;
+					} else {
+						String tb11 = tbarr1[1].trim().toLowerCase();
+						String tb12 = tbarr1[2].trim().toLowerCase();
+						// if table not in graph
+						if(!table_name.contains(tb11) || !table_name.contains(tb12)){
+							System.out.println("one of the table not in schema, enter table in schema");
+							break;
+						} else{
+							print_shortest_path(table_matrix,tb11,tb12);
+						}
+					}
+
+					break;
+				case "jdb-search-and-join":
+					command = command.trim();
+					System.out.println("Search and join");
+					command = command.replace(";","");
+					String tbarr[] = command.split(" ");
+					if(tbarr.length!= 3 || !tbarr[0].equals("jdb-search-and-join")){
+						System.out.println("Something wrong in syntax. try again");
+						break;
+					} else {
+						String tb1 = tbarr[1].trim().toLowerCase();
+						String tb2 = tbarr[2].trim().toLowerCase();
+						// if table not in graph
+						if(!table_name.contains(tb1) || !table_name.contains(tb2)){
+							System.out.println("one of the table not in schema, enter table in schema");
+							break;
+						} else{
+							print_join_table(conn,stmt,table_matrix,tb1,tb2,edgeName);
+							// for(int p=0;p<table_name.size();p++){
+							//   System.out.println("table_name:"+table_name.get(p));
+							// }
+						}
+					}
+					break;
+				case "jdb-get-view":
+					command = command.trim();
+					System.out.println("Get view");
+					// System.out.println("command:"+command);
+					String query11 = "";
+					if(command.contains("(") && command.contains(")")){
+						int indl = command.indexOf("(");
+						int indr = command.indexOf(")");
+						if(indl == indr -1){
+							System.out.println("empty, something wrong");
+							break;
+						}
+						query11 = command.substring(indl+1,indr);
+						// System.out.println("query11:"+query11);
+					}
+
+					// make all view name keys lowercase
+					String viewName1 = command.split(" ")[1].toLowerCase();
+					get_view_for_user(conn,stmt,viewName1,query11,view_def_map);
+
+					break;
+				case "jdb-show-best-Salesperson": {
+					int num =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;
+					jdbShowBestSalesperson(num, conn);
+					break;
+				}
+				case "jdb-show-reason-count": {
+					jdbShowReasonCount(conn);
+					break;
+				}
+				case "jdb-show-sales-monthly": {
+					int year =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;
+					jdbShowSalesMonthly (year, conn);
+					break;
+				}
+				case "jdb-stat": {
 					// get index of the column chosen in command
 					rs = stmt.executeQuery("SELECT column_name FROM information_schema.columns where table_name='" + parsed_command[1] + "'");
 					int index_of_column = 0;
@@ -295,6 +344,7 @@ public class MainInterface {
 					}
 
 					break;
+				}
 				case "jdb-customer-info": // jdb-customer-info "conditions" groupby? columnName // displays individual customers line by line that match "conditions", can group by column name, e.g. how many customers in this state
 					createTempAggregateSalesTables(stmt);
 					query = "SELECT ";
@@ -340,7 +390,7 @@ public class MainInterface {
 						where_expr = "WHERE " + parsed_command[1] + " ";
 					}
 					if ((parsed_command.length == 2 && parsed_command[1].equalsIgnoreCase("aggregate")) ||
-						 (parsed_command.length == 3 && parsed_command[2].equalsIgnoreCase("aggregate"))) {
+							(parsed_command.length == 3 && parsed_command[2].equalsIgnoreCase("aggregate"))) {
 						createTempAggregateSalesTables(stmt); // tables with aggregate sales data for a customer
 						query = "SELECT customer.AccountNumber AS 'Account Number', "
 								+ "customer.CustomerType AS 'Customer Type', "
@@ -353,7 +403,7 @@ public class MainInterface {
 								+ "INNER JOIN customeraggregate ON (customer.CustomerID=customeraggregate.CustomerID) ";
 					}
 					else if ((parsed_command.length == 2 && parsed_command[1].equalsIgnoreCase("aggregate-by-sales")) ||
-							 (parsed_command.length == 3 && parsed_command[2].equalsIgnoreCase("aggregate-by-sales"))) {
+							(parsed_command.length == 3 && parsed_command[2].equalsIgnoreCase("aggregate-by-sales"))) {
 						createTempAggregateSalesTables(stmt); // tables with aggregate sales data for a customer
 						query = "SELECT customer.AccountNumber AS 'Account Number', "
 								+ "customer.CustomerType AS 'Customer Type', "
@@ -362,7 +412,7 @@ public class MainInterface {
 								+ "salesaggregate.TotalProductCount AS 'Total number of items bought', "
 								+ "salesorderheader.SubTotal AS 'Total amount spent' ";
 						from_expr = "FROM customer INNER JOIN salesorderheader ON (customer.CustomerID=salesorderheader.CustomerID) "
-								 + "INNER JOIN salesaggregate ON (salesorderheader.SalesOrderID=salesaggregate.SalesOrderID) ";
+								+ "INNER JOIN salesaggregate ON (salesorderheader.SalesOrderID=salesaggregate.SalesOrderID) ";
 					}
 					else {
 						query = "SELECT customer.AccountNumber AS 'Account Number', "
@@ -372,8 +422,8 @@ public class MainInterface {
 								+ "product.ListPrice AS 'List Price', "
 								+ "salesorderdetail.OrderQty AS 'Amount ordered' ";
 						from_expr = "FROM customer INNER JOIN salesorderheader ON (customer.CustomerID=salesorderheader.CustomerID) "
-								 + "INNER JOIN salesorderdetail ON (salesorderheader.SalesOrderID=salesorderdetail.SalesOrderID) "
-								 + "INNER JOIN product ON (salesorderdetail.ProductID=product.ProductID) ";
+								+ "INNER JOIN salesorderdetail ON (salesorderheader.SalesOrderID=salesorderdetail.SalesOrderID) "
+								+ "INNER JOIN product ON (salesorderdetail.ProductID=product.ProductID) ";
 					}
 
 
@@ -384,100 +434,100 @@ public class MainInterface {
 					printResults(rs);
 					break;
 
-        case "CREATE":
-            // create view satement
-            if(command.contains("CREATE VIEW") && command.contains("AS")){
-              System.out.println(command);
-              String cv1[] = command.split(" AS ");
-              String viewName = cv1[0].replace("CREATE VIEW","").trim().toLowerCase();
-              System.out.println("v:"+viewName);
-              String qy = cv1[1].replace("(","").replace(")","").replace(";","").trim();
-              System.out.println("qy:"+qy);
+				case "CREATE":
+					// create view satement
+					if(command.contains("CREATE VIEW") && command.contains("AS")){
+						System.out.println(command);
+						String cv1[] = command.split(" AS ");
+						String viewName = cv1[0].replace("CREATE VIEW","").trim().toLowerCase();
+						System.out.println("v:"+viewName);
+						String qy = cv1[1].replace("(","").replace(")","").replace(";","").trim();
+						System.out.println("qy:"+qy);
 
-              if(qy.equals("")){
-                System.out.println("empty view def, try again");
-                break;
-              }
-              if(view_def_map.containsKey(viewName)){
-                System.out.println("THE view "+viewName+" has already existed. use replace view command");
-                break;
-              }
-              // call create view function
-              else {
-                create_or_update_view(viewName,qy,0);
-                for(String ttt: view_def_map.keySet()){
-                  System.out.println(ttt + "-> " + view_def_map.get(ttt));
-                }
-              }
-            }
-            // missing as keyword
-            else if (command.contains("CREATE VIEW") && (!command.contains("AS"))){
-              System.out.println("something wrong, missing AS keyword");
-            }
-            // other create mysql statement
-            else {
-              rs = stmt.executeQuery(command);
-              printResults(rs);
-              break;
-            }
-          break;
+						if(qy.equals("")){
+							System.out.println("empty view def, try again");
+							break;
+						}
+						if(view_def_map.containsKey(viewName)){
+							System.out.println("THE view "+viewName+" has already existed. use replace view command");
+							break;
+						}
+						// call create view function
+						else {
+							create_or_update_view(viewName,qy,0);
+							for(String ttt: view_def_map.keySet()){
+								System.out.println(ttt + "-> " + view_def_map.get(ttt));
+							}
+						}
+					}
+					// missing as keyword
+					else if (command.contains("CREATE VIEW") && (!command.contains("AS"))){
+						System.out.println("something wrong, missing AS keyword");
+					}
+					// other create mysql statement
+					else {
+						rs = stmt.executeQuery(command);
+						printResults(rs);
+						break;
+					}
+					break;
 
-        case "REPLACE":
-          System.out.println(command);
-          if(command.contains("REPLACE VIEW") && command.contains("AS")){
-            System.out.println(command);
-            String cv1[] = command.split(" AS ");
-            String viewName = cv1[0].replace("REPLACE VIEW","").trim().toLowerCase();
-            System.out.println("v:"+viewName);
-            String qy = cv1[1].replace("(","").replace(")","").replace(";","").trim();
-            System.out.println("qy:"+qy);
+				case "REPLACE":
+					System.out.println(command);
+					if(command.contains("REPLACE VIEW") && command.contains("AS")){
+						System.out.println(command);
+						String cv1[] = command.split(" AS ");
+						String viewName = cv1[0].replace("REPLACE VIEW","").trim().toLowerCase();
+						System.out.println("v:"+viewName);
+						String qy = cv1[1].replace("(","").replace(")","").replace(";","").trim();
+						System.out.println("qy:"+qy);
 
-            // empty query, break
-            if(qy.equals("")){
-              System.out.println("empty view def, try again");
-              break;
-            }
-            // call create_update view
-            if(view_def_map.containsKey(viewName)){
-              create_or_update_view(viewName,qy,1);
-              for(String ttt: view_def_map.keySet()){
-                System.out.println(ttt + "-> " + view_def_map.get(ttt));
-              }
-            }
-            else{
-              System.out.println("the view is not created yet, cannot replace.");
-            }
+						// empty query, break
+						if(qy.equals("")){
+							System.out.println("empty view def, try again");
+							break;
+						}
+						// call create_update view
+						if(view_def_map.containsKey(viewName)){
+							create_or_update_view(viewName,qy,1);
+							for(String ttt: view_def_map.keySet()){
+								System.out.println(ttt + "-> " + view_def_map.get(ttt));
+							}
+						}
+						else{
+							System.out.println("the view is not created yet, cannot replace.");
+						}
 
-          }
-          // error
-          else {
-            System.out.println("Something wrong, try again");
-          }
-          break;
+					}
+					// error
+					else {
+						System.out.println("Something wrong, try again");
+					}
+					break;
 
-        case "DROP":
-          if (command.contains("DROP VIEW")) {
-            String viewName = command.replace("DROP VIEW","").replace(";","").trim().toLowerCase();
-            System.out.println("table in drop:" + viewName);
-            // remove from map
-            if(view_def_map.containsKey(viewName)){
-              view_def_map.remove(viewName);
-              System.out.println(viewName + " removed");
-              for(String ttt: view_def_map.keySet()){
-                System.out.println(ttt + "-> " + view_def_map.get(ttt));
-              }
-            }
-            else{
-              System.out.println("the view is not created yet, cannot drop.");
-            }
+				case "DROP":
+					if (command.contains("DROP VIEW")) {
+						String viewName = command.replace("DROP VIEW","").replace(";","").trim().toLowerCase();
+						System.out.println("table in drop:" + viewName);
+						// remove from map
+						if(view_def_map.containsKey(viewName)){
+							view_def_map.remove(viewName);
+							System.out.println(viewName + " removed");
+							for(String ttt: view_def_map.keySet()){
+								System.out.println(ttt + "-> " + view_def_map.get(ttt));
+							}
+						}
+						else{
+							System.out.println("the view is not created yet, cannot drop.");
+						}
 
-          }
-          // other mysql drop commands
-          else{
-            rs = stmt.executeQuery(command);
-  					printResults(rs);
-          }
-          break;
+					}
+					// other mysql drop commands
+					else{
+						rs = stmt.executeQuery(command);
+						printResults(rs);
+					}
+					break;
 
 				default: // basic sql commands
 
@@ -517,8 +567,8 @@ public class MainInterface {
 		return !(command.contains("CREATE") || command.contains("DROP") ||
 				command.contains("ALTER") || command.contains("DELETE") ||
 				command.contains("INSERT")) || command.contains("CREATE VIEW")||
-        command.contains("UPDATE") ||
-        command.contains("REPLACE VIEW") || command.contains("DROP VIEW");
+				command.contains("UPDATE") ||
+				command.contains("REPLACE VIEW") || command.contains("DROP VIEW");
 	}
 
 	public static void printResults(ResultSet rs) throws SQLException {
@@ -550,353 +600,448 @@ public class MainInterface {
 
 	public static void createTempAggregateSalesTables(Statement stmt) throws SQLException {
 		stmt.executeUpdate("CREATE TEMPORARY TABLE IF NOT EXISTS subtotals "
-						 + "SELECT salesorderheader.CustomerID, SUM(salesorderheader.SubTotal) AS TotalSpent "
-						 + "FROM salesorderheader "
-						 + "GROUP BY salesorderheader.CustomerID");
+				+ "SELECT salesorderheader.CustomerID, SUM(salesorderheader.SubTotal) AS TotalSpent "
+				+ "FROM salesorderheader "
+				+ "GROUP BY salesorderheader.CustomerID");
 		stmt.executeUpdate("CREATE TEMPORARY TABLE IF NOT EXISTS customeraggregate "
-						 + "SELECT salesorderheader.CustomerID,"
-						 + "COUNT(DISTINCT(salesorderheader.SalesOrderID)) AS NumSales, "
-						 + "COUNT(DISTINCT(salesorderdetail.ProductID)) AS NumProducts,"
-						 + "SUM(salesorderdetail.OrderQty) AS TotalProducts "
-						 + "FROM salesorderheader INNER JOIN salesorderdetail ON (salesorderheader.SalesOrderID=salesorderdetail.SalesOrderID) "
-						 + "GROUP BY salesorderheader.CustomerID"); // a list of customer IDs and their aggregate sales info
+				+ "SELECT salesorderheader.CustomerID,"
+				+ "COUNT(DISTINCT(salesorderheader.SalesOrderID)) AS NumSales, "
+				+ "COUNT(DISTINCT(salesorderdetail.ProductID)) AS NumProducts,"
+				+ "SUM(salesorderdetail.OrderQty) AS TotalProducts "
+				+ "FROM salesorderheader INNER JOIN salesorderdetail ON (salesorderheader.SalesOrderID=salesorderdetail.SalesOrderID) "
+				+ "GROUP BY salesorderheader.CustomerID"); // a list of customer IDs and their aggregate sales info
 		stmt.executeUpdate("CREATE TEMPORARY TABLE IF NOT EXISTS salesaggregate "
-						 + "SELECT salesorderheader.SalesOrderID, "
-						 + "COUNT(DISTINCT(salesorderdetail.ProductID)) AS NumDistinctProducts, "
-						 + "SUM(salesorderdetail.OrderQty) AS TotalProductCount "
-						 + "FROM salesorderheader INNER JOIN salesorderdetail ON (salesorderheader.SalesOrderID=salesorderdetail.SalesOrderID) "
-						 + "GROUP BY salesorderheader.SalesOrderID");
+				+ "SELECT salesorderheader.SalesOrderID, "
+				+ "COUNT(DISTINCT(salesorderdetail.ProductID)) AS NumDistinctProducts, "
+				+ "SUM(salesorderdetail.OrderQty) AS TotalProductCount "
+				+ "FROM salesorderheader INNER JOIN salesorderdetail ON (salesorderheader.SalesOrderID=salesorderdetail.SalesOrderID) "
+				+ "GROUP BY salesorderheader.SalesOrderID");
 	}
 
-  // helper function build a map
-  public static void database_meta(Connection conn, Statement stmt,Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,Graph<String, DefaultWeightedEdge> table_matrix,ArrayList<String>table_name){
-    try{
+	// helper function build a map
+	public static void database_meta(Connection conn, Statement stmt,Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,Graph<String, DefaultWeightedEdge> table_matrix,ArrayList<String>table_name){
+		try{
 
-      ArrayList<ArrayList<String>> tbl_col = new ArrayList<ArrayList<String>>();
+			ArrayList<ArrayList<String>> tbl_col = new ArrayList<ArrayList<String>>();
 
-      String tablename;
+			String tablename;
 
-      DatabaseMetaData metaData = conn.getMetaData();
-      String[] types = {"TABLE"};
-      ResultSet tables = metaData.getTables(null, null, "%", types);
+			DatabaseMetaData metaData = conn.getMetaData();
+			String[] types = {"TABLE"};
+			ResultSet tables = metaData.getTables(null, null, "%", types);
 
-      // O(n)
-      while (tables.next()) {
-       tablename = tables.getString("TABLE_NAME");
-       // System.out.println("table:"+tablename);
-       table_name.add(tablename);
-       table_matrix.addVertex(tablename); // add table node to graph
-      }
+			// O(n)
+			while (tables.next()) {
+				tablename = tables.getString("TABLE_NAME");
+				// System.out.println("table:"+tablename);
+				table_name.add(tablename);
+				table_matrix.addVertex(tablename); // add table node to graph
+			}
 
-      // checking
-      // for(int i = 0; i < table_name.size();i++){
-      //   System.out.println(table_name.get(i));
-      // }
+			// checking
+			// for(int i = 0; i < table_name.size();i++){
+			//   System.out.println(table_name.get(i));
+			// }
 
-      // System.out.println("***************************************");
-      // System.out.println("***************************************");
+			// System.out.println("***************************************");
+			// System.out.println("***************************************");
 
-      String query1 = "select table_name,column_name from information_schema.columns where table_schema = 'adventureworks' order by table_name,column_name";
+			String query1 = "select table_name,column_name from information_schema.columns where table_schema = 'adventureworks' order by table_name,column_name";
 
-      stmt = conn.createStatement();
-      ResultSet rs1;
-      ResultSetMetaData rsmd1;
-      rs1 = stmt.executeQuery(query1);
-      rsmd1 = rs1.getMetaData();
-      while(rs1.next()){
-        // System.out.println("---------");
-        ArrayList<String> temp1 = new ArrayList<String>();
-        for(int j=1;j <= rsmd1.getColumnCount();j++){
-          temp1.add(rs1.getString(j));
-        }
-        tbl_col.add(temp1);
-      }
+			stmt = conn.createStatement();
+			ResultSet rs1;
+			ResultSetMetaData rsmd1;
+			rs1 = stmt.executeQuery(query1);
+			rsmd1 = rs1.getMetaData();
+			while(rs1.next()){
+				// System.out.println("---------");
+				ArrayList<String> temp1 = new ArrayList<String>();
+				for(int j=1;j <= rsmd1.getColumnCount();j++){
+					temp1.add(rs1.getString(j));
+				}
+				tbl_col.add(temp1);
+			}
 
-      // // prinout to check built table
-      // for(int i = 0; i < tbl_col.size();i++){
-      //   for(int k=0;k < tbl_col.get(i).size();k++){
-      //     System.out.print(tbl_col.get(i).get(k) + " ");
-      //   }
-      //   System.out.println();
-      // }
+			// // prinout to check built table
+			// for(int i = 0; i < tbl_col.size();i++){
+			//   for(int k=0;k < tbl_col.get(i).size();k++){
+			//     System.out.print(tbl_col.get(i).get(k) + " ");
+			//   }
+			//   System.out.println();
+			// }
 
-      // building adj list
-      for(int i=0;i<tbl_col.size();i++){
-        // ith item's 2nd column
-        String colstr = tbl_col.get(i).get(1);
-        String curr_tbl = tbl_col.get(i).get(0);
-        // not being added
-        if(adj_list_by_column.get(colstr)==null){
-          // ith item's 1st column, make a new array
-          ArrayList<String> temp2 = new ArrayList<String>();
-          temp2.add(curr_tbl);
-          adj_list_by_column.put(colstr,temp2);
-          temp2 = null;
-        } else {
-          // System.out.println(adj_list.get(colstr).getClass
-          // System.out.println(curr_tbl);
-          ArrayList<String> temp2 = adj_list_by_column.get(colstr);
-          temp2.add(curr_tbl); // append
-          adj_list_by_column.replace(colstr,temp2); // update
-          // System.out.println(colstr + temp2.size());
-        }
-      }
+			// building adj list
+			for(int i=0;i<tbl_col.size();i++){
+				// ith item's 2nd column
+				String colstr = tbl_col.get(i).get(1);
+				String curr_tbl = tbl_col.get(i).get(0);
+				// not being added
+				if(adj_list_by_column.get(colstr)==null){
+					// ith item's 1st column, make a new array
+					ArrayList<String> temp2 = new ArrayList<String>();
+					temp2.add(curr_tbl);
+					adj_list_by_column.put(colstr,temp2);
+					temp2 = null;
+				} else {
+					// System.out.println(adj_list.get(colstr).getClass
+					// System.out.println(curr_tbl);
+					ArrayList<String> temp2 = adj_list_by_column.get(colstr);
+					temp2.add(curr_tbl); // append
+					adj_list_by_column.replace(colstr,temp2); // update
+					// System.out.println(colstr + temp2.size());
+				}
+			}
 
-      // print for checking
-      // for(String k: adj_list_by_column.keySet()){
-      //   System.out.println("******************* "+ k +" ******************");
-      //   for(int j=0;j<adj_list_by_column.get(k).size();j++){
-      //     System.out.println(adj_list_by_column.get(k).get(j));
-      //   }
-      // }
+			// print for checking
+			// for(String k: adj_list_by_column.keySet()){
+			//   System.out.println("******************* "+ k +" ******************");
+			//   for(int j=0;j<adj_list_by_column.get(k).size();j++){
+			//     System.out.println(adj_list_by_column.get(k).get(j));
+			//   }
+			// }
 
-      // building map for table: adj_list_by_table
-      for(int i=0;i<tbl_col.size();i++){
-        // ith item's 2nd column
-        String colstr = tbl_col.get(i).get(1);
-        String curr_tbl = tbl_col.get(i).get(0);
+			// building map for table: adj_list_by_table
+			for(int i=0;i<tbl_col.size();i++){
+				// ith item's 2nd column
+				String colstr = tbl_col.get(i).get(1);
+				String curr_tbl = tbl_col.get(i).get(0);
 
-        if(!colstr.endsWith("ID")){
-          // System.out.println("Does not contain");
-          continue;
-        }
+				if(!colstr.endsWith("ID")){
+					// System.out.println("Does not contain");
+					continue;
+				}
 
-        // not being added
-        if(adj_list_by_table.get(curr_tbl)==null){
-          // ith item's 1st column, make a new array
-          ArrayList<String> temp2 = new ArrayList<String>();
-          temp2.add(colstr);
-          adj_list_by_table.put(curr_tbl,temp2);
-          temp2 = null;
-        } else {
-          // System.out.println(adj_list.get(colstr).getClass
-          // System.out.println(curr_tbl);
-          ArrayList<String> temp2 = adj_list_by_table.get(curr_tbl);
-          temp2.add(colstr); // append
-          adj_list_by_table.replace(curr_tbl,temp2); // update
-          // System.out.println(curr_tbl +temp2.size());
-          temp2 = null;
-        }
-      }
+				// not being added
+				if(adj_list_by_table.get(curr_tbl)==null){
+					// ith item's 1st column, make a new array
+					ArrayList<String> temp2 = new ArrayList<String>();
+					temp2.add(colstr);
+					adj_list_by_table.put(curr_tbl,temp2);
+					temp2 = null;
+				} else {
+					// System.out.println(adj_list.get(colstr).getClass
+					// System.out.println(curr_tbl);
+					ArrayList<String> temp2 = adj_list_by_table.get(curr_tbl);
+					temp2.add(colstr); // append
+					adj_list_by_table.replace(curr_tbl,temp2); // update
+					// System.out.println(curr_tbl +temp2.size());
+					temp2 = null;
+				}
+			}
 
-      // System.out.println("-------------------------------------------------------------");
-      // System.out.println("-----------------------------then table--------------------------------");
-      //
-      // for(String k: adj_list_by_table.keySet()){
-      //   System.out.println("******************* "+ k +" ******************");
-      //   for(int j=0;j<adj_list_by_table.get(k).size();j++){
-      //     System.out.println(adj_list_by_table.get(k).get(j));
-      //   }
-      // }
+			// System.out.println("-------------------------------------------------------------");
+			// System.out.println("-----------------------------then table--------------------------------");
+			//
+			// for(String k: adj_list_by_table.keySet()){
+			//   System.out.println("******************* "+ k +" ******************");
+			//   for(int j=0;j<adj_list_by_table.get(k).size();j++){
+			//     System.out.println(adj_list_by_table.get(k).get(j));
+			//   }
+			// }
 
-      for(String k: adj_list_by_column.keySet()){
-        // currently , id only
-        if(!k.contains("ID")){
-          continue;
-        }
-        ArrayList<String> temp3 = adj_list_by_column.get(k);
-        for(int j =0;j< temp3.size();j++){
-          for(int q=0;q<temp3.size();q++){
-            if(q != j){
-              DefaultWeightedEdge ee =  table_matrix.addEdge(temp3.get(j),temp3.get(q));
-              table_matrix.setEdgeWeight(table_matrix.getEdge(temp3.get(j),temp3.get(q)), ind); // nullptrException if ee to set
-              // System.out.println("index at: " + ind.toString() + " col:" + k + " j:" + temp3.get(j) + " q:" + temp3.get(q));
-              // edgeName add the string, this could be either map or arraylist
-              edgeName.add(k);
-              ind += 1.0;
-            }
-          }
-        }
-      }
+			for(String k: adj_list_by_column.keySet()){
+				// currently , id only
+				if(!k.contains("ID")){
+					continue;
+				}
+				ArrayList<String> temp3 = adj_list_by_column.get(k);
+				for(int j =0;j< temp3.size();j++){
+					for(int q=0;q<temp3.size();q++){
+						if(q != j){
+							DefaultWeightedEdge ee =  table_matrix.addEdge(temp3.get(j),temp3.get(q));
+							table_matrix.setEdgeWeight(table_matrix.getEdge(temp3.get(j),temp3.get(q)), ind); // nullptrException if ee to set
+							// System.out.println("index at: " + ind.toString() + " col:" + k + " j:" + temp3.get(j) + " q:" + temp3.get(q));
+							// edgeName add the string, this could be either map or arraylist
+							edgeName.add(k);
+							ind += 1.0;
+						}
+					}
+				}
+			}
 
-      // // test:
-      // int stopping = 0;
-      // for(DefaultWeightedEdge e : table_matrix.edgeSet()){
-      //   System.out.println(table_matrix.getEdgeSource(e) + " --> " + table_matrix.getEdgeTarget(e));
-      //   System.out.println(edgeName.get((int)table_matrix.getEdgeWeight(e))); // Note: double cannot be dereferebced error --  canot use intValue()
-      //   if(stopping == 10){break;}
-      // }
-
-
-
-    } catch(Exception e){
-      System.out.println(e);
-      e.printStackTrace();
-    }
-  }
+			// // test:
+			// int stopping = 0;
+			// for(DefaultWeightedEdge e : table_matrix.edgeSet()){
+			//   System.out.println(table_matrix.getEdgeSource(e) + " --> " + table_matrix.getEdgeTarget(e));
+			//   System.out.println(edgeName.get((int)table_matrix.getEdgeWeight(e))); // Note: double cannot be dereferebced error --  canot use intValue()
+			//   if(stopping == 10){break;}
+			// }
 
 
 
-  public static void print_shortest_path(Graph<String, DefaultWeightedEdge> table_matrix,String tb1, String tb2){
-    System.out.println("Shortest path from tb1 to tb2:");
-    DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg =
-        new DijkstraShortestPath<>(table_matrix);
-    SingleSourcePaths<String, DefaultWeightedEdge> iPaths = dijkstraAlg.getPaths(tb1);
-
-    System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
-    System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
-  }
+		} catch(Exception e){
+			System.out.println(e);
+			e.printStackTrace();
+		}
+	}
 
 
 
-  public static void print_join_table(Connection conn, Statement stmt,Graph<String, DefaultWeightedEdge> table_matrix,String tb1, String tb2, ArrayList<String>edgeName){
-    try{
-    System.out.println("Shortest path from tb1 to tb2:");
-    DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg =
-        new DijkstraShortestPath<>(table_matrix);
-    SingleSourcePaths<String, DefaultWeightedEdge> iPaths = dijkstraAlg.getPaths(tb1);
+	public static void print_shortest_path(Graph<String, DefaultWeightedEdge> table_matrix,String tb1, String tb2){
+		System.out.println("Shortest path from tb1 to tb2:");
+		DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg =
+				new DijkstraShortestPath<>(table_matrix);
+		SingleSourcePaths<String, DefaultWeightedEdge> iPaths = dijkstraAlg.getPaths(tb1);
 
-    System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
-    System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
-    List<String> tablelist = iPaths.getPath(tb2).getVertexList();
-
-
-    // retrieve on what columns into arraylist
-    ArrayList<String> onclauseEdge = new ArrayList<String>();
-    // retrieve edge string by weight of edge
-    for(int j = 0; j < tablelist.size()-1;j++){
-      // get edge name weight in graph
-      double wt = table_matrix.getEdgeWeight(table_matrix.getEdge(tablelist.get(j),tablelist.get(j+1)));
-      // get the string by weight/index in edgename
-      int index = (int)wt;
-      String columnName1 = edgeName.get(index);
-      System.out.println("index:"+index);
-      System.out.println("columnName1:"+columnName1);
-      // append it to oncluaseEdge
-      onclauseEdge.add(columnName1);
-    }
-
-
-    String query = "select * from ";
-    System.out.println("tblistsize:"+tablelist.size());
-    System.out.println("oncluasesize:"+onclauseEdge.size());
-    // contruct tables names and inner join strings
-    String middle = "";
-    for(int j=0;j<tablelist.size();j++){
-
-      if(j==0){
-        query = query + tablelist.get(j);
-      } else{
-        String currT = tablelist.get(j);
-        String prevT = tablelist.get(j-1);
-        String col = onclauseEdge.get(j-1);
-        query = query+" INNER JOIN "+currT+" ON ("+prevT+"."+col+"="+currT+"."+col+")";
-      }
-    }
-
-
-    System.out.println(query);
-    stmt = conn.createStatement();
-    ResultSet rs2;
-    ResultSetMetaData rsmd2;
-    rs2 = stmt.executeQuery(query);
-    rsmd2 = rs2.getMetaData();
-    System.out.println("hellow");
-    int countloop = 0;
-    while(rs2.next()){
-
-      for(int j=1;j <= rsmd2.getColumnCount();j++){
-        String type = rsmd2.getColumnTypeName(j);
-
-        // System.out.println("type:"+type);
-        if(type.toLowerCase().contains("binary")){
-          System.out.println(rsmd2.getColumnName(j)+": "+"some binary, print out make a noise");
-        }else {
-          System.out.println(rsmd2.getColumnName(j)+": "+rs2.getString(j));
-        }
-
-      }// end forloop
-      System.out.println("*******************************************************");
-
-    }
-
-
-  }catch(Exception e){
-    System.out.println("Something wrong in join table.");
-    e.printStackTrace();
-  }
-
-  }// print join table
-
-
-  public static void get_view_for_user(Connection conn, Statement stmt,String view_name,String view_def,Map<String,String> view_def_map){
-    try{
-
-      view_name = view_name.trim();
-      String qry = "";
-
-      // if esist in map
-      if(view_def_map.containsKey(view_name) && view_def.equals("")){
-        System.out.println("view exist");
-        qry = view_def_map.get(view_name);
-      }
-      // if does not exist in map, a new qry comes in
-      else if(!view_def_map.containsKey(view_name)) {
-        System.out.println("view created");
-        qry = view_def;
-        create_or_update_view(view_name,view_def,0);
-      }
-      // if exist and also new query, update
-      else if(view_def_map.containsKey(view_name) && (!view_def.equals(""))) {
-        System.out.println("view update");
-        qry = view_def;
-        create_or_update_view(view_name,view_def,1);
-      }
-      else {
-        System.out.println("something wrong");
-        return;
-      }
-
-      stmt = conn.createStatement();
-      ResultSet rs;
-      ResultSetMetaData rsmd;
-      rs = stmt.executeQuery(qry);
-      rsmd = rs.getMetaData();
-
-      while(rs.next()){
-
-        for(int j=1;j <= rsmd.getColumnCount();j++){
-          String type = rsmd.getColumnTypeName(j);
-
-          if(type.toLowerCase().contains("binary")){
-            System.out.println(rsmd.getColumnName(j)+": "+"some binary, print out make a noise");
-          }else {
-            System.out.println(rsmd.getColumnName(j)+": "+rs.getString(j));
-          }
-        }
-        System.out.println("*******************************************************");
-      }// end while
+		System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
+		System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+	}
 
 
 
+	public static void print_join_table(Connection conn, Statement stmt,Graph<String, DefaultWeightedEdge> table_matrix,String tb1, String tb2, ArrayList<String>edgeName){
+		try{
+			System.out.println("Shortest path from tb1 to tb2:");
+			DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg =
+					new DijkstraShortestPath<>(table_matrix);
+			SingleSourcePaths<String, DefaultWeightedEdge> iPaths = dijkstraAlg.getPaths(tb1);
 
-    }catch(Exception e){
-      System.out.println("get-view-for-user");
-      e.printStackTrace();
-    }
-  }
+			System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
+			System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+			List<String> tablelist = iPaths.getPath(tb2).getVertexList();
 
 
-  // update or create view locally
+			// retrieve on what columns into arraylist
+			ArrayList<String> onclauseEdge = new ArrayList<String>();
+			// retrieve edge string by weight of edge
+			for(int j = 0; j < tablelist.size()-1;j++){
+				// get edge name weight in graph
+				double wt = table_matrix.getEdgeWeight(table_matrix.getEdge(tablelist.get(j),tablelist.get(j+1)));
+				// get the string by weight/index in edgename
+				int index = (int)wt;
+				String columnName1 = edgeName.get(index);
+				System.out.println("index:"+index);
+				System.out.println("columnName1:"+columnName1);
+				// append it to oncluaseEdge
+				onclauseEdge.add(columnName1);
+			}
 
-  public static void create_or_update_view(String view_name,String view_def,int choice){
-    try{
 
-      if(choice == 0){
-        view_def_map.put(view_name,view_def);
-        System.out.println("create locally");
-      } else {
-        view_def_map.replace(view_name,view_def);
-        System.out.println("update locally");
-      }
+			String query = "select * from ";
+			System.out.println("tblistsize:"+tablelist.size());
+			System.out.println("oncluasesize:"+onclauseEdge.size());
+			// contruct tables names and inner join strings
+			String middle = "";
+			for(int j=0;j<tablelist.size();j++){
 
-      System.out.println("create/update view successfully");
+				if(j==0){
+					query = query + tablelist.get(j);
+				} else{
+					String currT = tablelist.get(j);
+					String prevT = tablelist.get(j-1);
+					String col = onclauseEdge.get(j-1);
+					query = query+" INNER JOIN "+currT+" ON ("+prevT+"."+col+"="+currT+"."+col+")";
+				}
+			}
 
-    }catch(Exception e){
-      System.out.println("in create_update_view");
-      e.printStackTrace();
-    }
-  }
 
+			System.out.println(query);
+			stmt = conn.createStatement();
+			ResultSet rs2;
+			ResultSetMetaData rsmd2;
+			rs2 = stmt.executeQuery(query);
+			rsmd2 = rs2.getMetaData();
+			System.out.println("hellow");
+			int countloop = 0;
+			while(rs2.next()){
+
+				for(int j=1;j <= rsmd2.getColumnCount();j++){
+					String type = rsmd2.getColumnTypeName(j);
+
+					// System.out.println("type:"+type);
+					if(type.toLowerCase().contains("binary")){
+						System.out.println(rsmd2.getColumnName(j)+": "+"some binary, print out make a noise");
+					}else {
+						System.out.println(rsmd2.getColumnName(j)+": "+rs2.getString(j));
+					}
+
+				}// end forloop
+				System.out.println("*******************************************************");
+
+			}
+
+
+		}catch(Exception e){
+			System.out.println("Something wrong in join table.");
+			e.printStackTrace();
+		}
+
+	}// print join table
+
+
+	public static void get_view_for_user(Connection conn, Statement stmt,String view_name,String view_def,Map<String,String> view_def_map){
+		try{
+
+			view_name = view_name.trim();
+			String qry = "";
+
+			// if esist in map
+			if(view_def_map.containsKey(view_name) && view_def.equals("")){
+				System.out.println("view exist");
+				qry = view_def_map.get(view_name);
+			}
+			// if does not exist in map, a new qry comes in
+			else if(!view_def_map.containsKey(view_name)) {
+				System.out.println("view created");
+				qry = view_def;
+				create_or_update_view(view_name,view_def,0);
+			}
+			// if exist and also new query, update
+			else if(view_def_map.containsKey(view_name) && (!view_def.equals(""))) {
+				System.out.println("view update");
+				qry = view_def;
+				create_or_update_view(view_name,view_def,1);
+			}
+			else {
+				System.out.println("something wrong");
+				return;
+			}
+
+			stmt = conn.createStatement();
+			ResultSet rs;
+			ResultSetMetaData rsmd;
+			rs = stmt.executeQuery(qry);
+			rsmd = rs.getMetaData();
+
+			while(rs.next()){
+
+				for(int j=1;j <= rsmd.getColumnCount();j++){
+					String type = rsmd.getColumnTypeName(j);
+
+					if(type.toLowerCase().contains("binary")){
+						System.out.println(rsmd.getColumnName(j)+": "+"some binary, print out make a noise");
+					}else {
+						System.out.println(rsmd.getColumnName(j)+": "+rs.getString(j));
+					}
+				}
+				System.out.println("*******************************************************");
+			}// end while
+
+
+
+
+		}catch(Exception e){
+			System.out.println("get-view-for-user");
+			e.printStackTrace();
+		}
+	}
+
+
+	// update or create view locally
+
+	public static void create_or_update_view(String view_name,String view_def,int choice){
+		try{
+
+			if(choice == 0){
+				view_def_map.put(view_name,view_def);
+				System.out.println("create locally");
+			} else {
+				view_def_map.replace(view_name,view_def);
+				System.out.println("update locally");
+			}
+
+			System.out.println("create/update view successfully");
+
+		}catch(Exception e){
+			System.out.println("in create_update_view");
+			e.printStackTrace();
+		}
+	}
+
+	public static void jdbFindColumn (String columnName, Connection conn) throws SQLException {
+
+		String sql="select TABLE_NAME from information_schema.columns where column_name like ?";
+		PreparedStatement statement =conn.prepareStatement(sql);
+		statement.setString(1, columnName );
+		ResultSet resultSet=statement.executeQuery();
+		displayResultSet(resultSet,'-',150);
+		System.out.println();
+		resultSet.close();
+		statement.close();
+	}
+
+	private static void displayResultSet(ResultSet resultSet, char symbol, int width) throws SQLException
+	{
+		ResultSetMetaData rsmd = resultSet.getMetaData();
+		int columnsNumber = rsmd.getColumnCount();
+
+		for(int i = 1; i <= columnsNumber; i++)
+		{
+			System.out.printf("| %-20.20s",rsmd.getColumnLabel(i));
+		}
+		System.out.println();
+		for(int i = 0; i < width; ++i)
+			System.out.printf("%c", symbol);
+
+		System.out.println();
+		while (resultSet.next()) {
+			// Print one row
+
+			for (int i = 1; i <= columnsNumber; i++) {
+				System.out.printf("| %-20.20s",resultSet.getString(i));
+			}
+
+			System.out.println();// Move to the next line to print the next row.
+		}
+	}
+
+	public static void jdbShowBestSalesperson(int num, Connection conn) throws SQLException {
+		String sql="SELECT c.FirstName, c.LastName, bestEmployeeYTD.bestYTD " +
+				"from (select SalesPersonID, SalesYTD as bestYTD from salesperson order by SalesYTD desc limit ?) " +
+				"as bestEmployeeYTD inner join " +
+				"employee e on bestEmployeeYTD.SalesPersonID = e.EmployeeID inner join " +
+				"Contact c on e.ContactID = c.ContactID;" ;
+
+		PreparedStatement statement =conn.prepareStatement(sql);
+		statement.setInt(1, num);
+
+		ResultSet resultSet=statement.executeQuery();
+		displayResultSet(resultSet,'-',150);
+		System.out.println();
+		resultSet.close();
+		statement.close();
+	}
+
+	public static void jdbShowReasonCount (Connection conn) throws SQLException {
+
+		String sql="select sr.Name as reason, count(*) as orderCount  from " +
+				"salesorderheader sh inner join\r\n" +
+				"salesorderheadersalesreason shr using(SalesOrderID) inner join " +
+				"salesreason sr using(SalesReasonID) " +
+				"group by sr.Name " +
+				"order by count(*) desc;";
+		Statement statement =conn.createStatement();
+		ResultSet resultSet=statement.executeQuery(sql);
+		displayResultSet(resultSet,'-',150);
+		System.out.println();
+		resultSet.close();
+		statement.close();
+	}
+
+	public static void jdbShowSalesMonthly(int year, Connection conn) throws SQLException {
+		String sql="select  month(OrderDate) as month, sum(SubTotal) as sales  from " +
+				"salesorderheader " +
+				"where year(OrderDate)= ? " +
+				"group by year(OrderDate) ,month(OrderDate) " +
+				"order by month(OrderDate)";
+
+		PreparedStatement statement =conn.prepareStatement(sql);
+		statement.setInt(1, year);
+
+		ResultSet resultSet=statement.executeQuery();
+		displayResultSet(resultSet,'-',150);
+		System.out.println();
+		resultSet.close();
+		statement.close();
+	}
+
+	private static String removeSemicolon(String str) {
+		String result = str;
+		if (str.charAt(str.length() - 1) == ';') {
+			result = str.substring(0, str.length() - 1);
+		}
+
+		return result;
+	}
 
 }

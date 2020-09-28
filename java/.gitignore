@@ -1,2 +1,7 @@
 /Test.class
 /MainInterface.class
+/MysqlDBAccess.class
+/TableEdge.class
+/TableGraph.class
+/TableNode.class
+/module-info.class
