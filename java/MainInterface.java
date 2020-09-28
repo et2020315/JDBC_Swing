@@ -327,7 +327,17 @@ public class MainInterface {
 					rs = stmt.executeQuery(query);
 					printResults(rs);
 					break;
+
+        case "CREATE":
+          System.out.println(command);
+          break;
+
+        case "UPDATE":
+          System.out.println(command);
+          break;
+
 				default: // basic sql commands
+
 					rs = stmt.executeQuery(command);
 					printResults(rs);
 					break;
@@ -363,7 +373,8 @@ public class MainInterface {
 		command = command.toUpperCase();
 		return !(command.contains("CREATE") || command.contains("DROP") ||
 				command.contains("ALTER") || command.contains("DELETE") ||
-				command.contains("INSERT"));
+				command.contains("INSERT")) || command.contains("CREATE VIEW")||
+        command.contains("UPDATE VIEW") ||command.contains("UPDATE");
 	}
 
 	public static void printResults(ResultSet rs) throws SQLException {
