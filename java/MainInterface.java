@@ -65,7 +65,7 @@ public class MainInterface {
 			ResultSet rs;
 			rs = stmt.executeQuery("USE adventureworks;");
 
-      database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_matrix);
+      database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_matrix,table_name);
 
 
 
@@ -122,13 +122,30 @@ public class MainInterface {
 					break;
 				case "jdb-search-path":
 					System.out.println("Search path");
+          
 					break;
 				case "jdb-search-and-join":
 					System.out.println("Search and join");
+          command = command.replace(";","");
+          String tbarr[] = command.split(" ");
+          if(tbarr.length!= 3 || !tbarr[0].equals("jdb-search-and-join")){
+            System.out.println("Something wrong in syntax. try again");
+            break;
+          } else {
+            String tb1 = tbarr[1].trim().toLowerCase();
+            String tb2 = tbarr[2].trim().toLowerCase();
+            // if table not in graph
+            if(!table_name.contains(tb1) || !table_name.contains(tb2)){
+              System.out.println("one of the table not in schema, enter table in schema");
+              break;
+            } else{
+              print_join_table(conn,stmt,table_matrix,tb1,tb2,edgeName);
+            }
+          }
 					break;
 				case "jdb-get-view":
 					System.out.println("Get view");
-          System.out.println("command:"+command);
+          // System.out.println("command:"+command);
           String query11 = "";
           if(command.contains("(") && command.contains(")")){
             int indl = command.indexOf("(");
@@ -138,7 +155,7 @@ public class MainInterface {
               break;
             }
             query11 = command.substring(indl+1,indr);
-            System.out.println("query11:"+query11);
+            // System.out.println("query11:"+query11);
           }
 
           // make all view name keys lowercase
@@ -530,7 +547,7 @@ public class MainInterface {
 	}
 
   // helper function build a map
-  public static void database_meta(Connection conn, Statement stmt,Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,Graph<String, DefaultWeightedEdge> table_matrix){
+  public static void database_meta(Connection conn, Statement stmt,Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,Graph<String, DefaultWeightedEdge> table_matrix,ArrayList<String>table_name){
     try{
 
       ArrayList<ArrayList<String>> tbl_col = new ArrayList<ArrayList<String>>();
@@ -545,7 +562,7 @@ public class MainInterface {
       while (tables.next()) {
        tablename = tables.getString("TABLE_NAME");
        // System.out.println("table:"+tablename);
-       // table_name.add(tablename);
+       table_name.add(tablename);
        table_matrix.addVertex(tablename); // add table node to graph
       }
 
