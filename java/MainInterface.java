@@ -225,7 +225,7 @@ public class MainInterface {
           get_view_for_user(conn,stmt,viewName1,query11,view_def_map);
 
 					break;
-				case "jdb-show-best-Salesperson": {
+				case "jdb-show-best-salesperson": {
 					int num =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;
 					jdbShowBestSalesperson(num, conn);
 					break;
@@ -990,7 +990,7 @@ public class MainInterface {
 				"from (select SalesPersonID, SalesYTD as bestYTD from salesperson order by SalesYTD desc limit ?) " +
 				"as bestEmployeeYTD inner join " +
 				"employee e on bestEmployeeYTD.SalesPersonID = e.EmployeeID inner join " +
-				"Contact c on e.ContactID = c.ContactID;" ;
+				"contact c on e.ContactID = c.ContactID;" ;
 
 				PreparedStatement statement =conn.prepareStatement(sql);
 				statement.setInt(1, num);
