@@ -134,6 +134,21 @@ public class MainInterface {
 						System.out.println("Incorrect amount of arguments");
 						break;
 					}
+				case "jdb-show-best-Salesperson": {
+					int num =Integer.parseInt( removeSemicolon( arr[1].trim())) ;					
+					MysqlDBAccess.jdbShowBestSalesperson(num, conn);
+					break;
+				}
+				case "jdb-show-reason-count": {										
+					MysqlDBAccess.jdbShowReasonCount(conn);
+					break;
+				}
+				case "jdb-show-sales-monthly": {
+					int year =Integer.parseInt( removeSemicolon( arr[1].trim())) ;					
+					
+					MysqlDBAccess.jdbShowSalesMonthly (year, conn);
+					break;
+				}
 
 					// get index of the column chosen in command
 					rs = stmt.executeQuery("SELECT column_name FROM information_schema.columns where table_name='" + parsed_command[1] + "'");
@@ -749,6 +764,23 @@ public class MainInterface {
 		System.out.println();
 		resultSet.close();
 		statement.close();			
+	}
+	
+	public static void jdbShowBestSalesperson(int num, Connection conn) throws SQLException {
+		String sql="SELECT c.FirstName, c.LastName, bestEmployeeYTD.bestYTD " + 
+				"from (select SalesPersonID, SalesYTD as bestYTD from salesperson order by SalesYTD desc limit ?) " + 
+				"as bestEmployeeYTD inner join " + 
+				"employee e on bestEmployeeYTD.SalesPersonID = e.EmployeeID inner join " + 
+				"Contact c on e.ContactID = c.ContactID;" ;		
+				
+				PreparedStatement statement =conn.prepareStatement(sql);
+				statement.setInt(1, num);
+				
+				ResultSet resultSet=statement.executeQuery();
+				displayResultSet(resultSet,'-',150);
+				System.out.println();
+				resultSet.close();
+				statement.close();		
 	}
 	
 	public static void jdbShowReasonCount (Connection conn) throws SQLException {
