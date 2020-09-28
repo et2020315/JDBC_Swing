@@ -128,6 +128,23 @@ public class MainInterface {
 					break;
 				case "jdb-get-view":
 					System.out.println("Get view");
+          System.out.println("command:"+command);
+          String query11 = "";
+          if(command.contains("(") && command.contains(")")){
+            int indl = command.indexOf("(");
+            int indr = command.indexOf(")");
+            if(indl == indr -1){
+              System.out.println("empty, something wrong");
+              break;
+            }
+            query11 = command.substring(indl+1,indr);
+            System.out.println("query11:"+query11);
+          }
+
+          // make all view name keys lowercase
+          String viewName1 = command.split(" ")[1].toLowerCase();
+          get_view_for_user(conn,stmt,viewName1,query11,view_def_map);
+
 					break;
 				case "jdb-stat":
 					if (parsed_command.length != 3) {
@@ -771,20 +788,24 @@ public class MainInterface {
 
       // if esist in map
       if(view_def_map.containsKey(view_name) && view_def.equals("")){
+        System.out.println("view exist");
         qry = view_def_map.get(view_name);
       }
       // if does not exist in map, a new qry comes in
-      else if(!view_def_map.containsKey(view_name) && (!view_def.equals(""))) {
+      else if(!view_def_map.containsKey(view_name)) {
+        System.out.println("view created");
         qry = view_def;
         create_or_update_view(view_name,view_def,0);
       }
       // if exist and also new query, update
       else if(view_def_map.containsKey(view_name) && (!view_def.equals(""))) {
+        System.out.println("view update");
         qry = view_def;
         create_or_update_view(view_name,view_def,1);
       }
       else {
-        System.out.println("third 489");
+        System.out.println("something wrong");
+        return;
       }
 
       stmt = conn.createStatement();
