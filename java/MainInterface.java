@@ -240,6 +240,11 @@ public class MainInterface {
 					break;
 				}
 				case "jdb-stat": {
+					if (parsed_command.length != 3) {
+						System.out.println("Incorrect amount of arguments");
+						break;
+					}
+
 					// get index of the column chosen in command
 					rs = stmt.executeQuery("SELECT column_name FROM information_schema.columns where table_name='" + parsed_command[1] + "'");
 					int index_of_column = 0;
