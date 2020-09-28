@@ -70,7 +70,7 @@ public class MainInterface {
 
 
       // test
-      print_shortest_path(table_matrix,"employee","vendorcontact");
+      // print_shortest_path(table_matrix,"employee","vendorcontact");
       // get_view_for_user(conn,stmt,"howdy1","select employee.EmployeeID,purchaseorderheader.TotalDue from employee INNER JOIN purchaseorderheader ON (employee.EmployeeID=purchaseorderheader.EmployeeID) INNER JOIN vendorcontact ON (purchaseorderheader.VendorID=vendorcontact.VendorID) where TotalDue < 581",view_def_map);
 
       // print_join_table(conn,stmt,table_matrix,"employee","vendorcontact",edgeName);
@@ -226,16 +226,16 @@ public class MainInterface {
 
 					break;
 				case "jdb-show-best-Salesperson": {
-					int num =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;					
+					int num =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;
 					jdbShowBestSalesperson(num, conn);
 					break;
 				}
-				case "jdb-show-reason-count": {										
+				case "jdb-show-reason-count": {
 					jdbShowReasonCount(conn);
 					break;
 				}
 				case "jdb-show-sales-monthly": {
-					int year =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;					
+					int year =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;
 					jdbShowSalesMonthly (year, conn);
 					break;
 				}
@@ -949,90 +949,90 @@ public class MainInterface {
   }
 
 	public static void jdbFindColumn (String columnName, Connection conn) throws SQLException {
-		
+
 		String sql="select TABLE_NAME from information_schema.columns where column_name like ?";
 		PreparedStatement statement =conn.prepareStatement(sql);
-		statement.setString(1, columnName );		
+		statement.setString(1, columnName );
 		ResultSet resultSet=statement.executeQuery();
 		displayResultSet(resultSet,'-',150);
 		System.out.println();
 		resultSet.close();
-		statement.close();			
+		statement.close();
 	}
 
-	private static void displayResultSet(ResultSet resultSet, char symbol, int width) throws SQLException 
+	private static void displayResultSet(ResultSet resultSet, char symbol, int width) throws SQLException
 	{
 	    ResultSetMetaData rsmd = resultSet.getMetaData();
-	    int columnsNumber = rsmd.getColumnCount();	    
+	    int columnsNumber = rsmd.getColumnCount();
 
 	    for(int i = 1; i <= columnsNumber; i++)
 	    {
 	    	System.out.printf("| %-20.20s",rsmd.getColumnLabel(i));
-	    }	    	
+	    }
 	    System.out.println();
 	    for(int i = 0; i < width; ++i)
 	        System.out.printf("%c", symbol);
-	    
+
 	    System.out.println();
 	    while (resultSet.next()) {
 			// Print one row
-	    	
+
 			for (int i = 1; i <= columnsNumber; i++) {
-				System.out.printf("| %-20.20s",resultSet.getString(i));				
+				System.out.printf("| %-20.20s",resultSet.getString(i));
 			}
-			
+
 			System.out.println();// Move to the next line to print the next row.
 		}
 	}
-	
+
 	public static void jdbShowBestSalesperson(int num, Connection conn) throws SQLException {
-		String sql="SELECT c.FirstName, c.LastName, bestEmployeeYTD.bestYTD " + 
-				"from (select SalesPersonID, SalesYTD as bestYTD from salesperson order by SalesYTD desc limit ?) " + 
-				"as bestEmployeeYTD inner join " + 
-				"employee e on bestEmployeeYTD.SalesPersonID = e.EmployeeID inner join " + 
-				"Contact c on e.ContactID = c.ContactID;" ;		
-				
+		String sql="SELECT c.FirstName, c.LastName, bestEmployeeYTD.bestYTD " +
+				"from (select SalesPersonID, SalesYTD as bestYTD from salesperson order by SalesYTD desc limit ?) " +
+				"as bestEmployeeYTD inner join " +
+				"employee e on bestEmployeeYTD.SalesPersonID = e.EmployeeID inner join " +
+				"Contact c on e.ContactID = c.ContactID;" ;
+
 				PreparedStatement statement =conn.prepareStatement(sql);
 				statement.setInt(1, num);
-				
+
 				ResultSet resultSet=statement.executeQuery();
 				displayResultSet(resultSet,'-',150);
 				System.out.println();
 				resultSet.close();
-				statement.close();		
+				statement.close();
 	}
-	
+
 	public static void jdbShowReasonCount (Connection conn) throws SQLException {
-		
-		String sql="select sr.Name as reason, count(*) as orderCount  from " + 
-				"salesorderheader sh inner join\r\n" + 
-				"salesorderheadersalesreason shr using(SalesOrderID) inner join " + 
-				"salesreason sr using(SalesReasonID) " + 
-				"group by sr.Name " + 
+
+		String sql="select sr.Name as reason, count(*) as orderCount  from " +
+				"salesorderheader sh inner join\r\n" +
+				"salesorderheadersalesreason shr using(SalesOrderID) inner join " +
+				"salesreason sr using(SalesReasonID) " +
+				"group by sr.Name " +
 				"order by count(*) desc;";
-		Statement statement =conn.createStatement();				
+		Statement statement =conn.createStatement();
 		ResultSet resultSet=statement.executeQuery(sql);
 		displayResultSet(resultSet,'-',150);
 		System.out.println();
 		resultSet.close();
-		statement.close();			
+		statement.close();
 	}
-	
+
 	public static void jdbShowSalesMonthly(int year, Connection conn) throws SQLException {
-		String sql="select  month(OrderDate) as month, sum(SubTotal) as sales  from " + 
-				"salesorderheader " + 
-				"where year(OrderDate)= ? " + 
-				"group by year(OrderDate) ,month(OrderDate) " + 
-				"order by month(OrderDate)";		
-				
+		String sql="select  month(OrderDate) as month, sum(SubTotal) as sales  from " +
+				"salesorderheader " +
+				"where year(OrderDate)= ? " +
+				"group by year(OrderDate) ,month(OrderDate) " +
+				"order by month(OrderDate)";
+
 				PreparedStatement statement =conn.prepareStatement(sql);
 				statement.setInt(1, year);
-				
+
 				ResultSet resultSet=statement.executeQuery();
 				displayResultSet(resultSet,'-',150);
 				System.out.println();
 				resultSet.close();
-				statement.close();		
+				statement.close();
 	}
 
 	private static String removeSemicolon(String str) {
@@ -1040,8 +1040,8 @@ public class MainInterface {
 		if (str.charAt(str.length() - 1) == ';') {
 			result = str.substring(0, str.length() - 1);
 		}
-		
+
 		return result;
 	}
-	
+
 }
