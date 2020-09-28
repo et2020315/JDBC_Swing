@@ -74,7 +74,6 @@ public class MainInterface {
 				case "jdb-show-related-tables":
 				// Given the table <table-name>, list all other tables that have in their
 				// column one or more of the primary keys of the table <table-name>.
-				// SHOW KEYS FROM <table name> WHERE Key_name = 'PRIMARY'
 					System.out.println("jdb-show-related-tables");
 					if (parsed_command.length != 2) {
 						System.out.println("Incorrect amount of arguments");
@@ -84,7 +83,23 @@ public class MainInterface {
 
 					query = "SHOW KEYS FROM " + t_name +" WHERE Key_name = 'PRIMARY'";
 					rs = stmt.executeQuery(query);
+					List<String> pks = new ArrayList<String>();
+					while (rs.next()) {
+						pks.add(rs.getString(1));
+					}
+					conn = DriverManager.getConnection(DB_URL,USER,PASS);
+					for (int i=0; i>pks.length(); i++) {
 
+						String sql="select TABLE_NAME from information_schema.columns where column_name like ?";
+						conn = DriverManager.getConnection(DB_URL,USER,PASS);
+						PreparedStatement statement =conn.prepareStatement(sql);
+						statement.setString(1, pks[i]);
+						ResultSet resultSet=statement.executeQuery();
+						displayResultSet(resultSet,'-',150);
+						System.out.println();
+						resultSet.close();
+						statement.close();
+					}
 
 
 					break;
@@ -360,6 +375,18 @@ public class MainInterface {
 				se.printStackTrace();
 			}
 		}
+	}
+
+	public static void jdbFindColumn (String columnName, Connection conn) throws SQLException {
+
+		String sql="select TABLE_NAME from information_schema.columns where column_name like ?";
+		PreparedStatement statement =conn.prepareStatement(sql);
+		statement.setString(1, columnName );
+		ResultSet resultSet=statement.executeQuery();
+		displayResultSet(resultSet,'-',150);
+		System.out.println();
+		resultSet.close();
+		statement.close();
 	}
 
 	public static boolean validateCommand(String command) {
