@@ -466,9 +466,7 @@ public class MainInterface {
             }
             // other create mysql statement
             else {
-              rs = stmt.executeQuery(command);
-              printResults(rs);
-              break;
+              
             }
           break;
 
@@ -523,10 +521,7 @@ public class MainInterface {
 
           }
           // other mysql drop commands
-          else{
-            rs = stmt.executeQuery(command);
-  					printResults(rs);
-          }
+          else{ }
           break;
 
 				default: // basic sql commands
