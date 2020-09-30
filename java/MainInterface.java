@@ -86,6 +86,8 @@ public class MainInterface {
 			Scanner sc = new Scanner(System.in);
 			boolean loop = true;
 			while (loop) {
+
+        try{
 				System.out.print("jdb> ");
 				String command = sc.nextLine();
 				if (!validateCommand(command)) {
@@ -539,8 +541,15 @@ public class MainInterface {
 					printResults(rs);
 					break;
 				}
-
-			}
+      } catch(SQLException ee){
+        System.out.println("SQL excpetion caught");
+        ee.printStackTrace();
+      }
+      catch(Exception e1){
+        System.out.println("something wrong");
+        e1.printStackTrace();
+      }
+			}// end while
 
 			// Closing scanner
 			sc.close();
