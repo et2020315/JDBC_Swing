@@ -86,6 +86,7 @@ public class MainInterface {
 			Scanner sc = new Scanner(System.in);
 			boolean loop = true;
 			while (loop) {
+        try{
 				System.out.print("jdb> ");
 				String command = sc.nextLine();
 				if (!validateCommand(command)) {
@@ -538,9 +539,25 @@ public class MainInterface {
 					rs = stmt.executeQuery(command);
 					printResults(rs);
 					break;
-				}
+				}// end switch
+      }// end try
+        catch(SQLException e0){
+          System.out.println("*******************************************");
+          System.out.println("YOU GOT A SQL EXCPETION!!!!! SEE BELOW");
+          System.out.println("*******************************************");
+          System.out.println("*******************************************");
+          e0.printStackTrace();
+          System.out.println("\n\n");
+        } catch(Exception e1){
+          System.out.println("*******************************************");
+          System.out.println("YOU GOT A normal EXCPETION!!!!! SEE BELOW");
+          System.out.println("*******************************************");
+          System.out.println("*******************************************");
+          e1.printStackTrace();
+          System.out.println("\n\n");
+        }
 
-			}
+			}// end while
 
 			// Closing scanner
 			sc.close();
