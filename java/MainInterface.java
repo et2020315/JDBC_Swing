@@ -9,7 +9,6 @@ import java.sql.*;
 import java.util.Scanner;
 import java.util.regex.*;
 import java.util.*;
-import java.util.*;
 import java.lang.*;
 import java.io.*;
 import java.net.*;
@@ -25,6 +24,8 @@ import org.jgrapht.alg.interfaces.ShortestPathAlgorithm.*;
 import org.jgrapht.alg.interfaces.*;
 import org.jgrapht.alg.shortestpath.*;
 import org.jgrapht.graph.*;
+
+
 
 public class MainInterface {
 
@@ -43,8 +44,11 @@ public class MainInterface {
   static Map<String,ArrayList<String>> adj_list_by_table = new HashMap<String,ArrayList<String>>();
 
   static ArrayList<String> table_name = new ArrayList<String>();
-  static Graph<String, DefaultWeightedEdge> table_matrix =
-    new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+  // static Graph<String, DefaultWeightedEdge> table_matrix =
+  //   new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+
+  static Graph<String, ColumnEdge> table_matrix =
+    new SimpleWeightedGraph<String, ColumnEdge>(ColumnEdge.class);
 
   static Double ind = 0.0;
   static ArrayList<String> edgeName = new ArrayList<String>(); // weight == index
@@ -471,7 +475,7 @@ public class MainInterface {
             }
             // other create mysql statement
             else {
-              
+
             }
           break;
 
@@ -618,8 +622,9 @@ public class MainInterface {
 						 + "GROUP BY salesorderheader.SalesOrderID");
 	}
 
-  // helper function build a map
-  public static void database_meta(Connection conn, Statement stmt,Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,Graph<String, DefaultWeightedEdge> table_matrix,ArrayList<String>table_name){
+  // // helper function build a map
+  public static void database_meta(Connection conn, Statement stmt,Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,Graph<String, ColumnEdge> table_matrix,ArrayList<String>table_name){
+  // public static void database_meta(Connection conn, Statement stmt,Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,Graph<String, DefaultWeightedEdge> table_matrix,ArrayList<String>table_name){
     try{
 
       ArrayList<ArrayList<String>> tbl_col = new ArrayList<ArrayList<String>>();
@@ -748,7 +753,7 @@ public class MainInterface {
         for(int j =0;j< temp3.size();j++){
           for(int q=0;q<temp3.size();q++){
             if(q != j){
-              DefaultWeightedEdge ee =  table_matrix.addEdge(temp3.get(j),temp3.get(q));
+              table_matrix.addEdge(temp3.get(j),temp3.get(q),new ColumnEdge(k));
               table_matrix.setEdgeWeight(table_matrix.getEdge(temp3.get(j),temp3.get(q)), ind); // nullptrException if ee to set
               // System.out.println("index at: " + ind.toString() + " col:" + k + " j:" + temp3.get(j) + " q:" + temp3.get(q));
               // edgeName add the string, this could be either map or arraylist
@@ -777,96 +782,189 @@ public class MainInterface {
 
 
 
-  public static void print_shortest_path(Graph<String, DefaultWeightedEdge> table_matrix,String tb1, String tb2){
+  // public static void print_shortest_path(Graph<String, DefaultWeightedEdge> table_matrix,String tb1, String tb2){
+  //   System.out.println("Shortest path from tb1 to tb2:");
+  //   DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg =
+  //       new DijkstraShortestPath<>(table_matrix);
+  //   SingleSourcePaths<String, DefaultWeightedEdge> iPaths = dijkstraAlg.getPaths(tb1);
+  //
+  //   System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
+  //   System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+  // }
+
+
+  public static void print_shortest_path(Graph<String, ColumnEdge> table_matrix,String tb1, String tb2){
     System.out.println("Shortest path from tb1 to tb2:");
-    DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg =
+    DijkstraShortestPath<String, ColumnEdge> dijkstraAlg =
         new DijkstraShortestPath<>(table_matrix);
-    SingleSourcePaths<String, DefaultWeightedEdge> iPaths = dijkstraAlg.getPaths(tb1);
+    SingleSourcePaths<String, ColumnEdge> iPaths = dijkstraAlg.getPaths(tb1);
 
     System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
     System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
   }
 
 
+  //
+  // public static void print_join_table(Connection conn, Statement stmt,Graph<String, DefaultWeightedEdge> table_matrix,String tb1, String tb2, ArrayList<String>edgeName){
+  //   try{
+  //   System.out.println("Shortest path from tb1 to tb2:");
+  //   DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg =
+  //       new DijkstraShortestPath<>(table_matrix);
+  //   SingleSourcePaths<String, DefaultWeightedEdge> iPaths = dijkstraAlg.getPaths(tb1);
+  //
+  //   System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
+  //   System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+  //   List<String> tablelist = iPaths.getPath(tb2).getVertexList();
+  //
+  //
+  //   // retrieve on what columns into arraylist
+  //   ArrayList<String> onclauseEdge = new ArrayList<String>();
+  //   // retrieve edge string by weight of edge
+  //   for(int j = 0; j < tablelist.size()-1;j++){
+  //     // get edge name weight in graph
+  //     double wt = table_matrix.getEdgeWeight(table_matrix.getEdge(tablelist.get(j),tablelist.get(j+1)));
+  //     // get the string by weight/index in edgename
+  //     int index = (int)wt;
+  //     String columnName1 = edgeName.get(index);
+  //     System.out.println("index:"+index);
+  //     System.out.println("columnName1:"+columnName1);
+  //     // append it to oncluaseEdge
+  //     onclauseEdge.add(columnName1);
+  //   }
+  //
+  //
+  //   String query = "select * from ";
+  //   System.out.println("tblistsize:"+tablelist.size());
+  //   System.out.println("oncluasesize:"+onclauseEdge.size());
+  //   // contruct tables names and inner join strings
+  //   String middle = "";
+  //   for(int j=0;j<tablelist.size();j++){
+  //
+  //     if(j==0){
+  //       query = query + tablelist.get(j);
+  //     } else{
+  //       String currT = tablelist.get(j);
+  //       String prevT = tablelist.get(j-1);
+  //       String col = onclauseEdge.get(j-1);
+  //       query = query+" INNER JOIN "+currT+" ON ("+prevT+"."+col+"="+currT+"."+col+")";
+  //     }
+  //   }
+  //
+  //
+  //   System.out.println(query);
+  //   stmt = conn.createStatement();
+  //   ResultSet rs2;
+  //   ResultSetMetaData rsmd2;
+  //   rs2 = stmt.executeQuery(query);
+  //   rsmd2 = rs2.getMetaData();
+  //   System.out.println("hellow");
+  //   int countloop = 0;
+  //   while(rs2.next()){
+  //
+  //     for(int j=1;j <= rsmd2.getColumnCount();j++){
+  //       String type = rsmd2.getColumnTypeName(j);
+  //
+  //       // System.out.println("type:"+type);
+  //       if(type.toLowerCase().contains("binary")){
+  //         System.out.println(rsmd2.getColumnName(j)+": "+"some binary, print out make a noise");
+  //       }else {
+  //         System.out.println(rsmd2.getColumnName(j)+": "+rs2.getString(j));
+  //       }
+  //
+  //     }// end forloop
+  //     System.out.println("*******************************************************");
+  //
+  //   }
+  //
+  //
+  // }catch(Exception e){
+  //   System.out.println("Something wrong in join table.");
+  //   e.printStackTrace();
+  // }
+  //
+  // }// print join table
 
-  public static void print_join_table(Connection conn, Statement stmt,Graph<String, DefaultWeightedEdge> table_matrix,String tb1, String tb2, ArrayList<String>edgeName){
-    try{
-    System.out.println("Shortest path from tb1 to tb2:");
-    DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraAlg =
-        new DijkstraShortestPath<>(table_matrix);
-    SingleSourcePaths<String, DefaultWeightedEdge> iPaths = dijkstraAlg.getPaths(tb1);
 
-    System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
-    System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
-    List<String> tablelist = iPaths.getPath(tb2).getVertexList();
+    public static void print_join_table(Connection conn, Statement stmt,Graph<String, ColumnEdge> table_matrix,String tb1, String tb2, ArrayList<String>edgeName){
+      try{
+      System.out.println("Shortest path from tb1 to tb2:");
+      DijkstraShortestPath<String, ColumnEdge> dijkstraAlg =
+          new DijkstraShortestPath<>(table_matrix);
+      SingleSourcePaths<String, ColumnEdge> iPaths = dijkstraAlg.getPaths(tb1);
 
-
-    // retrieve on what columns into arraylist
-    ArrayList<String> onclauseEdge = new ArrayList<String>();
-    // retrieve edge string by weight of edge
-    for(int j = 0; j < tablelist.size()-1;j++){
-      // get edge name weight in graph
-      double wt = table_matrix.getEdgeWeight(table_matrix.getEdge(tablelist.get(j),tablelist.get(j+1)));
-      // get the string by weight/index in edgename
-      int index = (int)wt;
-      String columnName1 = edgeName.get(index);
-      System.out.println("index:"+index);
-      System.out.println("columnName1:"+columnName1);
-      // append it to oncluaseEdge
-      onclauseEdge.add(columnName1);
-    }
+      System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
+      System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+      List<String> tablelist = iPaths.getPath(tb2).getVertexList();
 
 
-    String query = "select * from ";
-    System.out.println("tblistsize:"+tablelist.size());
-    System.out.println("oncluasesize:"+onclauseEdge.size());
-    // contruct tables names and inner join strings
-    String middle = "";
-    for(int j=0;j<tablelist.size();j++){
-
-      if(j==0){
-        query = query + tablelist.get(j);
-      } else{
-        String currT = tablelist.get(j);
-        String prevT = tablelist.get(j-1);
-        String col = onclauseEdge.get(j-1);
-        query = query+" INNER JOIN "+currT+" ON ("+prevT+"."+col+"="+currT+"."+col+")";
+      // retrieve on what columns into arraylist
+      ArrayList<String> onclauseEdge = new ArrayList<String>();
+      // retrieve edge string by weight of edge
+      for(int j = 0; j < tablelist.size()-1;j++){
+        // get edge name weight in graph
+        double wt = table_matrix.getEdgeWeight(table_matrix.getEdge(tablelist.get(j),tablelist.get(j+1)));
+        // get the string by weight/index in edgename
+        int index = (int)wt;
+        String columnName1 = edgeName.get(index);
+        System.out.println("index:"+index);
+        System.out.println("columnName1:"+columnName1);
+        // append it to oncluaseEdge
+        onclauseEdge.add(columnName1);
       }
-    }
 
 
-    System.out.println(query);
-    stmt = conn.createStatement();
-    ResultSet rs2;
-    ResultSetMetaData rsmd2;
-    rs2 = stmt.executeQuery(query);
-    rsmd2 = rs2.getMetaData();
-    System.out.println("hellow");
-    int countloop = 0;
-    while(rs2.next()){
+      String query = "select * from ";
+      System.out.println("tblistsize:"+tablelist.size());
+      System.out.println("oncluasesize:"+onclauseEdge.size());
+      // contruct tables names and inner join strings
+      String middle = "";
+      for(int j=0;j<tablelist.size();j++){
 
-      for(int j=1;j <= rsmd2.getColumnCount();j++){
-        String type = rsmd2.getColumnTypeName(j);
-
-        // System.out.println("type:"+type);
-        if(type.toLowerCase().contains("binary")){
-          System.out.println(rsmd2.getColumnName(j)+": "+"some binary, print out make a noise");
-        }else {
-          System.out.println(rsmd2.getColumnName(j)+": "+rs2.getString(j));
+        if(j==0){
+          query = query + tablelist.get(j);
+        } else{
+          String currT = tablelist.get(j);
+          String prevT = tablelist.get(j-1);
+          String col = onclauseEdge.get(j-1);
+          query = query+" INNER JOIN "+currT+" ON ("+prevT+"."+col+"="+currT+"."+col+")";
         }
+      }
 
-      }// end forloop
-      System.out.println("*******************************************************");
 
+      System.out.println(query);
+      stmt = conn.createStatement();
+      ResultSet rs2;
+      ResultSetMetaData rsmd2;
+      rs2 = stmt.executeQuery(query);
+      rsmd2 = rs2.getMetaData();
+      System.out.println("hellow");
+      int countloop = 0;
+      while(rs2.next()){
+
+        for(int j=1;j <= rsmd2.getColumnCount();j++){
+          String type = rsmd2.getColumnTypeName(j);
+
+          // System.out.println("type:"+type);
+          if(type.toLowerCase().contains("binary")){
+            System.out.println(rsmd2.getColumnName(j)+": "+"some binary, print out make a noise");
+          }else {
+            System.out.println(rsmd2.getColumnName(j)+": "+rs2.getString(j));
+          }
+
+        }// end forloop
+        System.out.println("*******************************************************");
+
+      }
+
+
+    }catch(Exception e){
+      System.out.println("Something wrong in join table.");
+      e.printStackTrace();
     }
 
+    }// print join table
 
-  }catch(Exception e){
-    System.out.println("Something wrong in join table.");
-    e.printStackTrace();
-  }
 
-  }// print join table
 
 
   public static void get_view_for_user(Connection conn, Statement stmt,String view_name,String view_def,Map<String,String> view_def_map){
