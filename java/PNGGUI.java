@@ -44,7 +44,7 @@ public class PNGGUI extends JFrame{
       File f = new File(img);
       Desktop desk = Desktop.getDesktop();
       desk.open(f);
-      JOptionPane.showMessageDialog(null,"Default image viewer opened");
+      JOptionPane.showMessageDialog(null,"Default image viewer opened. Please close the message Dialog window and the default image viewer app before entering queries");
 
     }
     catch(Exception e){
