@@ -16,7 +16,15 @@ public class TestTableGUI{
     tbpass.add(new ArrayList<String>(Arrays.asList("3","salesmen","C")));
     tbpass.add(new ArrayList<String>(Arrays.asList("4","product","D")));
 
-    TableGUI test1 = new TableGUI(tbpass,1);
+
+    ArrayList<String> col = new ArrayList<String>();
+    col.add("c1");
+    col.add("c2");
+    col.add("c3");
+
+    int num = 1;
+
+    TableGUI test1 = new TableGUI(tbpass,col,num);
 
 
 
