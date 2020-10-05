@@ -18,7 +18,7 @@ https://stackoverflow.com/questions/24932374/java-how-to-print-the-rows-from-dat
 https://stackoverflow.com/questions/5648420/how-to-get-all-columns-names-for-all-the-tables-in-mysql
 https://sqlzoo.net/wiki/AdventureWorks
 https://stackoverflow.com/questions/12367828/how-can-i-get-different-datatypes-from-resultsetmetadata-in-java
-
+https://jgrapht.org/guide/UserOverview#jgraphx-adapter
 https://stackoverflow.com/questions/696782/retrieve-column-names-from-java-sql-resultset
 https://stackoverflow.com/questions/58983924/java-jgraphx-is-there-a-method-to-re-position-the-vertexes-and-edges-automatic
 
