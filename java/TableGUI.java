@@ -13,15 +13,15 @@ import javax.swing.JOptionPane;
 import java.io.*;
 import java.util.*;
 
-
-import org.jgrapht.*;
-import org.jgrapht.graph.*;
-import org.jgrapht.nio.*;
-import org.jgrapht.nio.dot.*;
-import org.jgrapht.traverse.*;
-import org.jgrapht.alg.connectivity.*;
-import org.jgrapht.alg.interfaces.*;
-import org.jgrapht.graph.*;
+//
+// import org.jgrapht.*;
+// import org.jgrapht.graph.*;
+// import org.jgrapht.nio.*;
+// import org.jgrapht.nio.dot.*;
+// import org.jgrapht.traverse.*;
+// import org.jgrapht.alg.connectivity.*;
+// import org.jgrapht.alg.interfaces.*;
+// import org.jgrapht.graph.*;
 
 
 // this class could be used to show tables--- first 3 GUI tasks in phase 3
@@ -43,9 +43,9 @@ public class TableGUI extends JFrame{
   // mode = 1 : show columns/one column of a table
   // mode = 2 : show result of joint-tables
   // mode = 4 : plot the schema
-  private int mode = -1;
-  private JPanel main_panel;
-  private JLabel main_label;
+  // private int mode = -1;
+  // private JPanel main_panel;
+  // private JLabel main_label;
   private ImageIcon image;
   private final int width_base = 800;
   private final int height_base = 600;
@@ -57,18 +57,18 @@ public class TableGUI extends JFrame{
   //   System.exit(1);
   // }
 
-  public TableGUI(ArrayList<ArrayList<String>> table_being_passed,ArrayList<String> columns,int m){
+  public TableGUI(ArrayList<ArrayList<String>> table_being_passed,ArrayList<String> columns){
     try{
       this.setSize(width_base,height_base);
-      this.setTitle("Table shown");
+      this.setTitle("Present table in GUI");
       this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       // this.setLayout(new BorderLayout());
 
       // initialize mode
-      mode = m;
-      main_panel = null;
-      main_label = null;
-      image = null;
+      // mode = m;
+      // main_panel = null;
+      // main_label = null;
+      // image = null;
 
       // // copy the 2d arraylist
       // for(int i = 0; i < table_being_passed.size();i++){
@@ -108,7 +108,7 @@ public class TableGUI extends JFrame{
         System.out.print(cols[i]);
       }
 
-      main_panel = new JPanel();
+      // main_panel = new JPanel();
       // scroll = new JScrollPane();
       jtable = new JTable(table_to_show,cols);
       jtable.setShowGrid(true);
@@ -130,9 +130,9 @@ public class TableGUI extends JFrame{
   }// end constructor
 
 
-  public void display_table(){
-
-
-  }
+  // public void display_table(){
+  //
+  //
+  // }
 
 }
