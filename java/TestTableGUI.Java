@@ -22,9 +22,9 @@ public class TestTableGUI{
     col.add("c2");
     col.add("c3");
 
-    int num = 1;
+    // int num = 1;
 
-    TableGUI test1 = new TableGUI(tbpass,col,num);
+    TableGUI test1 = new TableGUI(tbpass,col);
 
 
 

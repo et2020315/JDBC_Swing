@@ -43,7 +43,7 @@ public class TableGUI extends JFrame{
   // mode = 1 : show columns/one column of a table
   // mode = 2 : show result of joint-tables
   // mode = 4 : plot the schema
-  private int mode = -1;
+  // private int mode = -1;
   private JPanel main_panel;
   private JLabel main_label;
   private ImageIcon image;
@@ -57,7 +57,7 @@ public class TableGUI extends JFrame{
   //   System.exit(1);
   // }
 
-  public TableGUI(ArrayList<ArrayList<String>> table_being_passed,ArrayList<String> columns,int m){
+  public TableGUI(ArrayList<ArrayList<String>> table_being_passed,ArrayList<String> columns){
     try{
       this.setSize(width_base,height_base);
       this.setTitle("Table shown");
@@ -65,7 +65,7 @@ public class TableGUI extends JFrame{
       // this.setLayout(new BorderLayout());
 
       // initialize mode
-      mode = m;
+      // mode = m;
       main_panel = null;
       main_label = null;
       image = null;
