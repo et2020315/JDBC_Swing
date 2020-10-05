@@ -12,6 +12,8 @@ https://stackoverflow.com/questions/960807/hashmapkey-string-value-arraylist-ret
 https://www.w3schools.com/sql/sql_groupby.asp
 https://stackoverflow.com/questions/16584948/how-to-create-weighted-adjacency-list-matrix-from-edge-list
 https://stackoverflow.com/questions/16584948/how-to-create-weighted-adjacency-list-matrix-from-edge-list
+https://stackoverflow.com/questions/299495/how-to-add-an-image-to-a-jpanel
+
 
 http://porthos.ist.utl.pt/docs/mySQL/information-schema.html#columns-table
 https://stackoverflow.com/questions/24932374/java-how-to-print-the-rows-from-database/24932538
