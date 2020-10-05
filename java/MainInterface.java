@@ -53,7 +53,7 @@ public class MainInterface {
   static Double ind = 0.0;
   static ArrayList<String> edgeName = new ArrayList<String>(); // weight == index
   static Map<String,String> view_def_map = new HashMap<String,String>();
-
+  static ArrayList<ArrayList<String>> GUI_display_table = new ArrayList<ArrayList<String>>();
 	// main loop to log into and interact with database
 	public static void main(String[] args) {
 		Connection conn = null;
