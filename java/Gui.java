@@ -3,7 +3,7 @@
 // even if you are working with just swings.
 
 // Choe: This does not do much other than displaying the UI,
-// since it does not include events. Just treat it as a reference on 
+// since it does not include events. Just treat it as a reference on
 // what kind of UI elements ara available. DO NOT base your app on this.
 // Use Action.java
 

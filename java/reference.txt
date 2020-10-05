@@ -20,6 +20,8 @@ https://sqlzoo.net/wiki/AdventureWorks
 https://stackoverflow.com/questions/12367828/how-can-i-get-different-datatypes-from-resultsetmetadata-in-java
 
 https://stackoverflow.com/questions/696782/retrieve-column-names-from-java-sql-resultset
+https://stackoverflow.com/questions/58983924/java-jgraphx-is-there-a-method-to-re-position-the-vertexes-and-edges-automatic
+
 At the beginning, i was planning to use adjacency matrix using 2d arraylist structure.
  but arraylist might have o(n^2) performance so i switch to 2d hashmap. However, I found out that the order was not
  preserved in the hashmap, and I need
@@ -59,6 +61,18 @@ https://www.mysqltutorial.org/mysql-data-types.aspx/
 http://www.java2s.com/Code/Java/Database-SQL-JDBC/Getallviewsinadatabase.html
 https://stackoverflow.com/questions/21024224/fetch-an-entire-row-with-jdbc-as-a-list
 
+https://www.tutorialspoint.com/how-to-prevent-displaying-any-grid-lines-in-a-jtable
+https://stackoverflow.com/questions/37865914/add-border-between-cells-in-jtable
+https://stackoverflow.com/questions/38926148/error-adding-row-into-jtable
+https://stackoverflow.com/questions/10619048/adding-a-jscrollpane-to-a-jtable-component
+https://stackoverflow.com/questions/2623957/how-to-display-a-jtable-in-a-jpanel-with-java
+
+https://stackoverflow.com/questions/9388570/nullpointerexception-when-trying-to-add-a-column-to-a-jtable
+https://www.tutorialspoint.com/how-to-add-jtable-to-panel-in-java-swing
+https://stackoverflow.com/questions/22649610/error-message-java-lang-nosuchmethoderror-customer-initljava-lang-stringd/22649700
+https://www.geeksforgeeks.org/arraylist-toarray-method-in-java-with-examples/
+https://stackoverflow.com/questions/10043209/convert-arraylist-into-2d-array-containing-varying-lengths-of-arrays
+https://www.codejava.net/java-se/swing/a-simple-jtable-example-for-display
 
 
 

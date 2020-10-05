@@ -25,6 +25,18 @@ import org.jgrapht.alg.interfaces.*;
 import org.jgrapht.alg.shortestpath.*;
 import org.jgrapht.graph.*;
 
+import javax.imageio.ImageIO;
+import org.jgrapht.ext.JGraphXAdapter;
+import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.layout.mxIGraphLayout;
+import com.mxgraph.util.mxCellRenderer;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
+
 
 
 public class MainInterface {
@@ -71,7 +83,7 @@ public class MainInterface {
 
       database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_matrix,table_name);
 
-
+      graphPNG(table_matrix);
 
       // test
       // print_shortest_path(table_matrix,"employee","vendorcontact");
@@ -1061,6 +1073,25 @@ public class MainInterface {
       System.out.println("in create_update_view");
       e.printStackTrace();
     }
+  }
+
+  public static void graphPNG(Graph<String, ColumnEdge> table_matrix){
+
+    JGraphXAdapter<String, ColumnEdge> graphAdapter = new JGraphXAdapter<>(table_matrix);
+        mxIGraphLayout layout = new mxHierarchicalLayout(graphAdapter);
+        layout.execute(graphAdapter.getDefaultParent());
+        BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
+        File imgFile = new File("DB.png");
+        try
+        {
+            ImageIO.write(image, "PNG", imgFile);
+            System.out.println("Image created successfully!");
+            Desktop.getDesktop().open(imgFile);
+        } catch (IOException e)
+        {
+            System.out.println(e.toString());
+        }
+
   }
 
 	public static void jdbFindColumn (String columnName, Connection conn) throws SQLException {
