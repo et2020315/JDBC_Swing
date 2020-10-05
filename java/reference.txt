@@ -20,6 +20,8 @@ https://sqlzoo.net/wiki/AdventureWorks
 https://stackoverflow.com/questions/12367828/how-can-i-get-different-datatypes-from-resultsetmetadata-in-java
 
 https://stackoverflow.com/questions/696782/retrieve-column-names-from-java-sql-resultset
+https://stackoverflow.com/questions/58983924/java-jgraphx-is-there-a-method-to-re-position-the-vertexes-and-edges-automatic
+
 At the beginning, i was planning to use adjacency matrix using 2d arraylist structure.
  but arraylist might have o(n^2) performance so i switch to 2d hashmap. However, I found out that the order was not
  preserved in the hashmap, and I need
