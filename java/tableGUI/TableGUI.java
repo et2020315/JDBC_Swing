@@ -1,4 +1,4 @@
-
+package tableGUI;
 
 
 import javax.swing.*;
