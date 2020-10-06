@@ -73,13 +73,13 @@ public class MainMainInterface{
       // initialize graph
       database_meta();
 
-      // // print for checking
-      // for(String k: adj_list_by_column.keySet()){
-      //   System.out.println("******************* "+ k +" ******************");
-      //   for(int j=0;j<adj_list_by_column.get(k).size();j++){
-      //     System.out.println(adj_list_by_column.get(k).get(j));
-      //   }
-      // }
+      // print for checking
+      for(String k: adj_list_by_column.keySet()){
+        System.out.println("******************* "+ k +" ******************");
+        for(int j=0;j<adj_list_by_column.get(k).size();j++){
+          System.out.println(adj_list_by_column.get(k).get(j));
+        }
+      }
 
 
     } catch(Exception e1){
@@ -127,7 +127,6 @@ public class MainMainInterface{
           break;
         }
 
-
         case "quit;":
         case "quit":{
           System.exit(0);
@@ -147,47 +146,32 @@ public class MainMainInterface{
         }
         break;
 
-
+        case "jdb-get-all-primary-keys;":
         case "jdb-show-all-primary-keys":
         {
-          // Show all primary keys from all tables. Print the list of (table_name, column_name).
-          if (parsed_command.length != 1) {
-            JOptionPane.showMessageDialog(null,"Incorrect amount of arguments.Re-enter");
-            break;
-          }
-          // System.out.println("Howdy");
-          // String sql="select TABLE_NAME, COLUMN_NAME from information_schema.columns where Key_name = 'PRIMARY'";
-          // String sql = "select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'PRIMARY KEY'";
           String sql = "select TABLE_NAME,COLUMN_NAME FROM  INFORMATION_SCHEMA.COLUMNS where COLUMN_KEY='PRI' AND TABLE_SCHEMA = 'adventureworks'";
-          // System.out.println("debug:"+sql);
+
           conn = DriverManager.getConnection(DB_URL,USER,PASS);
           PreparedStatement statement = conn.prepareStatement(sql);
           ResultSet rs2 = statement.executeQuery();
           displayResultSet(rs2,'-',150);
-          // displayResultSet(resultSet,'-',150);
           // CALL TableGUI here
         }// end case
         break;
 
 
         case "jdb-find-column":{
-          // Find all tables that have <column-name>
           if (parsed_command.length != 2) {
-            JOptionPane.showMessageDialog(null,"Incorrect amount of arguments.Re-enter");
+            JOptionPane.showMessageDialog(null,"Re-enter");
             break;
           }
-          String c_name = parsed_command[1];
-          query ="select TABLE_NAME from information_schema.columns where column_name like ?";
-          conn = DriverManager.getConnection(DB_URL,USER,PASS);
-          PreparedStatement prepstatement =conn.prepareStatement(query);
-          prepstatement.setString(1, c_name);
-          ResultSet rs2 = prepstatement.executeQuery();
-          displayResultSet(rs2 ,'-', 150);
-          System.out.println();
-          // resultSet2.close();
-          prepstatement.close();
-
-
+          String parC = parsed_command[1].replace(";","").trim();
+          ArrayList<String> arrfindcol = this.adj_list_by_column.get(parC);
+          System.out.println("-------- tables that connect to the column ----------");
+          for(int j = 0; j < arrfindcol.size();j++){
+            System.out.println(arrfindcol.get(j));
+          }
+          System.out.println("-----------------------------------------------------");
           // call TableGUI here
         }// end case
         break;

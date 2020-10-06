@@ -45,7 +45,7 @@ public class Test {
 			String testQuery1 = "jdb-get-view howdy (select employeeID, productID from employee,product);";
 			String testQuery2 = "jdb-show-related-tables employeeaddress;";
 			String testQuery3 = "jdb-show-all-primary-keys;";
-			String testQuery4 = "jdb-find-column productID;";
+			String testQuery4 = "jdb-find-column ScrapReasonID;";
 			String testQuery5 = "jdb-search-path employee product;";
 			String testQuery6 = "jdb-search-and-join employee product;";
 			String testQuery7 = "jdb-stat employee employeeID;";

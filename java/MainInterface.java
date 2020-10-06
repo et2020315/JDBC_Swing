@@ -165,23 +165,20 @@ public class MainInterface {
               break;
 
 
-              case "jdb-find-column":
-              // Find all tables that have <column-name>
-              if (parsed_command.length != 2) {
-                System.out.println("Incorrect amount of arguments");
-                break;
+              case "jdb-find-column":{
+                if (parsed_command.length != 2) {
+                  System.out.println("Re-enter");
+                  break;
+                }
+                // re-write
+                String parC = parsed_command[1].replace(";","").trim();
+                ArrayList<String> arrfindcol = adj_list_by_column.get(parC);
+                System.out.println("-------- tables that connect to the column ----------");
+                for(int j = 0; j < arrfindcol.size();j++){
+                  System.out.println(arrfindcol.get(j));
+                }
+                System.out.println("-----------------------------------------------------");
               }
-              String c_name = parsed_command[1];
-
-              query ="select TABLE_NAME from information_schema.columns where column_name like ?";
-              conn = DriverManager.getConnection(DB_URL,USER,PASS);
-              PreparedStatement prepstatement =conn.prepareStatement(query);
-              prepstatement.setString(1, c_name);
-              ResultSet resultSet2=prepstatement.executeQuery();
-              displayResultSet(resultSet2 ,'-', 150);
-              System.out.println();
-              resultSet2.close();
-              prepstatement.close();
               break;
 
 
