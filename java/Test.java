@@ -48,9 +48,9 @@ public class Test {
 			String testQuery4 = "jdb-find-column ScrapReasonID;";
 			String testQuery5 = "jdb-search-path employee product;";
 			String testQuery6 = "jdb-search-and-join employee product;";
-			String testQuery7 = "jdb-stat employee employeeID;";
+			String testQuery7 = "jdb-stat salesview salesstat;";
  			MainMainInterface testMMI = new MainMainInterface();
-			testMMI.setQueryString(testQuery4);
+			testMMI.setQueryString(testQuery7);
 			testMMI.switchOnFirstWord();
 
 		} catch (Exception e){
