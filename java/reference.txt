@@ -13,7 +13,27 @@ https://www.w3schools.com/sql/sql_groupby.asp
 https://stackoverflow.com/questions/16584948/how-to-create-weighted-adjacency-list-matrix-from-edge-list
 https://stackoverflow.com/questions/16584948/how-to-create-weighted-adjacency-list-matrix-from-edge-list
 https://stackoverflow.com/questions/299495/how-to-add-an-image-to-a-jpanel
+https://stackoverflow.com/questions/35563693/jgrapht-get-neighbor-nodes
 
+https://www.geeksforgeeks.org/arraylist-isempty-java-example/
+https://stackoverflow.com/questions/43508087/break-up-a-string-literal-over-multiple-lines
+https://stackoverflow.com/questions/171952/is-there-a-destructor-for-java
+https://www.geeksforgeeks.org/split-string-java-examples/
+https://stackoverflow.com/questions/16706716/using-two-values-for-one-switch-case-statement/16706729
+
+https://stackoverflow.com/questions/352780/when-to-catch-java-lang-error#:~:text=An%20Error%20usually%20shouldn't,such%20errors%20are%20abnormal%20conditions.
+https://stackoverflow.com/questions/37560236/trying-to-throw-exceptions-in-method-called-in-an-actionlistener/37560897
+https://beginnersbook.com/2017/10/java-string-isempty-method-with-example/
+
+
+https://stackoverflow.com/questions/12568340/add-custom-message-to-thrown-exception-while-maintaining-stack-trace-in-java
+
+
+https://stackoverflow.com/questions/43890918/pass-an-exception-up-to-the-method
+https://dev.mysql.com/doc/refman/8.0/en/information-schema-key-column-usage-table.html
+https://dev.mysql.com/doc/refman/8.0/en/information-schema-columns-table.html
+
+https://dev.mysql.com/doc/refman/8.0/en/information-schema-columns-table.html
 
 http://porthos.ist.utl.pt/docs/mySQL/information-schema.html#columns-table
 https://stackoverflow.com/questions/24932374/java-how-to-print-the-rows-from-database/24932538
