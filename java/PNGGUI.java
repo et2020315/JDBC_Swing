@@ -42,8 +42,8 @@ public class PNGGUI extends JFrame{
       // this.setVisible(true);
 
       File f = new File(img);
-      Desktop desk = Desktop.getDesktop();
-      desk.open(f);
+      Desktop desk = Desktop.getDesktop(); // get the desktop element
+      desk.open(f); // use the default app to open image generated
       JOptionPane.showMessageDialog(null,"Default image viewer opened. Please close the message Dialog window and the default image viewer app before entering queries");
 
     }
