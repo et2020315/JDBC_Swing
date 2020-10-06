@@ -3,7 +3,7 @@
 *
 * MainInterface --- name might be changed later
 */
-
+import java.util.regex.*;
 import java.sql.*;
 // import java.util.regex.*;
 import java.util.*;
@@ -38,214 +38,707 @@ import javax.swing.*;
 
 public class MainMainInterface{
 
-    private final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    private final String DB_URL = "jdbc:mysql://localhost:3306/?serverTimezone=UTC#/adventureworks";
+  private final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
+  private final String DB_URL = "jdbc:mysql://localhost:3306/?serverTimezone=UTC#/adventureworks";
 
-    // Database credentials
-    private final String USER = "root";
-    private final String PASS = "password";
-    private Map<String,ArrayList<String>> adj_list_by_column = new HashMap<String,ArrayList<String>>();
-    private Map<String,ArrayList<String>> adj_list_by_table = new HashMap<String,ArrayList<String>>();
-    private ArrayList<String> table_name = new ArrayList<String>();
-    private Graph<String, ColumnEdge> table_matrix =
-      new SimpleWeightedGraph<String, ColumnEdge>(ColumnEdge.class);
+  // Database credentials
+  private final String USER = "root";
+  private final String PASS = "password";
+  private Map<String,ArrayList<String>> adj_list_by_column = new HashMap<String,ArrayList<String>>();
+  private Map<String,ArrayList<String>> adj_list_by_table = new HashMap<String,ArrayList<String>>();
+  private ArrayList<String> table_name = new ArrayList<String>();
+  private Graph<String, ColumnEdge> table_matrix =
+  new SimpleWeightedGraph<String, ColumnEdge>(ColumnEdge.class);
 
-    private Double ind = 0.0;
-    private ArrayList<String> edgeName = new ArrayList<String>(); // weight == index
-    private Map<String,String> view_def_map = new HashMap<String,String>();
-    private ArrayList<ArrayList<String>> GUI_display_table = new ArrayList<ArrayList<String>>();
-    public Connection conn = null;
-		public Statement stmt = null;
+  private Double ind = 0.0;
+  private ArrayList<String> edgeName = new ArrayList<String>(); // weight == index
+  private Map<String,String> view_def_map = new HashMap<String,String>();
+  private ArrayList<ArrayList<String>> GUI_display_table = new ArrayList<ArrayList<String>>();
+  public Connection conn = null;
+  public Statement stmt = null;
 
-    private String query_string;
-
-
-    MainMainInterface(String input_string){
-      try{
-
-        Class.forName("com.mysql.cj.jdbc.Driver");
-  			System.out.println("Connecting to database...");
-  			conn = DriverManager.getConnection(DB_URL,USER,PASS);
-  			stmt = conn.createStatement();
-  			ResultSet rs;
-  			rs = stmt.executeQuery("USE adventureworks;");
-
-        // initialize graph
-        database_meta(conn,stmt,adj_list_by_column,adj_list_by_table,table_matrix,table_name);
-        // generate the image
-        graphPNG(table_matrix);
+  private String query_string = "";
 
 
-      } catch(Exception e1){
-        JOptionPane.showMessageDialog(null,"error in MainMainInterface constructor, details in terminal");
-        System.out.println("********** Something wrong in MainMainInterface constructor******");
-        e.printStackTrace();
+  MainMainInterface() throws Exception{
+    try{
+
+      Class.forName("com.mysql.cj.jdbc.Driver");
+      System.out.println("Connecting to database...");
+      conn = DriverManager.getConnection(DB_URL,USER,PASS);
+      stmt = conn.createStatement();
+      ResultSet rs;
+      rs = stmt.executeQuery("USE adventureworks;");
+
+      // initialize graph
+      database_meta();
+
+      // // print for checking
+      // for(String k: adj_list_by_column.keySet()){
+      //   System.out.println("******************* "+ k +" ******************");
+      //   for(int j=0;j<adj_list_by_column.get(k).size();j++){
+      //     System.out.println(adj_list_by_column.get(k).get(j));
+      //   }
+      // }
+
+
+    } catch(Exception e1){
+      JOptionPane.showMessageDialog(null,"error in MainMainInterface constructor, details in terminal");
+      throw new Exception(e1);
+    }
+
+  }// end constructor
+
+
+  // member functions that we won't use in MainMainInterface - either print functions or functions being moved to MainFrame
+
+  public void switchOnFirstWord() throws Exception{
+    try{
+      String command = this.query_string;
+      if(query_string.isEmpty()){
+        System.out.println("private member query string is empty");
+        System.exit(1);
       }
 
-    }// end constructor
+
+      Pattern spaceSplit = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
+      Matcher m = spaceSplit.matcher(command);
+      List<String> matches = new ArrayList<String>();
+
+      while (m.find()) {
+        if (m.group(1) != null) {
+          matches.add(m.group(1)); // content inside double quotes
+        } else if (m.group(2) != null) {
+          matches.add(m.group(2)); // content inside single quotes
+        } else {
+          matches.add(m.group()); // unquoted
+        }
+      }
+      String parsed_command[] = matches.toArray(new String[matches.size()]);
+
+      String query; // local string object to store query in switch cases
+      // String first = command.split(" ",2)[0];
+      // System.out.println("first: "+ first);
+      switch (parsed_command[0]) {
+
+        case "q":
+        case "q;":{
+          System.exit(0);
+          break;
+        }
 
 
-    // member functions that we won't use in MainMainInterface - either print functions or functions being moved to MainFrame
+        case "quit;":
+        case "quit":{
+          System.exit(0);
+          break;
+        }
+
+        case "jdb-show-related-tables":{
+          // SHOW KEYS FROM <table name> WHERE Key_name = 'PRIMARY'
+          if (parsed_command.length != 2) {
+            JOptionPane.showMessageDialog(null,"Incorrect amount of arguments. Re-enter");
+            break;
+          }
+          String parT = parsed_command[1].replace(";","").trim().toLowerCase();
+          System.out.println("**** A list of table that is connected to " + parT + "****");
+          System.out.println(Graphs.neighborListOf(this.table_matrix, parT));
+
+        }
+        break;
 
 
-    	// public static boolean validateCommand(String command) {
-    	// 	command = command.toUpperCase();
-    	// 	return !(command.contains("CREATE") || command.contains("DROP") ||
-    	// 			command.contains("ALTER") || command.contains("DELETE") ||
-    	// 			command.contains("INSERT")) || command.contains("CREATE VIEW")||
-      //       command.contains("UPDATE") ||
-      //       command.contains("REPLACE VIEW") || command.contains("DROP VIEW");
-    	// }
+        case "jdb-show-all-primary-keys":
+        {
+          // Show all primary keys from all tables. Print the list of (table_name, column_name).
+          if (parsed_command.length != 1) {
+            JOptionPane.showMessageDialog(null,"Incorrect amount of arguments.Re-enter");
+            break;
+          }
+          // System.out.println("Howdy");
+          // String sql="select TABLE_NAME, COLUMN_NAME from information_schema.columns where Key_name = 'PRIMARY'";
+          // String sql = "select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where CONSTRAINT_TYPE = 'PRIMARY KEY'";
+          String sql = "select TABLE_NAME,COLUMN_NAME FROM  INFORMATION_SCHEMA.COLUMNS where COLUMN_KEY='PRI' AND TABLE_SCHEMA = 'adventureworks'";
+          // System.out.println("debug:"+sql);
+          conn = DriverManager.getConnection(DB_URL,USER,PASS);
+          PreparedStatement statement = conn.prepareStatement(sql);
+          ResultSet rs2 = statement.executeQuery();
+          displayResultSet(rs2,'-',150);
+          // displayResultSet(resultSet,'-',150);
+          // CALL TableGUI here
+        }// end case
+        break;
 
 
-
-      public static void createTempAggregateSalesTables(Statement stmt) throws SQLException {
-    		stmt.executeUpdate("CREATE TEMPORARY TABLE IF NOT EXISTS subtotals "
-    						 + "SELECT salesorderheader.CustomerID, SUM(salesorderheader.SubTotal) AS TotalSpent "
-    						 + "FROM salesorderheader "
-    						 + "GROUP BY salesorderheader.CustomerID");
-    		stmt.executeUpdate("CREATE TEMPORARY TABLE IF NOT EXISTS customeraggregate "
-    						 + "SELECT salesorderheader.CustomerID,"
-    						 + "COUNT(DISTINCT(salesorderheader.SalesOrderID)) AS NumSales, "
-    						 + "COUNT(DISTINCT(salesorderdetail.ProductID)) AS NumProducts,"
-    						 + "SUM(salesorderdetail.OrderQty) AS TotalProducts "
-    						 + "FROM salesorderheader INNER JOIN salesorderdetail ON (salesorderheader.SalesOrderID=salesorderdetail.SalesOrderID) "
-    						 + "GROUP BY salesorderheader.CustomerID"); // a list of customer IDs and their aggregate sales info
-    		stmt.executeUpdate("CREATE TEMPORARY TABLE IF NOT EXISTS salesaggregate "
-    						 + "SELECT salesorderheader.SalesOrderID, "
-    						 + "COUNT(DISTINCT(salesorderdetail.ProductID)) AS NumDistinctProducts, "
-    						 + "SUM(salesorderdetail.OrderQty) AS TotalProductCount "
-    						 + "FROM salesorderheader INNER JOIN salesorderdetail ON (salesorderheader.SalesOrderID=salesorderdetail.SalesOrderID) "
-    						 + "GROUP BY salesorderheader.SalesOrderID");
-    	}
+        case "jdb-find-column":{
+          // Find all tables that have <column-name>
+          if (parsed_command.length != 2) {
+            JOptionPane.showMessageDialog(null,"Incorrect amount of arguments.Re-enter");
+            break;
+          }
+          String c_name = parsed_command[1];
+          query ="select TABLE_NAME from information_schema.columns where column_name like ?";
+          conn = DriverManager.getConnection(DB_URL,USER,PASS);
+          PreparedStatement prepstatement =conn.prepareStatement(query);
+          prepstatement.setString(1, c_name);
+          ResultSet rs2 = prepstatement.executeQuery();
+          displayResultSet(rs2 ,'-', 150);
+          System.out.println();
+          // resultSet2.close();
+          prepstatement.close();
 
 
+          // call TableGUI here
+        }// end case
+        break;
 
-      public static void database_meta(Connection conn, Statement stmt,Map<String,ArrayList<String>> adj_list_by_column, Map<String,ArrayList<String>> adj_list_by_table,Graph<String, ColumnEdge> table_matrix,ArrayList<String>table_name){
 
-        try{
-          ArrayList<ArrayList<String>> tbl_col = new ArrayList<ArrayList<String>>();
-          String tablename;
-          DatabaseMetaData metaData = conn.getMetaData();
-          String[] types = {"TABLE"};
-          ResultSet tables = metaData.getTables(null, null, "%", types);
-
-          // list of table name and add vertex to graph
-          while (tables.next()) {
-           tablename = tables.getString("TABLE_NAME");
-           table_name.add(tablename);
-           table_matrix.addVertex(tablename); // add table node to graph
-         }// end while
-
-          String query1 = "select table_name,column_name from information_schema.columns where table_schema = 'adventureworks' order by table_name,column_name";
-          stmt = conn.createStatement();
-          ResultSet rs1;
-          ResultSetMetaData rsmd1;
-          rs1 = stmt.executeQuery(query1);
-          rsmd1 = rs1.getMetaData();
-
-          while(rs1.next()){
-            ArrayList<String> temp1 = new ArrayList<String>();
-            for(int j=1;j <= rsmd1.getColumnCount();j++){
-              temp1.add(rs1.getString(j));
+        case "jdb-search-path":{
+          command = command.trim();
+          command = command.replace(";","");
+          String tbarr1[] = command.split(" ");
+          if(tbarr1.length!= 3 || !tbarr1[0].equals("jdb-search-path")){
+            JOptionPane.showMessageDialog(null,"Something wrong in syntax. try again");
+            break;
+          } else {
+            String tb11 = tbarr1[1].trim().toLowerCase();
+            String tb12 = tbarr1[2].trim().toLowerCase();
+            // if table not in graph
+            if(!table_name.contains(tb11) || !table_name.contains(tb12)){
+              JOptionPane.showMessageDialog(null,"one of the table not in schema, use table in schema");
+              break;
+            } else{
+              plot_shortest_path(table_matrix,tb11,tb12); /****** call PNG GUI *******/
             }
-            tbl_col.add(temp1);
-          }// end building 2d structure, while
+          }
+        }// end case
+        break;
 
-          // building adj list
-          for(int i=0;i<tbl_col.size();i++){
-            // ith item's 2nd column
-            String colstr = tbl_col.get(i).get(1);
-            String curr_tbl = tbl_col.get(i).get(0);
-            // not being added
-            if(adj_list_by_column.get(colstr)==null){
-              // ith item's 1st column, make a new array
-              ArrayList<String> temp2 = new ArrayList<String>();
-              temp2.add(curr_tbl);
-              adj_list_by_column.put(colstr,temp2);
-              temp2 = null;
-            } else {
-              ArrayList<String> temp2 = adj_list_by_column.get(colstr);
-              temp2.add(curr_tbl); // append
-              adj_list_by_column.replace(colstr,temp2); // update
+
+        case "jdb-search-and-join":{
+          command = command.trim();
+          System.out.println("Search and join");
+          command = command.replace(";","");
+          String tbarr[] = command.split(" ");
+          if(tbarr.length!= 3 || !tbarr[0].equals("jdb-search-and-join")){
+            System.out.println("Something wrong in syntax. try again");
+            break;
+          } else {
+            String tb1 = tbarr[1].trim().toLowerCase();
+            String tb2 = tbarr[2].trim().toLowerCase();
+            // if table not in graph
+            if(!table_name.contains(tb1) || !table_name.contains(tb2)){
+              System.out.println("one of the table not in schema, enter table in schema");
+              break;
+            } else{
+              print_join_table(conn,stmt,table_matrix,tb1,tb2,edgeName); // *************  call TABLEGUI !! ********/
             }
-          }// end building map
+          }
+        }
+        break;
 
 
-          // building map for table: adj_list_by_table
-          for(int i=0;i<tbl_col.size();i++){
-            // ith item's 2nd column
-            String colstr = tbl_col.get(i).get(1);
-            String curr_tbl = tbl_col.get(i).get(0);
-
-            if(!colstr.endsWith("ID")){
-              // System.out.println("Does not contain");
-              continue;
+        case "jdb-get-view":{
+          command = command.trim();
+          String query11 = "";
+          if(command.contains("(") && command.contains(")")){
+            int indl = command.indexOf("(");
+            int indr = command.indexOf(")");
+            if(indl == indr -1){
+              JOptionPane.showMessageDialog(null,"gdb-get-view, empty, re-enter please");
+              break;
             }
+            query11 = command.substring(indl+1,indr);
+          }
+          // make all view name keys lowercase
+          String viewName1 = command.split(" ")[1].toLowerCase();
+          get_view_for_user(conn,stmt,viewName1,query11,view_def_map); // call table GUI in function
+        }
+        break;
 
-            // not being added
-            if(adj_list_by_table.get(curr_tbl)==null){
-              // ith item's 1st column, make a new array
-              ArrayList<String> temp2 = new ArrayList<String>();
-              temp2.add(colstr);
-              adj_list_by_table.put(curr_tbl,temp2);
-              temp2 = null;
-            } else {
-              ArrayList<String> temp2 = adj_list_by_table.get(curr_tbl);
-              temp2.add(colstr); // append
-              adj_list_by_table.replace(curr_tbl,temp2); // update
-              temp2 = null;
+
+        case "jdb-show-best-salesperson": {
+          int num = Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;
+          jdbShowBestSalesperson(num, conn);
+          break;
+        }
+
+
+        case "jdb-show-reason-count": {
+          jdbShowReasonCount(conn);
+          break;
+        }
+
+
+        case "jdb-show-sales-monthly": {
+          int year =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;
+          jdbShowSalesMonthly(year, conn);
+          break;
+        }
+
+
+        case "jdb-stat": {
+          if (parsed_command.length != 3) {
+            JOptionPane.showMessageDialog(null,"Incorrect amount of arguments");
+            break;
+          }
+          // get index of the column chosen in command
+          ResultSet rs = stmt.executeQuery("SELECT column_name FROM information_schema.columns where table_name='" + parsed_command[1] + "'");
+          int index_of_column = 0;
+          boolean name_found = false;
+          while (rs.next()) {
+            String colName = rs.getString(1);
+            if (colName.equalsIgnoreCase(parsed_command[2])) {
+              name_found = true;
+              break;
             }
-          } // end building map
+            index_of_column++;
+          }
+          if (!name_found) {
+            JOptionPane.showMessageDialog(null,"Table or Column name not found.");
+            break;
+          }
 
+          // make sure data type is numeric
+          rs = stmt.executeQuery("SELECT data_type FROM information_schema.columns where table_name='" + parsed_command[1] + "'");
+          rs.next();
+          for (int i = 0; i < index_of_column; i++) {
+            rs.next();
+          }
+          String datatype = rs.getString(1);
+          if (!(datatype.contains("int") || datatype.contains("dec") || datatype.contains("num") || datatype.contains("float") || datatype.contains("double"))) {
+            JOptionPane.showMessageDialog(null,"Column must contain a numeric data type.");
+            break;
+          }
 
-          for(String k: adj_list_by_column.keySet()){
-            // currently , id only
-            if(!k.contains("ID")){
-              continue;
+          // now that query is valid, generate a list of the values in that column
+          rs = stmt.executeQuery("SELECT " + parsed_command[2] + " FROM " + parsed_command[1]);
+          List<Double> list = new ArrayList<Double>();
+          while (rs.next()) {
+            list.add(rs.getDouble(1));
+          }
+
+          // going through list and getting stats
+          double min = list.get(0);
+          double max = list.get(0);
+          double sum = 0;
+          double median = 0;
+          if (list.size()%2 == 0)
+          median = (list.get(list.size()/2) + list.get(list.size()/2 - 1))/2;
+          else
+          median = list.get(list.size()/2);
+
+          for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) < min)
+            min = list.get(i);
+            if (list.get(i) > max)
+            max = list.get(i);
+            sum += list.get(i);
+          }
+          double avg = sum/list.size();
+
+          System.out.format("Min value: %.2f\n", min);
+          System.out.format("Max value: %.2f\n", max);
+          System.out.format("Average: %.2f\n", avg);
+          System.out.format("Median: %.2f\n", median);
+
+          // plotting histogram
+          // first get number of bins and bin width
+          int num_bins = (int)Math.ceil(Math.sqrt(list.size()));
+          double bin_width = (max - min)/num_bins;
+          int[] bins = new int[num_bins];
+
+          // populating each bin and scaling them properly
+          int max_count = 0;
+          for (int index = 0; index < list.size(); index++) { // populating each bin with quantity in that bin
+            int i = (int)(Math.floor((list.get(index) - min)/bin_width));
+            i = Math.min(i, bins.length - 1);
+            bins[i]++;
+            if (bins[i] > max_count)
+            max_count = bins[i];
+          }
+          int y_scale = 1;
+          while (max_count/y_scale > 50) // get scale for y axis
+          y_scale *= 10;
+          for (int i = 0; i < bins.length; i++) { // divide each quantity in bins by y_scale
+            bins[i] = (int)Math.round(bins[i]/(double)y_scale);
+          }
+
+          // displaying bins
+          // printing y-axis
+          int offset = String.format("%.2f", max).length() * 2 + 3; // how long the header for each bin should be when displaying
+          System.out.println();
+          System.out.format("%-" + (offset + 1) + "s", "");
+          int max_count_scaled = max_count/y_scale;
+          for (int count = 0; count <= max_count_scaled; count++) // printing y-axis labels
+          System.out.print(count + "___");
+          System.out.format("(Each star and each y-axis label represents %d counts)\n", y_scale);
+
+          // printing each bin
+          for (int i = 0; i < bins.length; i++) {
+            String range = String.format("%.2f - %.2f", min + i*bin_width, min + (i+1)*bin_width);
+            System.out.format("%-" + offset + "s |", range);
+            for (int j = 0; j < bins[i]; j++) {
+              System.out.print("*");
             }
-            ArrayList<String> temp3 = adj_list_by_column.get(k);
-            for(int j =0;j< temp3.size();j++){
-              for(int q=0;q<temp3.size();q++){
-                if(q != j){
-                  table_matrix.addEdge(temp3.get(j),temp3.get(q),new ColumnEdge(k));
-                  table_matrix.setEdgeWeight(table_matrix.getEdge(temp3.get(j),temp3.get(q)), ind); // nullptrException if create new edge and pass it down
-                  edgeName.add(k);
-                  ind += 1.0;
-                }
+            System.out.println();
+          }
+          break;
+        }// end jdb-get-stat
+
+
+
+
+        case "jdb-customer-info": // displays individual customers line by line that match "conditions", can group by column name, e.g. how many customers in this state
+        {
+          createTempAggregateSalesTables(stmt);
+          query = "SELECT ";
+          boolean counting = (parsed_command.length == 3 && parsed_command[1].equalsIgnoreCase("groupby"))
+          || parsed_command.length == 4 && (parsed_command[2].equalsIgnoreCase("groupby"));
+
+          if (counting) {
+            query += parsed_command[parsed_command.length - 1] + ",Count(DISTINCT(customer.CustomerID)) ";
+          } else {
+            query += "AccountNumber AS 'Account Number', CustomerType AS 'Customer Type', "
+            + "customeraggregate.NumSales AS 'Total Number of Orders', customeraggregate.NumProducts AS 'Number of distinct products', "
+            + "customeraggregate.TotalProducts AS 'Total number of products', subtotals.TotalSpent AS 'Total amount spent', "
+            + "AddressLine1 AS 'Address Line 1', AddressLine2 AS 'Address Line 2', City, stateprovince.Name AS State, countryregion.Name AS Country, PostalCode AS 'Postal Code' ";
+          }
+          // Getting location info from customers
+          query += "FROM customeraggregate "
+          + "INNER JOIN subtotals ON (customeraggregate.CustomerID=subtotals.CustomerID) "
+          + "INNER JOIN customer ON (customeraggregate.CustomerID=customer.customerID) "
+          + "INNER JOIN customeraddress ON (customer.CustomerID=customeraddress.CustomerID) "
+          + "INNER JOIN address ON (customeraddress.AddressID=address.AddressID) "
+          + "INNER JOIN stateprovince ON (address.StateProvinceID=stateprovince.StateProvinceID) "
+          + "INNER JOIN countryregion ON (stateprovince.CountryRegionCode=countryregion.CountryRegionCode) ";
+
+          if (parsed_command.length > 1 && !parsed_command[1].equalsIgnoreCase("groupby")) {
+            query += "WHERE " + parsed_command[1] + " ";
+          }
+          if (counting) {
+            query += "GROUP BY " + parsed_command[parsed_command.length - 1] + " ";
+          }
+          ResultSet rs = stmt.executeQuery(query);
+          // Call TableGUI here
+        }
+        break;
+
+
+
+        case "jdb-customer-orders": //jdb-customer-orders <condition> <aggregate-by-sales|aggregate>
+        {
+          query = "";
+          String where_expr = "";
+          String group_expr = "";
+          String from_expr = "";
+          if (parsed_command.length > 1 && !parsed_command[1].toLowerCase().contains("aggregate")) {
+            where_expr = "WHERE " + parsed_command[1] + " ";
+          }
+          if ((parsed_command.length == 2 && parsed_command[1].equalsIgnoreCase("aggregate")) ||
+          (parsed_command.length == 3 && parsed_command[2].equalsIgnoreCase("aggregate"))) {
+            createTempAggregateSalesTables(stmt); // tables with aggregate sales data for a customer
+            query = "SELECT customer.AccountNumber AS 'Account Number', "
+            + "customer.CustomerType AS 'Customer Type', "
+            + "customeraggregate.NumSales AS 'Total number of sales',"
+            + "customeraggregate.NumProducts AS 'Distinct number of items bought',"
+            + "customeraggregate.TotalProducts AS 'Total number of items bought',"
+            + "subtotals.TotalSpent AS 'Total amount spent' ";
+            from_expr = "FROM customer "
+            + "INNER JOIN subtotals ON (customer.CustomerID=subtotals.CustomerID) "
+            + "INNER JOIN customeraggregate ON (customer.CustomerID=customeraggregate.CustomerID) ";
+          }
+          else if ((parsed_command.length == 2 && parsed_command[1].equalsIgnoreCase("aggregate-by-sales")) ||
+          (parsed_command.length == 3 && parsed_command[2].equalsIgnoreCase("aggregate-by-sales"))) {
+            createTempAggregateSalesTables(stmt); // tables with aggregate sales data for a customer
+            query = "SELECT customer.AccountNumber AS 'Account Number', "
+            + "customer.CustomerType AS 'Customer Type', "
+            + "salesorderheader.SalesOrderID AS 'Sales Order ID', "
+            + "salesaggregate.NumDistinctProducts AS 'Distinct number of items bought', "
+            + "salesaggregate.TotalProductCount AS 'Total number of items bought', "
+            + "salesorderheader.SubTotal AS 'Total amount spent' ";
+            from_expr = "FROM customer INNER JOIN salesorderheader ON (customer.CustomerID=salesorderheader.CustomerID) "
+            + "INNER JOIN salesaggregate ON (salesorderheader.SalesOrderID=salesaggregate.SalesOrderID) ";
+          }
+          else {
+            query = "SELECT customer.AccountNumber AS 'Account Number', "
+            + "customer.CustomerType AS 'CustomerType', "
+            + "salesorderheader.SalesOrderID AS 'Sales Order ID', "
+            + "product.Name AS 'Product Name', "
+            + "product.ListPrice AS 'List Price', "
+            + "salesorderdetail.OrderQty AS 'Amount ordered' ";
+            from_expr = "FROM customer INNER JOIN salesorderheader ON (customer.CustomerID=salesorderheader.CustomerID) "
+            + "INNER JOIN salesorderdetail ON (salesorderheader.SalesOrderID=salesorderdetail.SalesOrderID) "
+            + "INNER JOIN product ON (salesorderdetail.ProductID=product.ProductID) ";
+          }
+          query += from_expr + where_expr + group_expr + "";
+          ResultSet rs = stmt.executeQuery(query);
+          // printResults(rs);
+          // Call TableGUI here
+        }// end case
+        break;
+
+        case "CREATE":{
+          // create view satement
+          if(command.contains("CREATE VIEW") && command.contains("AS")){
+            String cv1[] = command.split(" AS ");
+            String viewName = cv1[0].replace("CREATE VIEW","").trim().toLowerCase();
+            String qy = cv1[1].replace("(","").replace(")","").replace(";","").trim();
+
+            if(qy.equals("")){
+              JOptionPane.showMessageDialog(null,"empty view def, try again");
+              break;
+            }
+            if(view_def_map.containsKey(viewName)){
+              JOptionPane.showMessageDialog(null,"THE view "+viewName+" has already existed. use replace view command");
+              break;
+            }
+            // call create view function
+            else {
+              create_or_update_view(viewName,qy,0);
+              for(String ttt: view_def_map.keySet()){
+                System.out.println(ttt + "-> " + view_def_map.get(ttt));
               }
             }
-          }// end for loop
-        } catch(Exception e){
-          System.out.println(e);
-          e.printStackTrace();
-        }
-      }// end database meta
+          }
+          // missing as keyword
+          else if (command.contains("CREATE VIEW") && (!command.contains("AS"))){
+            JOptionPane.showMessageDialog(null,"something wrong, missing AS keyword");
+          }
+          // other create mysql statement
+          else {}
+          }// end case
+          break;
 
-      // generate a graph of shortest path
-      public static void plot_shortest_path(Graph<String, ColumnEdge> table_matrix,String tb1, String tb2){
-        System.out.println("Shortest path from tb1 to tb2:");
-        DijkstraShortestPath<String, ColumnEdge> dijkstraAlg =
-            new DijkstraShortestPath<>(table_matrix);
-        SingleSourcePaths<String, ColumnEdge> iPaths = dijkstraAlg.getPaths(tb1);
+          case "REPLACE":{
+            if(command.contains("REPLACE VIEW") && command.contains("AS")){
+              String cv1[] = command.split(" AS ");
+              String viewName = cv1[0].replace("REPLACE VIEW","").trim().toLowerCase();
+              String qy = cv1[1].replace("(","").replace(")","").replace(";","").trim();
+              if(qy.equals("")){
+                JOptionPane.showMessageDialog(null,"empty view def, try again");
+                break;
+              }
+              // call create_update view
+              if(view_def_map.containsKey(viewName)){
+                create_or_update_view(viewName,qy,1); // add forloop below to debug
+              }
+              else{
+                JOptionPane.showMessageDialog(null,"the view is not created yet, cannot replace.");
+              }
+            }// end if
+            else {
+              JOptionPane.showMessageDialog(null,"Something wrong, try again"); // error
+            }
+          }// end case
+          break;
 
-        System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
-        System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+
+          case "DROP":{
+            if (command.contains("DROP VIEW")) {
+              String viewName = command.replace("DROP VIEW","").replace(";","").trim().toLowerCase();
+              // remove from map
+              if(view_def_map.containsKey(viewName)){
+                view_def_map.remove(viewName);
+                JOptionPane.showMessageDialog(null,viewName + " removed"); // add forlooop below to debug check view
+              }
+              else{
+                JOptionPane.showMessageDialog(null,"the view is not created yet, cannot drop.");
+              }
+            }
+            break;
+          }// end case
+
+
+          case "jdb-plot-schema":{
+            graphPNG(table_matrix);
+            PNGGUI png1 = new PNGGUI("DB.png");
+            break;
+          }
+
+          // basic sql commands
+          default:{
+            ResultSet rs = stmt.executeQuery(command);
+            printResults(rs);
+          }
+          break;
+        }// end switch
+
+      }//end try
+      catch(Exception e10){
+        throw new Exception(e10);
       }
+    }// end function
+
+
+    public void setQueryString(String query1){
+      this.query_string = query1;
+    }
+
+    public void createTempAggregateSalesTables(Statement stmt) throws SQLException {
+      stmt.executeUpdate("CREATE TEMPORARY TABLE IF NOT EXISTS subtotals "
+      + "SELECT salesorderheader.CustomerID, SUM(salesorderheader.SubTotal) AS TotalSpent "
+      + "FROM salesorderheader "
+      + "GROUP BY salesorderheader.CustomerID");
+      stmt.executeUpdate("CREATE TEMPORARY TABLE IF NOT EXISTS customeraggregate "
+      + "SELECT salesorderheader.CustomerID,"
+      + "COUNT(DISTINCT(salesorderheader.SalesOrderID)) AS NumSales, "
+      + "COUNT(DISTINCT(salesorderdetail.ProductID)) AS NumProducts,"
+      + "SUM(salesorderdetail.OrderQty) AS TotalProducts "
+      + "FROM salesorderheader INNER JOIN salesorderdetail ON (salesorderheader.SalesOrderID=salesorderdetail.SalesOrderID) "
+      + "GROUP BY salesorderheader.CustomerID"); // a list of customer IDs and their aggregate sales info
+      stmt.executeUpdate("CREATE TEMPORARY TABLE IF NOT EXISTS salesaggregate "
+      + "SELECT salesorderheader.SalesOrderID, "
+      + "COUNT(DISTINCT(salesorderdetail.ProductID)) AS NumDistinctProducts, "
+      + "SUM(salesorderdetail.OrderQty) AS TotalProductCount "
+      + "FROM salesorderheader INNER JOIN salesorderdetail ON (salesorderheader.SalesOrderID=salesorderdetail.SalesOrderID) "
+      + "GROUP BY salesorderheader.SalesOrderID");
+    }// end function
+
+
+    // debugging purpose
+  	public static void printResults(ResultSet rs) throws SQLException {
+  		ResultSetMetaData rsmd = rs.getMetaData();
+  		int cols = rsmd.getColumnCount();
+  		// Printing column names
+  		for (int i = 1; i <= cols; i++) {
+  			if (i > 1)
+  				System.out.print(", ");
+  			System.out.print(rsmd.getColumnLabel(i));
+  		}
+  		System.out.println("");
+  		// Printing query contents
+  		while (rs.next()) {
+  			for (int i = 1; i <= cols; i++) {
+  				if (i > 1)
+  					System.out.print(", ");
+  				String colVal = rs.getString(i);
+  				if (colVal != null && colVal.contains(","))
+  					System.out.print('"' + colVal + '"');
+  				else
+  					System.out.print(colVal);
+  			}
+  			System.out.println("");
+  		}
+  	}// end function
+
+    public void database_meta(){
+
+      try{
+        ArrayList<ArrayList<String>> tbl_col = new ArrayList<ArrayList<String>>();
+        String tablename;
+        DatabaseMetaData metaData = this.conn.getMetaData();
+        String[] types = {"TABLE"};
+        ResultSet tables = metaData.getTables(null, null, "%", types);
+
+        // list of table name and add vertex to graph
+        while (tables.next()) {
+          tablename = tables.getString("TABLE_NAME");
+          this.table_name.add(tablename);
+          this.table_matrix.addVertex(tablename); // add table node to graph
+        }// end while
+
+        String query1 = "select table_name,column_name from information_schema.columns where table_schema = 'adventureworks' order by table_name,column_name";
+        this.stmt = this.conn.createStatement();
+        ResultSet rs1;
+        ResultSetMetaData rsmd1;
+        rs1 = this.stmt.executeQuery(query1);
+        rsmd1 = rs1.getMetaData();
+
+        while(rs1.next()){
+          ArrayList<String> temp1 = new ArrayList<String>();
+          for(int j=1;j <= rsmd1.getColumnCount();j++){
+            temp1.add(rs1.getString(j));
+          }
+          tbl_col.add(temp1);
+        }// end building 2d structure, while
+
+        // building adj list
+        for(int i=0;i<tbl_col.size();i++){
+          // ith item's 2nd column
+          String colstr = tbl_col.get(i).get(1);
+          String curr_tbl = tbl_col.get(i).get(0);
+          // not being added
+          if(this.adj_list_by_column.get(colstr)==null){
+            // ith item's 1st column, make a new array
+            ArrayList<String> temp2 = new ArrayList<String>();
+            temp2.add(curr_tbl);
+            this.adj_list_by_column.put(colstr,temp2);
+            temp2 = null;
+          } else {
+            ArrayList<String> temp2 = this.adj_list_by_column.get(colstr);
+            temp2.add(curr_tbl); // append
+            this.adj_list_by_column.replace(colstr,temp2); // update
+          }
+        }// end building map
+
+        // building map for table: adj_list_by_table
+        for(int i=0;i<tbl_col.size();i++){
+          // ith item's 2nd column
+          String colstr = tbl_col.get(i).get(1);
+          String curr_tbl = tbl_col.get(i).get(0);
+
+          if(!colstr.endsWith("ID")){
+            continue;
+          }
+
+          if(this.adj_list_by_table.get(curr_tbl)==null){ // not being added
+            ArrayList<String> temp2 = new ArrayList<String>(); // ith item's 1st column, make a new array
+            temp2.add(colstr);
+            this.adj_list_by_table.put(curr_tbl,temp2);
+            temp2 = null;
+          } else {
+            ArrayList<String> temp2 = this.adj_list_by_table.get(curr_tbl);
+            temp2.add(colstr); // append
+            this.adj_list_by_table.replace(curr_tbl,temp2); // update
+            temp2 = null;
+          }
+        } // end building map
+
+        for(String k: this.adj_list_by_column.keySet()){
+          // currently , id only
+          if(!k.contains("ID")){ continue; }
+          ArrayList<String> temp3 = this.adj_list_by_column.get(k);
+          for(int j =0;j< temp3.size();j++){
+            for(int q=0;q<temp3.size();q++){
+              if(q != j){
+                this.table_matrix.addEdge(temp3.get(j),temp3.get(q),new ColumnEdge(k));
+                this.table_matrix.setEdgeWeight(this.table_matrix.getEdge(temp3.get(j),temp3.get(q)), this.ind); // nullptrException if create new edge and pass it down
+                this.edgeName.add(k);
+                this.ind += 1.0;
+              }
+            }
+          }
+        }// end for loop
+      } catch(Exception e){
+        System.out.println(e);
+        e.printStackTrace();
+      }
+    }// end database meta
+
+    // generate a graph of shortest path
+    public void plot_shortest_path(Graph<String, ColumnEdge> table_matrix,String tb1, String tb2){
+      System.out.println("Shortest path from tb1 to tb2:");
+      DijkstraShortestPath<String, ColumnEdge> dijkstraAlg =
+      new DijkstraShortestPath<>(table_matrix);
+      SingleSourcePaths<String, ColumnEdge> iPaths = dijkstraAlg.getPaths(tb1);
+
+      System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
+      System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+    }
 
 
 
-      public static void print_join_table(Connection conn, Statement stmt,Graph<String, ColumnEdge> table_matrix,String tb1, String tb2, ArrayList<String>edgeName){
-        try{
+    public void print_join_table(Connection conn, Statement stmt,Graph<String, ColumnEdge> table_matrix,String tb1, String tb2, ArrayList<String>edgeName){
+      try{
         System.out.println("Shortest path from tb1 to tb2:");
         DijkstraShortestPath<String, ColumnEdge> dijkstraAlg =
-            new DijkstraShortestPath<>(table_matrix);
+        new DijkstraShortestPath<>(table_matrix);
         SingleSourcePaths<String, ColumnEdge> iPaths = dijkstraAlg.getPaths(tb1);
 
         System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
         System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
         List<String> tablelist = iPaths.getPath(tb2).getVertexList();
-
 
         // retrieve on what columns into arraylist
         ArrayList<String> onclauseEdge = new ArrayList<String>();
@@ -301,196 +794,196 @@ public class MainMainInterface{
         System.out.println("Something wrong in join table.");
         e.printStackTrace();
       }// end catch
-      }// print join table
+    }// print join table
 
 
 
 
-      public static void get_view_for_user(Connection conn, Statement stmt,String view_name,String view_def,Map<String,String> view_def_map){
-        try{
-          view_name = view_name.trim();
-          String qry = "";
-          // if esist in map
-          if(view_def_map.containsKey(view_name) && view_def.equals("")){
-            System.out.println("view exist");
-            qry = view_def_map.get(view_name);
-          }
-          // if does not exist in map, a new qry comes in
-          else if(!view_def_map.containsKey(view_name)) {
-            System.out.println("view created");
-            qry = view_def;
-            create_or_update_view(view_name,view_def,0);
-          }
-          // if exist and also new query, update
-          else if(view_def_map.containsKey(view_name) && (!view_def.equals(""))) {
-            System.out.println("view update");
-            qry = view_def;
-            create_or_update_view(view_name,view_def,1);
-          }
-          else {
-            System.out.println("something wrong");
-            return;
-          }
-          stmt = conn.createStatement();
-          ResultSet rs;
-          ResultSetMetaData rsmd;
-          rs = stmt.executeQuery(qry);
-          rsmd = rs.getMetaData();
-
-          while(rs.next()){
-            for(int j=1;j <= rsmd.getColumnCount();j++){
-              String type = rsmd.getColumnTypeName(j);
-              if(type.toLowerCase().contains("binary")){
-                System.out.println(rsmd.getColumnName(j)+": "+"some binary, print out make a noise");
-              }else {
-                System.out.println(rsmd.getColumnName(j)+": "+rs.getString(j));
-              }
-            }
-            System.out.println("*******************************************************");
-          }// end while
-
-        }catch(Exception e){
-          System.out.println("get-view-for-user");
-          e.printStackTrace();
+    public void get_view_for_user(Connection conn, Statement stmt,String view_name,String view_def,Map<String,String> view_def_map){
+      try{
+        view_name = view_name.trim();
+        String qry = "";
+        // if esist in map
+        if(view_def_map.containsKey(view_name) && view_def.equals("")){
+          System.out.println("view exist");
+          qry = view_def_map.get(view_name);
         }
-      }// end function
-
-      public static void create_or_update_view(String view_name,String view_def,int choice){
-        try{
-          if(choice == 0){
-            view_def_map.put(view_name,view_def);
-            System.out.println("create locally");
-          } else {
-            view_def_map.replace(view_name,view_def);
-            System.out.println("update locally");
-          }
-          System.out.println("create/update view successfully");
-        }catch(Exception e){
-          System.out.println("in create_update_view");
-          e.printStackTrace();
+        // if does not exist in map, a new qry comes in
+        else if(!view_def_map.containsKey(view_name)) {
+          System.out.println("view created");
+          qry = view_def;
+          create_or_update_view(view_name,view_def,0);
         }
-      }// end function
+        // if exist and also new query, update
+        else if(view_def_map.containsKey(view_name) && (!view_def.equals(""))) {
+          System.out.println("view update");
+          qry = view_def;
+          create_or_update_view(view_name,view_def,1);
+        }
+        else {
+          System.out.println("something wrong");
+          return;
+        }
+        stmt = conn.createStatement();
+        ResultSet rs;
+        ResultSetMetaData rsmd;
+        rs = stmt.executeQuery(qry);
+        rsmd = rs.getMetaData();
 
-
-
-      public static void graphPNG(Graph<String, ColumnEdge> table_matrix){
-        JGraphXAdapter<String, ColumnEdge> graphAdapter = new JGraphXAdapter<>(table_matrix);
-            mxIGraphLayout layout = new mxHierarchicalLayout(graphAdapter);
-            layout.execute(graphAdapter.getDefaultParent());
-            BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
-            File imgFile = new File("DB.png");
-            try{
-                ImageIO.write(image, "PNG", imgFile);
-                System.out.println("Image created successfully!");
-                Desktop.getDesktop().open(imgFile);
-            } catch (IOException e){
-              System.out.println("Something Wrong in graphPNG function*********");
-              e.printStackTrace();
+        while(rs.next()){
+          for(int j=1;j <= rsmd.getColumnCount();j++){
+            String type = rsmd.getColumnTypeName(j);
+            if(type.toLowerCase().contains("binary")){
+              System.out.println(rsmd.getColumnName(j)+": "+"some binary, print out make a noise");
+            }else {
+              System.out.println(rsmd.getColumnName(j)+": "+rs.getString(j));
             }
-      }// end function
+          }
+          System.out.println("*******************************************************");
+        }// end while
 
+      }catch(Exception e){
+        System.out.println("get-view-for-user");
+        e.printStackTrace();
+      }
+    }// end function
 
-      	public static void jdbFindColumn (String columnName, Connection conn) throws SQLException {
-
-      		String sql="select TABLE_NAME from information_schema.columns where column_name like ?";
-      		PreparedStatement statement =conn.prepareStatement(sql);
-      		statement.setString(1, columnName );
-      		ResultSet resultSet=statement.executeQuery();
-      		displayResultSet(resultSet,'-',150);
-      		System.out.println();
-      		resultSet.close();
-      		statement.close();
-      	}// end function
-
-      	private static void displayResultSet(ResultSet resultSet, char symbol, int width) throws SQLException
-      	{
-      	    ResultSetMetaData rsmd = resultSet.getMetaData();
-      	    int columnsNumber = rsmd.getColumnCount();
-      	    for(int i = 1; i <= columnsNumber; i++)
-      	    {
-      	    	System.out.printf("| %-20.20s",rsmd.getColumnLabel(i));
-      	    }
-      	    System.out.println();
-      	    for(int i = 0; i < width; ++i)
-      	        System.out.printf("%c", symbol);
-      	    System.out.println();
-      	    while (resultSet.next()){
-      			for (int i = 1; i <= columnsNumber; i++) {
-      				System.out.printf("| %-20.20s",resultSet.getString(i));
-      			}
-      			System.out.println();// Move to the next line to print the next row.
-      		}
-      	}// end function
-
-
-      	public static void jdbShowBestSalesperson(int num, Connection conn) throws SQLException {
-      		String sql="SELECT c.FirstName, c.LastName, bestEmployeeYTD.bestYTD " +
-      				"from (select SalesPersonID, SalesYTD as bestYTD from salesperson order by SalesYTD desc limit ?) " +
-      				"as bestEmployeeYTD inner join " +
-      				"employee e on bestEmployeeYTD.SalesPersonID = e.EmployeeID inner join " +
-      				"contact c on e.ContactID = c.ContactID;" ;
-
-      				PreparedStatement statement =conn.prepareStatement(sql);
-      				statement.setInt(1, num);
-
-      				ResultSet resultSet=statement.executeQuery();
-      				displayResultSet(resultSet,'-',150);
-      				System.out.println();
-      				resultSet.close();
-      				statement.close();
-      	}// end function
+    public void create_or_update_view(String view_name,String view_def,int choice){
+      try{
+        if(choice == 0){
+          view_def_map.put(view_name,view_def);
+          System.out.println("create locally");
+        } else {
+          view_def_map.replace(view_name,view_def);
+          System.out.println("update locally");
+        }
+        System.out.println("create/update view successfully");
+      }catch(Exception e){
+        System.out.println("in create_update_view");
+        e.printStackTrace();
+      }
+    }// end function
 
 
 
-
-        	public static void jdbShowReasonCount (Connection conn) throws SQLException {
-
-        		String sql="select sr.Name as reason, count(*) as orderCount  from " +
-        				"salesorderheader sh inner join\r\n" +
-        				"salesorderheadersalesreason shr using(SalesOrderID) inner join " +
-        				"salesreason sr using(SalesReasonID) " +
-        				"group by sr.Name " +
-        				"order by count(*) desc;";
-        		Statement statement =conn.createStatement();
-        		ResultSet resultSet=statement.executeQuery(sql);
-        		displayResultSet(resultSet,'-',150);
-        		System.out.println();
-        		resultSet.close();
-        		statement.close();
-        	}// end function
-
-        	public static void jdbShowSalesMonthly(int year, Connection conn) throws SQLException {
-        		String sql="select  month(OrderDate) as month, sum(SubTotal) as sales  from " +
-        				"salesorderheader " +
-        				"where year(OrderDate)= ? " +
-        				"group by year(OrderDate) ,month(OrderDate) " +
-        				"order by month(OrderDate)";
-
-        				PreparedStatement statement =conn.prepareStatement(sql);
-        				statement.setInt(1, year);
-
-        				ResultSet resultSet=statement.executeQuery();
-        				displayResultSet(resultSet,'-',150);
-        				System.out.println();
-        				resultSet.close();
-        				statement.close();
-        	}// end function
+    public void graphPNG(Graph<String, ColumnEdge> table_matrix){
+      JGraphXAdapter<String, ColumnEdge> graphAdapter = new JGraphXAdapter<>(table_matrix);
+      mxIGraphLayout layout = new mxHierarchicalLayout(graphAdapter);
+      layout.execute(graphAdapter.getDefaultParent());
+      BufferedImage image = mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
+      File imgFile = new File("DB.png");
+      try{
+        ImageIO.write(image, "PNG", imgFile);
+        System.out.println("Image created successfully!");
+        Desktop.getDesktop().open(imgFile);
+      } catch (IOException e){
+        System.out.println("Something Wrong in graphPNG function*********");
+        e.printStackTrace();
+      }
+    }// end function
 
 
+    public void jdbFindColumn (String columnName, Connection conn) throws SQLException {
 
-        	private static String removeSemicolon(String str) {
-        		String result = str;
-        		if (str.charAt(str.length() - 1) == ';') {
-        			result = str.substring(0, str.length() - 1);
-        		}
-        		return result;
-        	}
+      String sql="select TABLE_NAME from information_schema.columns where column_name like ?";
+      PreparedStatement statement =conn.prepareStatement(sql);
+      statement.setString(1, columnName );
+      ResultSet resultSet=statement.executeQuery();
+      displayResultSet(resultSet,'-',150);
+      System.out.println();
+      resultSet.close();
+      statement.close();
+    }// end function
+
+    private void displayResultSet(ResultSet resultSet, char symbol, int width) throws SQLException
+    {
+      ResultSetMetaData rsmd = resultSet.getMetaData();
+      int columnsNumber = rsmd.getColumnCount();
+      for(int i = 1; i <= columnsNumber; i++)
+      {
+        System.out.printf("| %-20.20s",rsmd.getColumnLabel(i));
+      }
+      System.out.println();
+      for(int i = 0; i < width; ++i)
+      System.out.printf("%c", symbol);
+      System.out.println();
+      while (resultSet.next()){
+        for (int i = 1; i <= columnsNumber; i++) {
+          System.out.printf("| %-20.20s",resultSet.getString(i));
+        }
+        System.out.println();// Move to the next line to print the next row.
+      }
+    }// end function
+
+
+    public void jdbShowBestSalesperson(int num, Connection conn) throws SQLException {
+      String sql="SELECT c.FirstName, c.LastName, bestEmployeeYTD.bestYTD " +
+      "from (select SalesPersonID, SalesYTD as bestYTD from salesperson order by SalesYTD desc limit ?) " +
+      "as bestEmployeeYTD inner join " +
+      "employee e on bestEmployeeYTD.SalesPersonID = e.EmployeeID inner join " +
+      "contact c on e.ContactID = c.ContactID;" ;
+
+      PreparedStatement statement =conn.prepareStatement(sql);
+      statement.setInt(1, num);
+
+      ResultSet resultSet=statement.executeQuery();
+      displayResultSet(resultSet,'-',150);
+      System.out.println();
+      resultSet.close();
+      statement.close();
+    }// end function
 
 
 
 
+    public void jdbShowReasonCount (Connection conn) throws SQLException {
+
+      String sql="select sr.Name as reason, count(*) as orderCount  from " +
+      "salesorderheader sh inner join\r\n" +
+      "salesorderheadersalesreason shr using(SalesOrderID) inner join " +
+      "salesreason sr using(SalesReasonID) " +
+      "group by sr.Name " +
+      "order by count(*) desc;";
+      Statement statement =conn.createStatement();
+      ResultSet resultSet=statement.executeQuery(sql);
+      displayResultSet(resultSet,'-',150);
+      System.out.println();
+      resultSet.close();
+      statement.close();
+    }// end function
+
+    public void jdbShowSalesMonthly(int year, Connection conn) throws SQLException {
+      String sql="select  month(OrderDate) as month, sum(SubTotal) as sales  from " +
+      "salesorderheader " +
+      "where year(OrderDate)= ? " +
+      "group by year(OrderDate) ,month(OrderDate) " +
+      "order by month(OrderDate)";
+
+      PreparedStatement statement =conn.prepareStatement(sql);
+      statement.setInt(1, year);
+
+      ResultSet resultSet=statement.executeQuery();
+      displayResultSet(resultSet,'-',150);
+      System.out.println();
+      resultSet.close();
+      statement.close();
+    }// end function
+
+
+
+    private String removeSemicolon(String str) {
+      String result = str;
+      if (str.charAt(str.length() - 1) == ';') {
+        result = str.substring(0, str.length() - 1);
+      }
+      return result;
+    }
 
 
 
 
-}// end MainMainInterface class
+
+
+
+
+  }// end MainMainInterface class
