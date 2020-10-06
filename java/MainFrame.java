@@ -67,18 +67,80 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             String action = e.getActionCommand();
 
+            // case strings are temporary, buttons aren't added yet
             switch(action) {
                 case "Submit Query":
                     String text = getConsoleInput();
-                    System.out.println("Button pressed");
+                    promptInput("SubmitQuery", 2, args);
                     // send to main interface
-                    // get results
-                    // output to display, perhaps with another function
                     break;
                 case "Join Tables":
                     // prompts for extra input, such as specific tables
                     break;
+                case "show list of tables":
+                    String query = "show tables";
+                    // send
+                    break;
+                case "show one or more columns of a specific table":
+
+                    break;
+                case "jdb-show-related-tables":
+                    String[] args = {"tableName"};
+                    String query = promptInput("jdb-show-related-tables", 1, args);
+                    // Send to main interface
+                    break;
+                case "jdb-show-all-primary-keys":
+                    // No command args needed
+                    String query = "jdb-show-all-primary-keys;";
+                    // send to MainInterface
+                    break;
+                case "jdb-find-column":
+                    String[] args = {"columnName"};
+                    String query = promptInput("jdb-find-column", 1, args);
+                    // send to Main Interface
+                    break;
+                case "jdb-search-path":
+                    break;
+                case "jdb-search-and-join":
+                    break;
+                case "jdb-stat":
+                    break;
             }
+        }
+
+        // creates JInputDialog to gather parameters for MainMainInterface functions
+        // fields is how many parameters, and fieldStrings specifies parameter names
+        public String promptInput(String function, int fields, String[] fieldStrings) {
+            JPanel pane = new JPanel();
+            pane.setLayout(new GridLayout(2, fields, 2, 2));
+
+            JTextField[] textFields = new JTextField[fields];
+
+            // Initiliaze text fields and add to pane with label
+            for (int i = 0; i < fields; i++) {
+                textFields[i] = new JTextField();
+                pane.add(new JLabel("Enter " + fieldStrings[i] + ": "));
+                pane.add(textFields[i]);
+            }
+
+            String[] output = new String[fields];
+            String query = "";
+            boolean missingVar = false;
+            int option = JOptionPane.showConfirmDialog(window, pane, "Enter " + function + " parameters", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            if (option == JOptionPane.YES_OPTION) {
+                for (int i = 0; i < fields; i++) {
+                    output[i] = textFields[i].getText();
+                    if (output[i] == null) {
+                        // error catch
+                        missingVar = true;
+                    }
+                    query += output[i] + " ";
+                }
+            }
+
+            // we could go to mainframe from here, or do it in buttonlistener
+            System.out.println(query);
+            return function + " " + query + ";";
         }
     }
 
@@ -89,11 +151,7 @@ public class MainFrame extends JFrame {
 
     // Uncomment this and run this file alone to test
     public static void main (String[] args) {
-        JFrame testFrame = new JFrame();
-        testFrame.add(new MainFrame());
-        testFrame.setPreferredSize(new Dimension(700, 800));
-        testFrame.pack();
-        testFrame.setVisible(true);
+        MainFrame testFrame = new MainFrame();
     }
 }
 
