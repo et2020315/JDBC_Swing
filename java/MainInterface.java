@@ -1076,7 +1076,6 @@ public class MainInterface {
   }
 
   public static void graphPNG(Graph<String, ColumnEdge> table_matrix){
-
     JGraphXAdapter<String, ColumnEdge> graphAdapter = new JGraphXAdapter<>(table_matrix);
         mxIGraphLayout layout = new mxHierarchicalLayout(graphAdapter);
         layout.execute(graphAdapter.getDefaultParent());
@@ -1091,7 +1090,6 @@ public class MainInterface {
         {
             System.out.println(e.toString());
         }
-
   }
 
 	public static void jdbFindColumn (String columnName, Connection conn) throws SQLException {
