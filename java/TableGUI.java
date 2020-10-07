@@ -27,6 +27,7 @@ public class TableGUI extends JFrame{
 	private final int width_base = 800;
 	private final int height_base = 600;
 	private JTable jtable;
+	private JLabel jlabel;
 	private String [] cols;
 	private JScrollPane scroll;
 
@@ -66,14 +67,31 @@ public class TableGUI extends JFrame{
 			setVisible(true);
 
 
-		} catch(Exception e){
+		} catch (Exception e){
 			System.out.println("Something wrong in constructor");
 			e.printStackTrace();
 		}
 	}// end constructor
 	
 	public TableGUI(List<String> rows) {
-		
+		try {
+			this.setSize(width_base,height_base);
+			this.setTitle("Present output in GUI");
+			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			
+			String allText = "<html><pre>";
+			for (String row : rows) {
+				allText += row + "<br>";
+			}
+			allText += "</pre></html>";
+			
+			jlabel = new JLabel(allText);
+			add(new JScrollPane(jlabel));
+			setVisible(true);
+		} catch (Exception e) {
+			System.out.println("Something wrong in constructor");
+			e.printStackTrace();
+		}
 	}
 
 
