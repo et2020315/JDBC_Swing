@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /MainFrame$ButtonListener.class
 /MainMainInterface.class
 /Action.class
@@ -9,3 +10,12 @@
 /ex_SwingFirstExample.class
 /ex_SimpleGui.class
 /ex_Action.class
+=======
+/Test.class
+/MainInterface.class
+/MysqlDBAccess.class
+/TableEdge.class
+/TableGraph.class
+/TableNode.class
+/module-info.class
+>>>>>>> e2d3e740f0c09eab33c0350acf53ae03cbf6dbc7
