@@ -80,70 +80,96 @@ public class MainFrame extends JFrame {
             switch(action) {
                 case "Submit Query":
                     String text = getConsoleInput();
-                    mainInterface.setQueryString(text);
-                    mainInterface.switchOnFirstWord();
-                    // send to main interface
+                    sendToMainInterface(text);
                     break;
                 case "Join Tables":
-                    // prompts for extra input, such as specific tables
+                    String[] args = {"tables to join up to 4, split by space"};
+                    query = promptInput("join-tables", 1, args);
+                    sendToMainInterface(query);
                     break;
                 case "show list of tables":
                     query = "show tables";
-                    mainInterface.setQueryString(query);
-                    mainInterface.switchOnFirstWord();
+                    sendToMainInterface(query);
                     break;
                 case "show one or more columns of a specific table": {
-                    String[] args = {"tableName", "colName"};
-                    query = "show-specific-columns " + promptInput("Enter ALL for all columns, or list (e.g 1:3 for 1 and 3)", 2,  new String["tableName", "colName"]);
-                    mainInterface.setQueryString(query);
-                    mainInterface.switchOnFirstWord();
+                    String[] args = {"tableName", "colName, ALL or (e.g 1:3 for 1 and 3"};
+                    query = promptInput("show-specific-columns", 2,  args);
+                    sendToMainInterface(query);
                 } break;
                 case "jdb-show-related-tables": {
                     String[] args = {"tableName"};
                     query = promptInput("jdb-show-related-tables", 1,  args);
-                    mainInterface.setQueryString(query);
-                    mainInterface.switchOnFirstWord();
-                    // Send to main interface
+                    sendToMainInterface(query);
                     break;
                 }
                 case "jdb-show-all-primary-keys":
                     // No command String[] args needed
                     query = "jdb-show-all-primary-keys;";
-                    mainInterface.setQueryString(query);
-                    mainInterface.switchOnFirstWord();
+                    sendToMainInterface(query);
                     break;
                 case "jdb-find-column": {
                     String[] args = {"columnName"};
                     query = promptInput("jdb-find-column", 1, args);
-                    mainInterface.setQueryString(query);
-                    mainInterface.switchOnFirstWord();
+                    sendToMainInterface(query);
                     break;
                 }
                 case "jdb-search-path": {
                     String[] args = {"tableName1", "tableName2"};
                     query = promptInput("jdb-search-path", 2, args);
-                    mainInterface.setQueryString(query);
-                    mainInterface.switchOnFirstWord();
+                    sendToMainInterface(query);
                     break;
                 }
                 case "jdb-search-and-join": {
                     String[] args = {"numToShow"};
                     query = promptInput("jdb-show-best-salesperson", 1, args);
-                    mainInterface.setQueryString(query);
-                    mainInterface.switchOnFirstWord();
+                    sendToMainInterface(query);
                     break;
                 }
-                case "jdb-stat":
+                case "jdb-stat": {
+                    String[] args = {"table or view", "columnName"};
+                    query = promptInput("jdb-stat", 2, args);
+                    sendToMainInterface(query);
                     break;
+                }
                 case "jdb-show-sales-monthly": {
                     String[] args = {"year"};
                     query = promptInput("jdb-show-sales-monthly", 1, args);
-                    mainInterface.setQueryString(query);
-                    mainInterface.switchOnFirstWord();
+                    sendToMainInterface(query);
                     break;
                 }
-                case "jdb-customer-orders":
+                case "jdb-customer-orders": {
+                    String[] args = {"aggregate or aggregate-by-sales", "aggregate or aggregate-by-sales"};
+                    query = promptInput("jdb-customer-orders", 2, args);
+                    sendToMainInterface(query);
                     break;
+                }
+                case "jdb-plot-schema": 
+                    query = "jdb-plot-schema;";
+                    sendToMainInterface(query);
+                    break;
+                case "jdb-customer-info": {
+
+                    break;
+                }
+                case "jdb-show-reason-count": {
+                    query = "jdb-show-reason-count";
+                    sendToMainInterface(query);
+                    break;
+                }
+                case "jdb-get-view": {
+                    String[] args = {"view-name", "(SQL query)"};
+                    query = promptInput("jdb-get-view", 2, args);
+                    break;
+                }
+            }
+        }
+
+        public void sendToMainInterface(String query) {
+            mainInterface.setQueryString(query);
+            try {
+                mainInterface.switchOnFirstWord();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
