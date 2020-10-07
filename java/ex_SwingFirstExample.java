@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField; 
-public class SwingFirstExample {
+public class ex_SwingFirstExample {
     
     public static void main(String[] args) {    
         // Creating instance of JFrame

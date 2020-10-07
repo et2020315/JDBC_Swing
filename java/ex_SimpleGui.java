@@ -3,7 +3,7 @@
 // Choe: very simple swing example. Again, no event handling included.
 
 import javax.swing.*;
-class SimpleGui{
+class ex_SimpleGui{
     public static void main(String args[]){
        JFrame frame = new JFrame("My First GUI");
        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -6,18 +6,18 @@
 import java.awt.*;
 import java.awt.event.*;
 
-public class Action extends Frame implements WindowListener,ActionListener {
+public class ex_Action extends Frame implements WindowListener,ActionListener {
         TextField text = new TextField(20);
         Button b;
         private int numClicks = 0;
 
         public static void main(String[] args) {
-                Action myWindow = new Action("My first window");
+                ex_Action myWindow = new ex_Action("My first window");
                 myWindow.setSize(350,100);
                 myWindow.setVisible(true);
         }
 
-        public Action(String title) {
+        public ex_Action(String title) {
 
                 super(title);
                 setLayout(new FlowLayout());
