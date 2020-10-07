@@ -82,11 +82,12 @@ public class MainFrame extends JFrame {
                     String text = getConsoleInput();
                     sendToMainInterface(text);
                     break;
-                case "Join Tables":
+                case "Join Tables": {
                     String[] args = {"tables to join up to 4, split by space"};
                     query = promptInput("join-tables", 1, args);
                     sendToMainInterface(query);
                     break;
+                }
                 case "show list of tables":
                     query = "show tables";
                     sendToMainInterface(query);
@@ -148,7 +149,9 @@ public class MainFrame extends JFrame {
                     sendToMainInterface(query);
                     break;
                 case "jdb-customer-info": {
-
+                    String args[] = {"\"conditions\"", "groupby + columnName, or leave empty"};
+                    query = promptInput("jdb-customer-info", 3, args);
+                    sendToMainInterface(query);
                     break;
                 }
                 case "jdb-show-reason-count": {
