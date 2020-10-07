@@ -462,6 +462,33 @@ public class MainMainInterface{
         }// end case
         break;
 
+        // Need this for phase 3 requirements
+        case "show-specific-columns": {
+          ArrayList<ArrayList<String>> results;
+
+          if (parsed_command.length != 3) {
+            JOptionPane.showMessageDialog(null, "Arguments invalid");
+          }
+
+          int[] columns = new int[parsed_command[2].split(":")];
+          query = "SELECT * FROM " + parsed_command[1];
+          ResultSet rs = stmt.executeQuery(query);
+          ResultSetMetaData rsmd = rs.getMetaData(); 
+          
+          int colIndex = 0;
+          for (int i = 0; i < rsmd.getColumnCount(); i++) {
+            if (i == columns[colIndex]) {
+              colIndex++;
+              
+              String[] arr = rs.getArray(i);
+              results.add(Arrays.asList(arr));
+            }
+          }
+            
+          // call tableGUI?
+        } break;
+
+
         case "CREATE":{
           // create view satement
           if(command.contains("CREATE VIEW") && command.contains("AS")){
