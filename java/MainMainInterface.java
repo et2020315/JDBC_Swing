@@ -465,7 +465,7 @@ public class MainMainInterface{
         // Need this for phase 3 requirements
         // not finished but will compile
         case "show-specific-columns": {
-          ArrayList<ArrayList<String>> results;
+          ArrayList<ArrayList<String>> results = new ArrayList<ArrayList<String>>();
 
           if (parsed_command.length != 3) {
             JOptionPane.showMessageDialog(null, "Arguments invalid");
@@ -480,14 +480,24 @@ public class MainMainInterface{
           query = "SELECT * FROM " + parsed_command[1];
           ResultSet rs = stmt.executeQuery(query);
           ResultSetMetaData rsmd = rs.getMetaData(); 
+          int colCount = rsmd.getColumnCount();
           
           int colIndex = 0;
-          for (int i = 0; i < rsmd.getColumnCount(); i++) {
-            if (i == columns[colIndex]) {
+          for (int i = 0; i < colCount; i++) {
+            if (columns[colIndex] == i+1) {
+              ArrayList<String> col = new ArrayList<String>();
+              results.add(col);
               colIndex++;
-              
-              Array arr = rs.getArray(i);
+            }
+          }
           
+          colIndex = 0;
+          while (rs.next()) {
+            for (int i = 0; i < colCount; i++) {
+              if (columns[colIndex] == i+1) {
+                results.get(colIndex).add(rs.getString(i+1));
+                colIndex++;
+              }
             }
           }
             
