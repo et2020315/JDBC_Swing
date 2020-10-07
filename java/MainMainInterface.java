@@ -73,13 +73,13 @@ public class MainMainInterface{
       // initialize graph
       database_meta();
 
-      // print for checking
-      for(String k: adj_list_by_column.keySet()){
-        System.out.println("******************* "+ k +" ******************");
-        for(int j=0;j<adj_list_by_column.get(k).size();j++){
-          System.out.println(adj_list_by_column.get(k).get(j));
-        }
-      }
+      // // print for checking
+      // for(String k: adj_list_by_column.keySet()){
+      //   System.out.println("******************* "+ k +" ******************");
+      //   for(int j=0;j<adj_list_by_column.get(k).size();j++){
+      //     System.out.println(adj_list_by_column.get(k).get(j));
+      //   }
+      // }
 
 
     } catch(Exception e1){
@@ -90,10 +90,26 @@ public class MainMainInterface{
   }// end constructor
 
 
+
+  public void testtestFunction(){
+    ArrayList<ArrayList<String>> tbpass = new ArrayList<ArrayList<String>>();
+    tbpass.add(new ArrayList<String>(Arrays.asList("1","employee","A")));
+    tbpass.add(new ArrayList<String>(Arrays.asList("2","vendorcontact","B")));
+    tbpass.add(new ArrayList<String>(Arrays.asList("3","salesmen","C")));
+    tbpass.add(new ArrayList<String>(Arrays.asList("4","product","D")));
+    ArrayList<String> col = new ArrayList<String>();
+    col.add("c1");
+    col.add("c2");
+    col.add("c3");
+    TableGUI test1 = new TableGUI(tbpass,col);
+  }
+
   // member functions that we won't use in MainMainInterface - either print functions or functions being moved to MainFrame
 
   public void switchOnFirstWord() throws Exception{
     try{
+      // testtestFunction();
+
       String command = this.query_string;
       if(query_string.isEmpty()){
         System.out.println("private member query string is empty");
