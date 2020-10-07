@@ -163,6 +163,7 @@ public class MainMainInterface{
           ResultSet rs2 = statement.executeQuery();
           displayResultSet(rs2,'-',150);
           // CALL TableGUI here
+          TableGUI tbprimary = new TableGUI(rs2);
         }// end case
         break;
 
