@@ -90,20 +90,6 @@ public class MainMainInterface{
   }// end constructor
 
 
-
-  public void testtestFunction(){
-    ArrayList<ArrayList<String>> tbpass = new ArrayList<ArrayList<String>>();
-    tbpass.add(new ArrayList<String>(Arrays.asList("1","employee","A")));
-    tbpass.add(new ArrayList<String>(Arrays.asList("2","vendorcontact","B")));
-    tbpass.add(new ArrayList<String>(Arrays.asList("3","salesmen","C")));
-    tbpass.add(new ArrayList<String>(Arrays.asList("4","product","D")));
-    ArrayList<String> col = new ArrayList<String>();
-    col.add("c1");
-    col.add("c2");
-    col.add("c3");
-    TableGUI test1 = new TableGUI(tbpass,col);
-  }
-
   // member functions that we won't use in MainMainInterface - either print functions or functions being moved to MainFrame
 
   public void switchOnFirstWord() throws Exception{
@@ -144,6 +130,11 @@ public class MainMainInterface{
         }
 
         case "quit;":
+        {
+          System.exit(0);
+          break;
+        }
+
         case "quit":{
           System.exit(0);
           break;
@@ -156,13 +147,26 @@ public class MainMainInterface{
             break;
           }
           String parT = parsed_command[1].replace(";","").trim().toLowerCase();
-          System.out.println("**** A list of table that is connected to " + parT + "****");
-          System.out.println(Graphs.neighborListOf(this.table_matrix, parT));
-
+          // System.out.println("**** A list of table that is connected to " + parT + "****");
+          // System.out.println(Graphs.neighborListOf(this.table_matrix, parT));
+          List<String> relate_tb = Graphs.neighborListOf(this.table_matrix, parT);
+          TableGUI relatedtablegui = new TableGUI(relate_tb);
         }
         break;
 
-        case "jdb-get-all-primary-keys;":
+        case "jdb-show-all-primary-keys;":
+        {
+          String sql = "select TABLE_NAME,COLUMN_NAME FROM  INFORMATION_SCHEMA.COLUMNS where COLUMN_KEY='PRI' AND TABLE_SCHEMA = 'adventureworks'";
+
+          conn = DriverManager.getConnection(DB_URL,USER,PASS);
+          PreparedStatement statement = conn.prepareStatement(sql);
+          ResultSet rs2 = statement.executeQuery();
+          displayResultSet(rs2,'-',150);
+          // CALL TableGUI here
+        }// end case
+        break;
+
+
         case "jdb-show-all-primary-keys":
         {
           String sql = "select TABLE_NAME,COLUMN_NAME FROM  INFORMATION_SCHEMA.COLUMNS where COLUMN_KEY='PRI' AND TABLE_SCHEMA = 'adventureworks'";
@@ -774,12 +778,13 @@ public class MainMainInterface{
       System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
       // System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
       List<String> pathstr1 = iPaths.getPath(tb2).getVertexList();
-      ArrayList<String> pathls1 = new ArrayList<String>(); //  the 1d array to passed to tablegui
-      for(int i = 0;i < pathstr1.size();i++){
-        pathls1.add(pathstr1.get(i));
-      }
-      System.out.println("printing arraylist:");
-      System.out.println(Arrays.toString(pathls1.toArray()) );
+      // ArrayList<String> pathls1 = new ArrayList<String>(); //  the 1d array to passed to tablegui
+      // for(int i = 0;i < pathstr1.size();i++){
+      //   pathls1.add(pathstr1.get(i));
+      // }
+      // System.out.println("printing arraylist:");
+      // System.out.println(Arrays.toString(pathls1.toArray()) );
+      TableGUI tbpath = new TableGUI(pathstr1);
     }
 
 
