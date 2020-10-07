@@ -19,6 +19,8 @@ import java.util.*;
 
 // MainFrame class as a JPanel,
 public class MainFrame extends JFrame {
+    private MainMainInterface mainInterface;
+
     private JFrame window = new JFrame("Main Window");
 
     // -- PHASE 3 GUI COMPONENTS -- //
@@ -39,6 +41,8 @@ public class MainFrame extends JFrame {
 
     // Constructor for MainFrame
     MainFrame() {
+        MainMainInterface mainInterface = new MainMainInterface();
+
         phase3Panel.setLayout(null);
 
         // JButtons, add actionlistener here
@@ -71,7 +75,8 @@ public class MainFrame extends JFrame {
             switch(action) {
                 case "Submit Query":
                     String text = getConsoleInput();
-                    promptInput("SubmitQuery", 2, args);
+                    mainInterface.setQueryString(text);
+                    mainInterface.switchOnFirstWord();
                     // send to main interface
                     break;
                 case "Join Tables":
@@ -79,32 +84,56 @@ public class MainFrame extends JFrame {
                     break;
                 case "show list of tables":
                     String query = "show tables";
-                    // send
+                    mainInterface.setQueryString(query);
+                    mainInterface.switchOnFirstWord();
                     break;
                 case "show one or more columns of a specific table":
-
+                    String[] args = {"tableName", "Columns"};
+                    query = "show-specific-columns " + promptInput("Enter ALL for all columns, or list (e.g 1:3 for 1 and 3)", 2, args);
+                    mainInterface.setQueryString(query);
+                    mainInterface.switchOnFirstWord();
                     break;
                 case "jdb-show-related-tables":
                     String[] args = {"tableName"};
                     String query = promptInput("jdb-show-related-tables", 1, args);
+                    mainInterface.setQueryString(query);
+                    mainInterface.switchOnFirstWord();
                     // Send to main interface
                     break;
                 case "jdb-show-all-primary-keys":
                     // No command args needed
                     String query = "jdb-show-all-primary-keys;";
-                    // send to MainInterface
+                    mainInterface.setQueryString(query);
+                    mainInterface.switchOnFirstWord();
                     break;
                 case "jdb-find-column":
                     String[] args = {"columnName"};
                     String query = promptInput("jdb-find-column", 1, args);
-                    // send to Main Interface
+                    mainInterface.setQueryString(query);
+                    mainInterface.switchOnFirstWord();
                     break;
                 case "jdb-search-path":
+                    String[] args = {"tableName1", "tableName2"};
+                    String query = promptInput("jdb-search-path", 2, args);
+                    mainInterface.setQueryString(query);
+                    mainInterface.switchOnFirstWord();
                     break;
                 case "jdb-search-and-join":
+                    String[] args = {"numToShow"};
+                    String query = promptInput("jdb-show-best-salesperson", 1, args);
+                    mainInterface.setQueryString(query);
+                    mainInterface.switchOnFirstWord();
                     break;
                 case "jdb-stat":
                     break;
+                case "jdb-show-sales-monthly":
+                    String[] args = {"year"};
+                    String query = promptInput("jdb-show-sales-monthly", 1, args);
+                    mainInterface.setQueryString(query);
+                    mainInterface.switchOnFirstWord();
+                    break;
+                case "jdb-customer-orders":
+                    String args = {""}
             }
         }
 
