@@ -45,7 +45,7 @@ public class TableGUI extends JFrame{
 			ArrayList<String[]> table_al = new ArrayList<String[]>();
 			while (rs.next()) {
 				String[] row = new String[numCols];
-				for (int i = 0; i < numCols; i++)
+				for (int i = 1; i <= numCols; i++)
 					row[i] = rs.getString(i);
 				table_al.add(row);
 			}
@@ -53,7 +53,7 @@ public class TableGUI extends JFrame{
 			
 			// convert array list of column names to string array to pass into JTable
 			cols = new String[numCols];
-			for(int i = 0; i < numCols; i++){
+			for(int i = 1; i <= numCols; i++){
 				cols[i] = rsmd.getColumnLabel(i);
 			}
 
