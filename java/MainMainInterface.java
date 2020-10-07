@@ -479,9 +479,9 @@ public class MainMainInterface{
 
             query = "SELECT * FROM " + parsed_command[1];
             ResultSet rs = stmt.executeQuery(query);
-            ResultSetMetaData rsmd = rs.getMetaData(); 
+            ResultSetMetaData rsmd = rs.getMetaData();
             int colCount = rsmd.getColumnCount();
-            
+
             int colIndex = 0;
             for (int i = 0; i < colCount; i++) {
               if (columns[colIndex] == i+1) {
@@ -490,7 +490,7 @@ public class MainMainInterface{
                 colIndex++;
               }
             }
-            
+
             colIndex = 0;
             while (rs.next()) {
               for (int i = 0; i < colCount; i++) {
@@ -756,7 +756,14 @@ public class MainMainInterface{
       SingleSourcePaths<String, ColumnEdge> iPaths = dijkstraAlg.getPaths(tb1);
 
       System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
-      System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+      // System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+      List<String> pathstr1 = iPaths.getPath(tb2).getVertexList();
+      ArrayList<String> pathls1 = new ArrayList<String>(); //  the 1d array to passed to tablegui
+      for(int i = 0;i < pathstr1.size();i++){
+        pathls1.add(pathstr1.get(i));
+      }
+      System.out.println("printing arraylist:");
+      System.out.println(Arrays.toString(pathls1.toArray()) );
     }
 
 

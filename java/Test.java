@@ -50,16 +50,16 @@ public class Test {
 
 			// ArrayList<String>
 
-			// String testQuery1 = "jdb-get-view howdy (select employeeID, productID from employee,product);";
-			// String testQuery2 = "jdb-show-related-tables employeeaddress;";
-			// String testQuery3 = "jdb-show-all-primary-keys;";
-			// String testQuery4 = "jdb-find-column ScrapReasonID;";
-			// String testQuery5 = "jdb-search-path employee product;";
-			// String testQuery6 = "jdb-search-and-join employee product;";
-			// String testQuery7 = "jdb-stat salesview salesstat;";
- 			// MainMainInterface testMMI = new MainMainInterface();
-			// testMMI.setQueryString(testQuery7);
-			// testMMI.switchOnFirstWord();
+			String testQuery1 = "jdb-get-view howdy (select employeeID, productID from employee,product);";
+			String testQuery2 = "jdb-show-related-tables employeeaddress;";
+			String testQuery3 = "jdb-show-all-primary-keys;";
+			String testQuery4 = "jdb-find-column ScrapReasonID;";
+			String testQuery5 = "jdb-search-path employee product;";
+			String testQuery6 = "jdb-search-and-join employee product;";
+			String testQuery7 = "jdb-stat salesview salesstat;";
+ 			MainMainInterface testMMI = new MainMainInterface();
+			testMMI.setQueryString(testQuery5);
+			testMMI.switchOnFirstWord();
 
 		} catch (Exception e){
 			System.out.println("********************");
