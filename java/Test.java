@@ -41,17 +41,25 @@ public class Test {
 
 			//
 			// PNGGUI png1 = new PNGGUI("DB.png");
+			// List<Integer> llist = new LinkedList<Integer>();
+      // llist.add(2);
+      // llist.add(4);
+			// llist.add(6);
+			// llist.add(10);
+			// ListGUI lsgui1 = new ListGUI(llist);
 
-			String testQuery1 = "jdb-get-view howdy (select employeeID, productID from employee,product);";
-			String testQuery2 = "jdb-show-related-tables employeeaddress;";
-			String testQuery3 = "jdb-show-all-primary-keys;";
-			String testQuery4 = "jdb-find-column ScrapReasonID;";
-			String testQuery5 = "jdb-search-path employee product;";
-			String testQuery6 = "jdb-search-and-join employee product;";
-			String testQuery7 = "jdb-stat salesview salesstat;";
- 			MainMainInterface testMMI = new MainMainInterface();
-			testMMI.setQueryString(testQuery7);
-			testMMI.switchOnFirstWord();
+			// ArrayList<String>
+
+			// String testQuery1 = "jdb-get-view howdy (select employeeID, productID from employee,product);";
+			// String testQuery2 = "jdb-show-related-tables employeeaddress;";
+			// String testQuery3 = "jdb-show-all-primary-keys;";
+			// String testQuery4 = "jdb-find-column ScrapReasonID;";
+			// String testQuery5 = "jdb-search-path employee product;";
+			// String testQuery6 = "jdb-search-and-join employee product;";
+			// String testQuery7 = "jdb-stat salesview salesstat;";
+ 			// MainMainInterface testMMI = new MainMainInterface();
+			// testMMI.setQueryString(testQuery7);
+			// testMMI.switchOnFirstWord();
 
 		} catch (Exception e){
 			System.out.println("********************");
