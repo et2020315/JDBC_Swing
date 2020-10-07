@@ -519,6 +519,14 @@ public class MainMainInterface{
               }
             }
 
+            ArrayList<String> output = new ArrayList<String>();
+            for (int i = 0; i < results.size(); i++) {
+              String row = "";
+              for (int j = 0; j < results.get(i).size(); j++) {
+                row += results.get(i).get(j) + " ";
+              }
+            }
+
             // send to tableGUI
           } else {
             query = "SELECT * FROM " + parsed_command[1];
