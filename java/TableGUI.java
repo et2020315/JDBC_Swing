@@ -46,7 +46,7 @@ public class TableGUI extends JFrame{
 			while (rs.next()) {
 				String[] row = new String[numCols];
 				for (int i = 1; i <= numCols; i++)
-					row[i] = rs.getString(i);
+					row[i-1] = rs.getString(i);
 				table_al.add(row);
 			}
 			table = table_al.toArray(new String[table_al.size()][]);
@@ -54,7 +54,7 @@ public class TableGUI extends JFrame{
 			// convert array list of column names to string array to pass into JTable
 			cols = new String[numCols];
 			for(int i = 1; i <= numCols; i++){
-				cols[i] = rsmd.getColumnLabel(i);
+				cols[i-1] = rsmd.getColumnLabel(i);
 			}
 
 			// JTable element requires Object [][] for the table you want to show and Object[] for column row
