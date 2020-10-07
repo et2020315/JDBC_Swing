@@ -463,7 +463,6 @@ public class MainMainInterface{
         break;
 
         // Need this for phase 3 requirements
-        // not finished but will compile
         case "show-specific-columns": {
           ArrayList<ArrayList<String>> results = new ArrayList<ArrayList<String>>();
 
@@ -471,37 +470,43 @@ public class MainMainInterface{
             JOptionPane.showMessageDialog(null, "Arguments invalid");
           }
 
-          String[] colsAsString = parsed_command[2].split(":");
-          int[] columns = new int[colsAsString.length];
-          for (int i = 0; i < colsAsString.length; i++) {
-            columns[i] = Integer.parseInt(colsAsString[i]);
-          }
-          
-          query = "SELECT * FROM " + parsed_command[1];
-          ResultSet rs = stmt.executeQuery(query);
-          ResultSetMetaData rsmd = rs.getMetaData(); 
-          int colCount = rsmd.getColumnCount();
-          
-          int colIndex = 0;
-          for (int i = 0; i < colCount; i++) {
-            if (columns[colIndex] == i+1) {
-              ArrayList<String> col = new ArrayList<String>();
-              results.add(col);
-              colIndex++;
+          if (parsed_command[2] != "ALL") {
+            String[] colsAsString = parsed_command[2].split(":");
+            int[] columns = new int[colsAsString.length];
+            for (int i = 0; i < colsAsString.length; i++) {
+              columns[i] = Integer.parseInt(colsAsString[i]);
             }
-          }
-          
-          colIndex = 0;
-          while (rs.next()) {
+
+            query = "SELECT * FROM " + parsed_command[1];
+            ResultSet rs = stmt.executeQuery(query);
+            ResultSetMetaData rsmd = rs.getMetaData(); 
+            int colCount = rsmd.getColumnCount();
+            
+            int colIndex = 0;
             for (int i = 0; i < colCount; i++) {
               if (columns[colIndex] == i+1) {
-                results.get(colIndex).add(rs.getString(i+1));
+                ArrayList<String> col = new ArrayList<String>();
+                results.add(col);
                 colIndex++;
               }
             }
-          }
             
-          // call tableGUI?
+            colIndex = 0;
+            while (rs.next()) {
+              for (int i = 0; i < colCount; i++) {
+                if (columns[colIndex] == i+1) {
+                  results.get(colIndex).add(rs.getString(i+1));
+                  colIndex++;
+                }
+              }
+            }
+
+            // send to tableGUI
+          } else {
+            query = "SELECT * FROM " + parsed_command[1];
+            ResultSet rs = stmt.executeQuery(query);
+            // send to TableGUI
+          }
         } break;
 
 
