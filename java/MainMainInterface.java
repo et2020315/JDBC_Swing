@@ -161,8 +161,6 @@ public class MainMainInterface{
           conn = DriverManager.getConnection(DB_URL,USER,PASS);
           PreparedStatement statement = conn.prepareStatement(sql);
           ResultSet rs2 = statement.executeQuery();
-          displayResultSet(rs2,'-',150);
-          // CALL TableGUI here
           TableGUI tbprimary = new TableGUI(rs2);
         }// end case
         break;
@@ -175,8 +173,7 @@ public class MainMainInterface{
           conn = DriverManager.getConnection(DB_URL,USER,PASS);
           PreparedStatement statement = conn.prepareStatement(sql);
           ResultSet rs2 = statement.executeQuery();
-          displayResultSet(rs2,'-',150);
-          // CALL TableGUI here
+          TableGUI tbprimary2 = new TableGUI(rs2);
         }// end case
         break;
 
@@ -187,13 +184,13 @@ public class MainMainInterface{
             break;
           }
           String parC = parsed_command[1].replace(";","").trim();
-          ArrayList<String> arrfindcol = this.adj_list_by_column.get(parC);
+          List<String> arrfindcol = this.adj_list_by_column.get(parC);
           System.out.println("-------- tables that connect to the column ----------");
           for(int j = 0; j < arrfindcol.size();j++){
             System.out.println(arrfindcol.get(j));
           }
           System.out.println("-----------------------------------------------------");
-          // call TableGUI here
+          TableGUI tblcolGUI = new TableGUI(arrfindcol);
         }// end case
         break;
 

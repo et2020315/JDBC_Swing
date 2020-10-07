@@ -58,7 +58,7 @@ public class Test {
 			String testQuery6 = "jdb-search-and-join employee product;";
 			String testQuery7 = "jdb-stat salesorderheader SubTotal";
  			MainMainInterface testMMI = new MainMainInterface();
-			testMMI.setQueryString(testQuery3);
+			testMMI.setQueryString(testQuery4);
 			testMMI.switchOnFirstWord();
 
 		} catch (Exception e){

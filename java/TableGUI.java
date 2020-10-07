@@ -43,26 +43,32 @@ public class TableGUI extends JFrame{
 			int numCols = rsmd.getColumnCount();
 
 			ArrayList<String[]> table_al = new ArrayList<String[]>();
+			// System.out.println("hi");
 			while (rs.next()) {
+				// System.out.println("howdy");
 				String[] row = new String[numCols];
-				for (int i = 1; i <= numCols; i++)
-					row[i-1] = rs.getString(i);
+				for (int i = 1; i <= numCols; i++){
+						row[i-1] = rs.getString(i);
+						// System.out.println("row:"+row[i-1]);
+				}
 				table_al.add(row);
 			}
-			table = table_al.toArray(new String[table_al.size()][]);
+
+			// System.out.println("hi2");
+			this.table = table_al.toArray(new String[table_al.size()][]);
 
 			// convert array list of column names to string array to pass into JTable
-			cols = new String[numCols];
+			this.cols = new String[numCols];
 			for(int i = 1; i <= numCols; i++){
-				cols[i-1] = rsmd.getColumnLabel(i);
+				this.cols[i-1] = rsmd.getColumnLabel(i);
 			}
 
 			// JTable element requires Object [][] for the table you want to show and Object[] for column row
-			jtable = new JTable(table, cols);
+			this.jtable = new JTable(this.table, this.cols);
 			jtable.setShowGrid(true);
 			// use the JTable to instantiate ScrollPane, required
 			// add JScrollPane to JPanel
-			add(new JScrollPane(jtable));
+			add(new JScrollPane(this.jtable));
 			// set the panel to be visible
 			setVisible(true);
 
