@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 import java.sql.*;
 
 
@@ -70,6 +71,10 @@ public class TableGUI extends JFrame{
 			e.printStackTrace();
 		}
 	}// end constructor
+	
+	public TableGUI(List<String> rows) {
+		
+	}
 
 
 }
