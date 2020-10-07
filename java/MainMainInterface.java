@@ -463,6 +463,7 @@ public class MainMainInterface{
         break;
 
         // Need this for phase 3 requirements
+        // not finished but will compile
         case "show-specific-columns": {
           ArrayList<ArrayList<String>> results;
 
@@ -470,7 +471,12 @@ public class MainMainInterface{
             JOptionPane.showMessageDialog(null, "Arguments invalid");
           }
 
-          int[] columns = new int[parsed_command[2].split(":")];
+          String[] colsAsString = parsed_command[2].split(":");
+          int[] columns = new int[colsAsString.length];
+          for (int i = 0; i < colsAsString.length; i++) {
+            columns[i] = Integer.parseInt(colsAsString[i]);
+          }
+          
           query = "SELECT * FROM " + parsed_command[1];
           ResultSet rs = stmt.executeQuery(query);
           ResultSetMetaData rsmd = rs.getMetaData(); 
@@ -480,8 +486,8 @@ public class MainMainInterface{
             if (i == columns[colIndex]) {
               colIndex++;
               
-              String[] arr = rs.getArray(i);
-              results.add(Arrays.asList(arr));
+              Array arr = rs.getArray(i);
+          
             }
           }
             
