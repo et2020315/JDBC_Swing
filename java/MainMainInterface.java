@@ -73,13 +73,13 @@ public class MainMainInterface{
       // initialize graph
       database_meta();
 
-      // print for checking
-      for(String k: adj_list_by_column.keySet()){
-        System.out.println("******************* "+ k +" ******************");
-        for(int j=0;j<adj_list_by_column.get(k).size();j++){
-          System.out.println(adj_list_by_column.get(k).get(j));
-        }
-      }
+      // // print for checking
+      // for(String k: adj_list_by_column.keySet()){
+      //   System.out.println("******************* "+ k +" ******************");
+      //   for(int j=0;j<adj_list_by_column.get(k).size();j++){
+      //     System.out.println(adj_list_by_column.get(k).get(j));
+      //   }
+      // }
 
 
     } catch(Exception e1){
@@ -94,6 +94,8 @@ public class MainMainInterface{
 
   public void switchOnFirstWord() throws Exception{
     try{
+      // testtestFunction();
+
       String command = this.query_string;
       if(query_string.isEmpty()){
         System.out.println("private member query string is empty");
@@ -128,6 +130,11 @@ public class MainMainInterface{
         }
 
         case "quit;":
+        {
+          System.exit(0);
+          break;
+        }
+
         case "quit":{
           System.exit(0);
           break;
@@ -140,13 +147,27 @@ public class MainMainInterface{
             break;
           }
           String parT = parsed_command[1].replace(";","").trim().toLowerCase();
-          System.out.println("**** A list of table that is connected to " + parT + "****");
-          System.out.println(Graphs.neighborListOf(this.table_matrix, parT));
-
+          // System.out.println("**** A list of table that is connected to " + parT + "****");
+          // System.out.println(Graphs.neighborListOf(this.table_matrix, parT));
+          List<String> relate_tb = Graphs.neighborListOf(this.table_matrix, parT);
+          TableGUI relatedtablegui = new TableGUI(relate_tb);
         }
         break;
 
-        case "jdb-get-all-primary-keys;":
+        case "jdb-show-all-primary-keys;":
+        {
+          String sql = "select TABLE_NAME,COLUMN_NAME FROM  INFORMATION_SCHEMA.COLUMNS where COLUMN_KEY='PRI' AND TABLE_SCHEMA = 'adventureworks'";
+
+          conn = DriverManager.getConnection(DB_URL,USER,PASS);
+          PreparedStatement statement = conn.prepareStatement(sql);
+          ResultSet rs2 = statement.executeQuery();
+          displayResultSet(rs2,'-',150);
+          // CALL TableGUI here
+          TableGUI tbprimary = new TableGUI(rs2);
+        }// end case
+        break;
+
+
         case "jdb-show-all-primary-keys":
         {
           String sql = "select TABLE_NAME,COLUMN_NAME FROM  INFORMATION_SCHEMA.COLUMNS where COLUMN_KEY='PRI' AND TABLE_SCHEMA = 'adventureworks'";
@@ -479,9 +500,9 @@ public class MainMainInterface{
 
             query = "SELECT * FROM " + parsed_command[1];
             ResultSet rs = stmt.executeQuery(query);
-            ResultSetMetaData rsmd = rs.getMetaData(); 
+            ResultSetMetaData rsmd = rs.getMetaData();
             int colCount = rsmd.getColumnCount();
-            
+
             int colIndex = 0;
             for (int i = 0; i < colCount; i++) {
               if (columns[colIndex] == i+1) {
@@ -490,7 +511,7 @@ public class MainMainInterface{
                 colIndex++;
               }
             }
-            
+
             colIndex = 0;
             while (rs.next()) {
               for (int i = 0; i < colCount; i++) {
@@ -756,7 +777,15 @@ public class MainMainInterface{
       SingleSourcePaths<String, ColumnEdge> iPaths = dijkstraAlg.getPaths(tb1);
 
       System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
-      System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+      // System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+      List<String> pathstr1 = iPaths.getPath(tb2).getVertexList();
+      // ArrayList<String> pathls1 = new ArrayList<String>(); //  the 1d array to passed to tablegui
+      // for(int i = 0;i < pathstr1.size();i++){
+      //   pathls1.add(pathstr1.get(i));
+      // }
+      // System.out.println("printing arraylist:");
+      // System.out.println(Arrays.toString(pathls1.toArray()) );
+      TableGUI tbpath = new TableGUI(pathstr1);
     }
 
 

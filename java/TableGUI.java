@@ -41,7 +41,7 @@ public class TableGUI extends JFrame{
 
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int numCols = rsmd.getColumnCount();
-			
+
 			ArrayList<String[]> table_al = new ArrayList<String[]>();
 			while (rs.next()) {
 				String[] row = new String[numCols];
@@ -50,7 +50,7 @@ public class TableGUI extends JFrame{
 				table_al.add(row);
 			}
 			table = table_al.toArray(new String[table_al.size()][]);
-			
+
 			// convert array list of column names to string array to pass into JTable
 			cols = new String[numCols];
 			for(int i = 1; i <= numCols; i++){
@@ -72,19 +72,19 @@ public class TableGUI extends JFrame{
 			e.printStackTrace();
 		}
 	}// end constructor
-	
+
 	public TableGUI(List<String> rows) {
 		try {
 			this.setSize(width_base,height_base);
 			this.setTitle("Present output in GUI");
 			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			
+
 			String allText = "<html><pre>";
 			for (String row : rows) {
 				allText += row + "<br>";
 			}
 			allText += "</pre></html>";
-			
+
 			jlabel = new JLabel(allText);
 			add(new JScrollPane(jlabel));
 			setVisible(true);
