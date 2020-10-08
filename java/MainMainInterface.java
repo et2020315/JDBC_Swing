@@ -139,6 +139,13 @@ public class MainMainInterface{
           System.exit(0);
           break;
         }
+        case "show-tables;":
+        case "show-tables":{
+          List<String> ttbstr = table_name;
+          TableGUI showtbGui = new TableGUI(ttbstr);
+
+          break;
+        }
 
         case "jdb-show-related-tables":{
           // SHOW KEYS FROM <table name> WHERE Key_name = 'PRIMARY'
@@ -571,7 +578,7 @@ public class MainMainInterface{
           } else {
             query = "SELECT * FROM " + parsed_command[1];
             ResultSet rs = stmt.executeQuery(query);
-
+            TableGUI specColGui = new TableGUI(rs);
           }
         } break;
 
@@ -657,7 +664,8 @@ public class MainMainInterface{
           // basic sql commands
           default:{
             ResultSet rs = stmt.executeQuery(command);
-            printResults(rs);
+            // printResults(rs);
+            TableGUI tbdefault = new TableGUI(rs);
           }
           break;
         }// end switch
@@ -695,31 +703,31 @@ public class MainMainInterface{
     }// end function
 
 
-    // debugging purpose
-  	public static void printResults(ResultSet rs) throws SQLException {
-  		ResultSetMetaData rsmd = rs.getMetaData();
-  		int cols = rsmd.getColumnCount();
-  		// Printing column names
-  		for (int i = 1; i <= cols; i++) {
-  			if (i > 1)
-  				System.out.print(", ");
-  			System.out.print(rsmd.getColumnLabel(i));
-  		}
-  		System.out.println("");
-  		// Printing query contents
-  		while (rs.next()) {
-  			for (int i = 1; i <= cols; i++) {
-  				if (i > 1)
-  					System.out.print(", ");
-  				String colVal = rs.getString(i);
-  				if (colVal != null && colVal.contains(","))
-  					System.out.print('"' + colVal + '"');
-  				else
-  					System.out.print(colVal);
-  			}
-  			System.out.println("");
-  		}
-  	}// end function
+    // // debugging purpose
+  	// public static void printResults(ResultSet rs) throws SQLException {
+  	// 	ResultSetMetaData rsmd = rs.getMetaData();
+  	// 	int cols = rsmd.getColumnCount();
+  	// 	// Printing column names
+  	// 	for (int i = 1; i <= cols; i++) {
+  	// 		if (i > 1)
+  	// 			System.out.print(", ");
+  	// 		System.out.print(rsmd.getColumnLabel(i));
+  	// 	}
+  	// 	System.out.println("");
+  	// 	// Printing query contents
+  	// 	while (rs.next()) {
+  	// 		for (int i = 1; i <= cols; i++) {
+  	// 			if (i > 1)
+  	// 				System.out.print(", ");
+  	// 			String colVal = rs.getString(i);
+  	// 			if (colVal != null && colVal.contains(","))
+  	// 				System.out.print('"' + colVal + '"');
+  	// 			else
+  	// 				System.out.print(colVal);
+  	// 		}
+  	// 		System.out.println("");
+  	// 	}
+  	// }// end function
 
     public void database_meta(){
 

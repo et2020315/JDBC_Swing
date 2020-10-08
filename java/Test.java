@@ -65,14 +65,16 @@ public class Test {
 			String testQuery11 = "jdb-show-best-salesperson;";
 			String testQuery12 = "jdb-show-sales-monthly;";
 
-			String testQuery13 = "jdb-customer-info state \"state.zipcode < 50000\" groupby state.statename;";
+			String testQuery13 = "jdb-customer-info \"customer.TerritoryID < 5\" groupby stateprovince.Name";
+			String testQuery16 = "jdb-customer-orders \"customer.CustomerID < 10\" aggregate";
 
-			String testQuery20 = "jdb-show-sales-monthly msodf;";
-
+			String testQuery14 = "select * from customer;";
+			String testQuery15 = "show-specific-columns employee ALL";
+			String testQuery17 = "show-tables;";
 
 
  			MainMainInterface testMMI = new MainMainInterface();
-			testMMI.setQueryString(testQuery13);
+			testMMI.setQueryString(testQuery17);
 			testMMI.switchOnFirstWord();
 
 		} catch (Exception e){
