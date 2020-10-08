@@ -139,6 +139,13 @@ public class MainMainInterface{
           System.exit(0);
           break;
         }
+        case "show-tables;":
+        case "show-tables":{
+          List<String> ttbstr = table_name;
+          TableGUI showtbGui = new TableGUI(ttbstr);
+
+          break;
+        }
 
         case "jdb-show-related-tables":{
           // SHOW KEYS FROM <table name> WHERE Key_name = 'PRIMARY'
@@ -185,11 +192,6 @@ public class MainMainInterface{
           }
           String parC = parsed_command[1].replace(";","").trim();
           List<String> arrfindcol = this.adj_list_by_column.get(parC);
-          System.out.println("-------- tables that connect to the column ----------");
-          for(int j = 0; j < arrfindcol.size();j++){
-            System.out.println(arrfindcol.get(j));
-          }
-          System.out.println("-----------------------------------------------------");
           TableGUI tblcolGUI = new TableGUI(arrfindcol);
         }// end case
         break;
@@ -210,7 +212,7 @@ public class MainMainInterface{
               JOptionPane.showMessageDialog(null,"one of the table not in schema, use table in schema");
               break;
             } else{
-              plot_shortest_path(table_matrix,tb11,tb12); /****** call PNG GUI *******/
+              plot_shortest_path(table_matrix,tb11,tb12); // call TableGUI in function
             }
           }
         }// end case
@@ -219,7 +221,6 @@ public class MainMainInterface{
 
         case "jdb-search-and-join":{
           command = command.trim();
-          System.out.println("Search and join");
           command = command.replace(";","");
           String tbarr[] = command.split(" ");
           if(tbarr.length!= 3 || !tbarr[0].equals("jdb-search-and-join")){
@@ -233,7 +234,7 @@ public class MainMainInterface{
               System.out.println("one of the table not in schema, enter table in schema");
               break;
             } else{
-              print_join_table(conn,stmt,table_matrix,tb1,tb2,edgeName); // *************  call TABLEGUI !! ********/
+              print_join_table(conn,stmt,table_matrix,tb1,tb2,edgeName); // call tableGUI in function
             }
           }
         }
@@ -258,23 +259,61 @@ public class MainMainInterface{
         }
         break;
 
+        case "jdb-show-best-salesperson;":{
+          jdbShowBestSalesperson(1, conn);
+          break;
+        }
+
 
         case "jdb-show-best-salesperson": {
-          int num = Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;
-          jdbShowBestSalesperson(num, conn);
+          String bsp[] = command.split(" ");
+          if(bsp.length > 2){
+            JOptionPane.showMessageDialog(null,"Re-enter. Not correct syntax");
+            break;
+          }
+          // position 1 not a number
+          try {
+            Integer.parseInt(parsed_command[1].replace(";","").trim());
+          }
+          catch (NumberFormatException eee){
+            JOptionPane.showMessageDialog(null,"position 1 not a number ");
+            break;
+          }
+
+          int num = Integer.parseInt(parsed_command[1].replace(";","").trim()) ;
+          jdbShowBestSalesperson(num, conn); // call tablegui in function
           break;
         }
 
-
+        case "jdb-show-reason-count;":
         case "jdb-show-reason-count": {
-          jdbShowReasonCount(conn);
+          jdbShowReasonCount(conn); // call tablegui in function
           break;
         }
 
+        case "jdb-show-sales-monthly;":{
+          JOptionPane.showMessageDialog(null,"Did not enter a year, defualt set to year 2002,click ok");
+          jdbShowSalesMonthly(2002, conn); // default year when you did not specify a year
+          break;
+        }
 
         case "jdb-show-sales-monthly": {
-          int year =Integer.parseInt( removeSemicolon( parsed_command[1].trim())) ;
-          jdbShowSalesMonthly(year, conn);
+          String bsp[] = command.split(" ");
+          if(bsp.length > 2){
+            JOptionPane.showMessageDialog(null,"Re-enter. Not correct syntax");
+            break;
+          }
+          try {
+            Integer.parseInt(parsed_command[1].replace(";","").trim());
+          }
+          catch (NumberFormatException eee){
+            JOptionPane.showMessageDialog(null,"position 1 not a number ");
+            break;
+          }
+
+
+          int year = Integer.parseInt(parsed_command[1].replace(";","").trim());
+          jdbShowSalesMonthly(year, conn); // call tablegui in function
           break;
         }
 
@@ -339,10 +378,13 @@ public class MainMainInterface{
           }
           double avg = sum/list.size();
 
-          System.out.format("Min value: %.2f\n", min);
-          System.out.format("Max value: %.2f\n", max);
-          System.out.format("Average: %.2f\n", avg);
-          System.out.format("Median: %.2f\n", median);
+          // set up 1 d arraylist
+          ArrayList<String> statArr = new ArrayList<String>();
+
+          statArr.add(String.format("Min value: %.2f\n", min));
+          statArr.add(String.format("Max value: %.2f\n", max));
+          statArr.add(String.format("Average: %.2f\n", avg));
+          statArr.add(String.format("Median: %.2f\n", median));
 
           // plotting histogram
           // first get number of bins and bin width
@@ -365,26 +407,39 @@ public class MainMainInterface{
           for (int i = 0; i < bins.length; i++) { // divide each quantity in bins by y_scale
             bins[i] = (int)Math.round(bins[i]/(double)y_scale);
           }
-
+          String stst = "";
           // displaying bins
           // printing y-axis
           int offset = String.format("%.2f", max).length() * 2 + 3; // how long the header for each bin should be when displaying
           System.out.println();
-          System.out.format("%-" + (offset + 1) + "s", "");
+          stst += String.format("%-" + (offset + 1) + "s", "");
           int max_count_scaled = max_count/y_scale;
-          for (int count = 0; count <= max_count_scaled; count++) // printing y-axis labels
-          System.out.print(count + "___");
-          System.out.format("(Each star and each y-axis label represents %d counts)\n", y_scale);
 
+          // printing y-axis labels
+          for (int count = 0; count <= max_count_scaled; count++){
+            stst += (count + "___");
+          }
+
+          stst += String.format("(Each star and each y-axis label represents %d counts)\n", y_scale);
+          statArr.add(stst);
+
+          stst = "";
           // printing each bin
           for (int i = 0; i < bins.length; i++) {
             String range = String.format("%.2f - %.2f", min + i*bin_width, min + (i+1)*bin_width);
-            System.out.format("%-" + offset + "s |", range);
+            String stst2 = "";
+            stst2 += String.format("%-" + offset + "s |", range);
             for (int j = 0; j < bins[i]; j++) {
-              System.out.print("*");
+              stst2 += "*";
             }
-            System.out.println();
+            // System.out.println();
+            statArr.add(stst2);
+            stst2 = "";
           }
+
+          List<String> sstat = statArr;
+          TableGUI tbstatss = new TableGUI(sstat);
+
           break;
         }// end jdb-get-stat
 
@@ -422,6 +477,7 @@ public class MainMainInterface{
             query += "GROUP BY " + parsed_command[parsed_command.length - 1] + " ";
           }
           ResultSet rs = stmt.executeQuery(query);
+          TableGUI Cusgui = new TableGUI(rs);
           // Call TableGUI here
         }
         break;
@@ -475,8 +531,7 @@ public class MainMainInterface{
           }
           query += from_expr + where_expr + group_expr + "";
           ResultSet rs = stmt.executeQuery(query);
-          // printResults(rs);
-          // Call TableGUI here
+          TableGUI cusOrdGUI = new TableGUI(rs);
         }// end case
         break;
 
@@ -487,37 +542,47 @@ public class MainMainInterface{
           if (parsed_command.length != 3) {
             JOptionPane.showMessageDialog(null, "Arguments invalid");
           }
-
-          if (parsed_command[2] != "ALL") {
-            String[] colsAsString = parsed_command[2].split(":");
-            int[] columns = new int[colsAsString.length];
-            for (int i = 0; i < colsAsString.length; i++) {
-              columns[i] = Integer.parseInt(colsAsString[i]);
+          System.out.println("arg2-"+parsed_command[1]+"-args-"+parsed_command[2]+"-");
+          if (!parsed_command[2].equalsIgnoreCase("ALL")) {
+            String[] colsAsString = parsed_command[2].trim().split(":");
+            // int[] columns = new int[colsAsString.length];
+            // for (int i = 0; i < colsAsString.length; i++) {
+            //   columns[i] = Integer.parseInt(colsAsString[i]);
+            //   System.out.println("col:"+columns[i]);
+            // }
+            ArrayList<String> intStrlist = new ArrayList<String>();
+            for(int i = 0; i < colsAsString.length;i++){
+              intStrlist.add(colsAsString[i].trim());
             }
+            // now intStrlist contains the index of column
 
             query = "SELECT * FROM " + parsed_command[1];
             ResultSet rs = stmt.executeQuery(query);
             ResultSetMetaData rsmd = rs.getMetaData();
             int colCount = rsmd.getColumnCount();
+            // columns contains the index of displaying columns
 
-            int colIndex = 0;
-            for (int i = 0; i < colCount; i++) {
-              if (columns[colIndex] == i+1) {
-                ArrayList<String> col = new ArrayList<String>();
-                results.add(col);
-                colIndex++;
-              }
+            ArrayList<String> displaySPEC = new ArrayList<String>();
+            String temptemp = "";
+            for(int i = 0; i < colsAsString.length;i++){
+              temptemp += " |" + rsmd.getColumnName(Integer.parseInt(colsAsString[i]));
             }
+            displaySPEC.add(temptemp);
 
-            colIndex = 0;
             while (rs.next()) {
-              for (int i = 0; i < colCount; i++) {
-                if (columns[colIndex] == i+1) {
-                  results.get(colIndex).add(rs.getString(i+1));
-                  colIndex++;
+              String strrow = "";
+              for (int i = 1; i <= colCount; i++){
+                // if (columns[colIndex] == i+1) {
+                //   results.get(colIndex).add(rs.getString(i+1));
+                //   colIndex++;
+                // }
+                if(intStrlist.contains(Integer.toString(i))){
+                  strrow = strrow + "\t|" + rs.getString(i);
                 }
-              }
+              }// end for
+              displaySPEC.add(strrow);
             }
+            TableGUI disSpecGUI = new TableGUI(displaySPEC);
 
             ArrayList<String> output = new ArrayList<String>();
             for (int i = 0; i < results.size(); i++) {
@@ -529,9 +594,9 @@ public class MainMainInterface{
 
             // send to tableGUI
           } else {
-            query = "SELECT * FROM " + parsed_command[1];
+            query = "SELECT * FROM " + parsed_command[1].trim();
             ResultSet rs = stmt.executeQuery(query);
-            // send to TableGUI
+            TableGUI specColGui = new TableGUI(rs);
           }
         } break;
 
@@ -554,9 +619,9 @@ public class MainMainInterface{
             // call create view function
             else {
               create_or_update_view(viewName,qy,0);
-              for(String ttt: view_def_map.keySet()){
-                System.out.println(ttt + "-> " + view_def_map.get(ttt));
-              }
+              // for(String ttt: view_def_map.keySet()){
+              //   System.out.println(ttt + "-> " + view_def_map.get(ttt));
+              // }
             }
           }
           // missing as keyword
@@ -617,13 +682,15 @@ public class MainMainInterface{
           // basic sql commands
           default:{
             ResultSet rs = stmt.executeQuery(command);
-            printResults(rs);
+            // printResults(rs);
+            TableGUI tbdefault = new TableGUI(rs);
           }
           break;
         }// end switch
 
       }//end try
       catch(Exception e10){
+        JOptionPane.showMessageDialog(null,"exception caught.");
         throw new Exception(e10);
       }
     }// end function
@@ -654,31 +721,31 @@ public class MainMainInterface{
     }// end function
 
 
-    // debugging purpose
-  	public static void printResults(ResultSet rs) throws SQLException {
-  		ResultSetMetaData rsmd = rs.getMetaData();
-  		int cols = rsmd.getColumnCount();
-  		// Printing column names
-  		for (int i = 1; i <= cols; i++) {
-  			if (i > 1)
-  				System.out.print(", ");
-  			System.out.print(rsmd.getColumnLabel(i));
-  		}
-  		System.out.println("");
-  		// Printing query contents
-  		while (rs.next()) {
-  			for (int i = 1; i <= cols; i++) {
-  				if (i > 1)
-  					System.out.print(", ");
-  				String colVal = rs.getString(i);
-  				if (colVal != null && colVal.contains(","))
-  					System.out.print('"' + colVal + '"');
-  				else
-  					System.out.print(colVal);
-  			}
-  			System.out.println("");
-  		}
-  	}// end function
+    // // debugging purpose
+  	// public static void printResults(ResultSet rs) throws SQLException {
+  	// 	ResultSetMetaData rsmd = rs.getMetaData();
+  	// 	int cols = rsmd.getColumnCount();
+  	// 	// Printing column names
+  	// 	for (int i = 1; i <= cols; i++) {
+  	// 		if (i > 1)
+  	// 			System.out.print(", ");
+  	// 		System.out.print(rsmd.getColumnLabel(i));
+  	// 	}
+  	// 	System.out.println("");
+  	// 	// Printing query contents
+  	// 	while (rs.next()) {
+  	// 		for (int i = 1; i <= cols; i++) {
+  	// 			if (i > 1)
+  	// 				System.out.print(", ");
+  	// 			String colVal = rs.getString(i);
+  	// 			if (colVal != null && colVal.contains(","))
+  	// 				System.out.print('"' + colVal + '"');
+  	// 			else
+  	// 				System.out.print(colVal);
+  	// 		}
+  	// 		System.out.println("");
+  	// 	}
+  	// }// end function
 
     public void database_meta(){
 
@@ -784,12 +851,7 @@ public class MainMainInterface{
       System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
       // System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
       List<String> pathstr1 = iPaths.getPath(tb2).getVertexList();
-      // ArrayList<String> pathls1 = new ArrayList<String>(); //  the 1d array to passed to tablegui
-      // for(int i = 0;i < pathstr1.size();i++){
-      //   pathls1.add(pathstr1.get(i));
-      // }
-      // System.out.println("printing arraylist:");
-      // System.out.println(Arrays.toString(pathls1.toArray()) );
+
       TableGUI tbpath = new TableGUI(pathstr1);
     }
 
@@ -797,13 +859,13 @@ public class MainMainInterface{
 
     public void print_join_table(Connection conn, Statement stmt,Graph<String, ColumnEdge> table_matrix,String tb1, String tb2, ArrayList<String>edgeName){
       try{
-        System.out.println("Shortest path from tb1 to tb2:");
+        System.out.println("---------------- It will take a while to display ------------");
         DijkstraShortestPath<String, ColumnEdge> dijkstraAlg =
         new DijkstraShortestPath<>(table_matrix);
         SingleSourcePaths<String, ColumnEdge> iPaths = dijkstraAlg.getPaths(tb1);
 
-        System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
-        System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
+        // System.out.println("shortest path from table \""+tb1+"\" to table \"" + tb2 + "\":");
+        // System.out.println(iPaths.getPath(tb2).getVertexList() + "\n");
         List<String> tablelist = iPaths.getPath(tb2).getVertexList();
 
         // retrieve on what columns into arraylist
@@ -815,14 +877,22 @@ public class MainMainInterface{
           // get the string by weight/index in edgename
           int index = (int)wt;
           String columnName1 = edgeName.get(index);
-          System.out.println("index:"+index);
-          System.out.println("columnName1:"+columnName1);
+          // System.out.println("index:"+index);
+          // System.out.println("columnName1:"+columnName1);
           // append it to oncluaseEdge
           onclauseEdge.add(columnName1);
         }
+
+        // // if there are more than 3 edges. which means more than 4 tables joined, do not display
+        // if(onclauseEdge.size()>3){
+        //   JOptionPane.showMessageDialog(null,"More than 4 tables joined. we are not going to display it");
+        //   return;
+        // }
+
+
         String query = "select * from ";
-        System.out.println("tblistsize:"+tablelist.size());
-        System.out.println("oncluasesize:"+onclauseEdge.size());
+        // System.out.println("tblistsize:"+tablelist.size());
+        // System.out.println("oncluasesize:"+onclauseEdge.size());
         // contruct tables names and inner join strings
         String middle = "";
         for(int j=0;j<tablelist.size();j++){
@@ -841,21 +911,13 @@ public class MainMainInterface{
         ResultSetMetaData rsmd2;
         rs2 = stmt.executeQuery(query);
         rsmd2 = rs2.getMetaData();
-        System.out.println("hellow");
+        // System.out.println("hellow");
         int countloop = 0;
-        while(rs2.next()){
+        JOptionPane.showMessageDialog(null,"The joined table will be displayed after you read 2 messages and clicking ok button for three times");
+        JOptionPane.showMessageDialog(null,"If the joined table contains too many columns, it will show dots, please click ok to continue");
+        JOptionPane.showMessageDialog(null,"You might need to change the width of the column to see the entries, please click ok to continue");
+        TableGUI joingui = new TableGUI(rs2);
 
-          for(int j=1;j <= rsmd2.getColumnCount();j++){
-            String type = rsmd2.getColumnTypeName(j);
-            // System.out.println("type:"+type);
-            if(type.toLowerCase().contains("binary")){
-              System.out.println(rsmd2.getColumnName(j)+": "+"some binary, print out make a noise");
-            }else {
-              System.out.println(rsmd2.getColumnName(j)+": "+rs2.getString(j));
-            }
-          }// end forloop
-          System.out.println("*******************************************************");
-        }
       }catch(Exception e){
         System.out.println("Something wrong in join table.");
         e.printStackTrace();
@@ -896,17 +958,18 @@ public class MainMainInterface{
         rs = stmt.executeQuery(qry);
         rsmd = rs.getMetaData();
 
-        while(rs.next()){
-          for(int j=1;j <= rsmd.getColumnCount();j++){
-            String type = rsmd.getColumnTypeName(j);
-            if(type.toLowerCase().contains("binary")){
-              System.out.println(rsmd.getColumnName(j)+": "+"some binary, print out make a noise");
-            }else {
-              System.out.println(rsmd.getColumnName(j)+": "+rs.getString(j));
-            }
-          }
-          System.out.println("*******************************************************");
-        }// end while
+        TableGUI tbviewgui = new TableGUI(rs);
+        // while(rs.next()){
+        //   for(int j=1;j <= rsmd.getColumnCount();j++){
+        //     String type = rsmd.getColumnTypeName(j);
+        //     if(type.toLowerCase().contains("binary")){
+        //       System.out.println(rsmd.getColumnName(j)+": "+"some binary, print out make a noise");
+        //     }else {
+        //       System.out.println(rsmd.getColumnName(j)+": "+rs.getString(j));
+        //     }
+        //   }
+        //   System.out.println("*******************************************************");
+        // }// end while
 
       }catch(Exception e){
         System.out.println("get-view-for-user");
@@ -993,10 +1056,11 @@ public class MainMainInterface{
       statement.setInt(1, num);
 
       ResultSet resultSet=statement.executeQuery();
-      displayResultSet(resultSet,'-',150);
-      System.out.println();
-      resultSet.close();
-      statement.close();
+      TableGUI salesGUI = new TableGUI(resultSet);
+      // displayResultSet(resultSet,'-',150);
+      // System.out.println();
+      // resultSet.close();
+      // statement.close();
     }// end function
 
 
@@ -1012,10 +1076,11 @@ public class MainMainInterface{
       "order by count(*) desc;";
       Statement statement =conn.createStatement();
       ResultSet resultSet=statement.executeQuery(sql);
-      displayResultSet(resultSet,'-',150);
-      System.out.println();
-      resultSet.close();
-      statement.close();
+      TableGUI reasongui = new TableGUI(resultSet);
+      // displayResultSet(resultSet,'-',150);
+      // System.out.println();
+      // resultSet.close();
+      // statement.close();
     }// end function
 
     public void jdbShowSalesMonthly(int year, Connection conn) throws SQLException {
@@ -1029,21 +1094,22 @@ public class MainMainInterface{
       statement.setInt(1, year);
 
       ResultSet resultSet=statement.executeQuery();
-      displayResultSet(resultSet,'-',150);
-      System.out.println();
-      resultSet.close();
-      statement.close();
+      TableGUI monthlyGUI  = new TableGUI(resultSet);
+      // displayResultSet(resultSet,'-',150);
+      // System.out.println();
+      // resultSet.close();
+      // statement.close();
     }// end function
 
 
 
-    private String removeSemicolon(String str) {
-      String result = str;
-      if (str.charAt(str.length() - 1) == ';') {
-        result = str.substring(0, str.length() - 1);
-      }
-      return result;
-    }
+    // private String removeSemicolon(String str) {
+    //   String result = str;
+    //   if (str.charAt(str.length() - 1) == ';') {
+    //     result = str.substring(0, str.length() - 1);
+    //   }
+    //   return result;
+    // }
 
 
 

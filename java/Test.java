@@ -57,8 +57,25 @@ public class Test {
 			String testQuery5 = "jdb-search-path employee product;";
 			String testQuery6 = "jdb-search-and-join employee product;";
 			String testQuery7 = "jdb-stat salesorderheader SubTotal";
+
+			String testQuery8 = "jdb-show-best-salesperson 10;";
+			String testQuery9 = "jdb-show-reason-count;";
+			String testQuery10 = "jdb-show-sales-monthly 2002;";
+
+			String testQuery11 = "jdb-show-best-salesperson;";
+			String testQuery12 = "jdb-show-sales-monthly;";
+
+			String testQuery13 = "jdb-customer-info \"customer.TerritoryID < 5\" groupby stateprovince.Name";
+			String testQuery16 = "jdb-customer-orders \"customer.CustomerID < 10\" aggregate";
+
+			String testQuery14 = "select * from customer;";
+			String testQuery15 = "show-specific-columns employee 1:3:5";
+			String testQuery18 = "show-specific-columns employee ALL";
+			String testQuery17 = "show-tables;";
+
+
  			MainMainInterface testMMI = new MainMainInterface();
-			testMMI.setQueryString(testQuery4);
+			testMMI.setQueryString(testQuery18);
 			testMMI.switchOnFirstWord();
 
 		} catch (Exception e){
