@@ -1,63 +1,33 @@
+README for Phase 3 Project
 
-Experimenting with AdventureWorks on your local system 
-+ JDBC connectivity, JAVA GUI (see java/ directory)
+The line for "Enter query" will allow users to enter a raw SQL query.
 
-1. Download AdventureWorks database from
+The following will explain the input parameters of each button and dropdown.
+Only commands with confusing input parameters will be included.
 
-  https://sourceforge.net/projects/awmysql/
 
-  and unzip it to produce AWBackup.sql. 
 
-  AdventureWorks is an example database made public by Microsoft.
+Buttons: Basic functions
 
-2. Create a docker directory with the docker-compose.yml file provided here.
+Show Columns of Table: First argument is a table name, second argument is the
+columns you wish to see separated by space. Case-sensitive.
 
-- Note: username root, password: password 
-- You MUST change the above in the docker-compose.yml file for security.
-- In the examples below, I will assume that the default password is used.
-- You will use these credentials to connect to your MySQL server
-- Move the AWBackup.sql file to this directory.
+Join Tables: The join conditions between table entries are raw SQL conditional
+syntax, e.g. table1.col = table2.col
 
-*  See https://medium.com/@chrischuck35/how-to-create-a-mysql-instance-with-docker-compose-1598f3cc1bee 
 
-3. Start the container
 
-- run
+Dropdown: Required commands and custom commands
 
-  docker-compose up -d
+Get stats: if you scroll to the right, there is a line explaining how many counts each star represents.
 
-4. Populate your MySQL server with the data. You only need to do this once.
+Get customer info: first parameter is sql conditional syntax (e.g. table1.col < 100), second parameter is column name if you wish to group by that column name. Columns can be chosen from customer, address, stateprovince, and countryregion.
+This will return all the locational information of all customers.
 
-- run
+Get customer orders: first parameter is same as above (acceptable tables are customer, salesorderheader, salesorderdetail), second is either blank, aggregate, or aggregate-by-sales. 
+This will return all the purchase information of customers, including all products they purchased.
+If aggregate is the second parameter, it will return the aggregate info for each customer.
+If aggregate-by-sales is the second parameter, it will return the aggregate info for each unique sale.
 
-  mysql --host 127.0.0.1 --port 3306 -u root  -ppassword < AWBackup.sql 
-
-- this will take a while, and once it is done, you'll be dropped back to
-  your prompt
-
-5. Login to your MySQL server
-
--run
-
-  mysql --host 127.0.0.1 --port 3306 -u root  -ppassword
-
-6. Try out some commands
-
--run 
-
-  use adventureworks; 
-  show tables;
-  show columns from customer;
-  select * from customer where AccountNumber="AW00029475";
-
-7. Stop the container when you're done
-
-- run
-
-  docker-compose stop 
-
-8. When you start the container again later and connect to your MySQL server,
-you will find that the adventureworks DB is alive and well. Don't forget to do
-
-  use adventureworks;
-
+Both of the above may take a while to display since they deal with huge amounts of data if there is no conditional syntax.
+Please give them time.
