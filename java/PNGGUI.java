@@ -29,7 +29,12 @@ public class PNGGUI extends JFrame{
   // private final int width_base = 1200;
   // private final int height_base = 1000;
 
-  public PNGGUI(String img){
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L; // this line is needed or else other classes will not recognize this
+
+public PNGGUI(String img){
     try{
 
       // this.setSize(width_base,height_base);
