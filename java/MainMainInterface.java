@@ -73,14 +73,9 @@ public class MainMainInterface{
 
       // initialize graph
       database_meta();
+      // join_table3("employee","purchaseorderheader","vendorcontact","purchaseorderheader.EmployeeID = employee.EmployeeID","purchaseorderheader.VendorID=vendorcontact.VendorID");
+      // join_table4("department","employeedepartmenthistory","employeepayhistory","jobcandidate","department.DepartmentID=employeepayhistory.DepartmentID","employeepayhistory.EmployeeID=employeedepartmenthistory.EmployeeID","employeepayhistory.EmployeeID=jobcandidate.EmployeeID");
 
-      // // print for checking
-      // for(String k: adj_list_by_column.keySet()){
-      //   System.out.println("******************* "+ k +" ******************");
-      //   for(int j=0;j<adj_list_by_column.get(k).size();j++){
-      //     System.out.println(adj_list_by_column.get(k).get(j));
-      //   }
-      // }
 
 
     } catch(Exception e1){
@@ -240,6 +235,37 @@ public class MainMainInterface{
           }
         }
         break;
+
+        case "join-tables":{
+          if(parsed_command.length == 4){
+            String tB1 = parsed_command[1].trim();
+            String tB2 = parsed_command[3].replace(";","").trim();
+            print_join_table(this.conn,this.stmt,this.table_matrix,tB1,tB2,this.edgeName);
+
+          } else if(parsed_command.length == 6){
+            String tB1 = parsed_command[1].trim();
+            String tB2 = parsed_command[3].trim();
+            String tB3 = parsed_command[5].replace(";","").trim();
+            String cond1 = parsed_command[2].trim();
+            String cond2 = parsed_command[4].trim();
+            join_table3(tB1,tB2,tB3,cond1,cond2);
+
+          } else if (parsed_command.length == 8){
+            String tB1 = parsed_command[1].trim();
+            String tB2 = parsed_command[3].trim();
+            String tB3 = parsed_command[5].trim();
+            String tB4 = parsed_command[7].replace(";","").trim();
+            String cond1 = parsed_command[2].trim();
+            String cond2 = parsed_command[4].trim();
+            String cond3 = parsed_command[6].trim();
+            join_table4(tB1,tB2,tB3,tB4,cond1,cond2,cond3);
+
+          } else {
+            JOptionPane.showMessageDialog(null,"incorrect num of arguments. Retry");
+          }
+
+          break;
+        }
 
 
         case "jdb-get-view":{
@@ -682,6 +708,7 @@ public class MainMainInterface{
 
           // basic sql commands
           default:{
+            command = command.replace(";","").trim();
             ResultSet rs = stmt.executeQuery(command);
             // printResults(rs);
             TableGUI tbdefault = new TableGUI(rs);
@@ -856,9 +883,42 @@ public class MainMainInterface{
       TableGUI tbpath = new TableGUI(pathstr1);
     }
 
+    public void join_table3(String tb1, String tb2, String tb3, String cond1, String cond2)throws Exception{
+      try{
+        String qry = "select * from " + tb1 +
+        " INNER JOIN " + tb2 + " ON ( " + cond1 + ") " +
+        " INNER JOIN " + tb3 + " ON ( " + cond2 + ") ";
+        this.stmt = this.conn.createStatement();
+        ResultSet rs2;
+        rs2 = this.stmt.executeQuery(qry);
+        TableGUI tbjoin3gui = new TableGUI(rs2);
+      }catch(Exception e){
+        // throw new Exception(ee);
+        JOptionPane.showMessageDialog(null,"Wrong format or syntax for condition is not correct. Re-enter");
+        throw new Exception(e);
+      }
+    }// end function
+
+    public void join_table4(String tb1, String tb2, String tb3, String tb4, String cond1, String cond2, String cond3) throws Exception{
+      try{
+        String qry = "select * from " + tb1 +
+        " INNER JOIN " + tb2 + " ON ( " + cond1 + " ) " +
+        " INNER JOIN " + tb3 + " ON ( " + cond2 + " ) "  +
+        " INNER JOIN " + tb4 + " ON ( " + cond3 + " ) ";
+
+        this.stmt = this.conn.createStatement();
+        ResultSet rs2;
+        rs2 = this.stmt.executeQuery(qry);
+        TableGUI tbjoin3gui = new TableGUI(rs2);
+
+      } catch(Exception ee){
+        JOptionPane.showMessageDialog(null,"Wrong format or syntax for condition is not correct.Re-enter");
+        throw new Exception(ee);
+      }
+    }
 
 
-    public void print_join_table(Connection conn, Statement stmt,Graph<String, ColumnEdge> table_matrix,String tb1, String tb2, ArrayList<String>edgeName){
+    public void print_join_table(Connection conn, Statement stmt,Graph<String, ColumnEdge> table_matrix,String tb1, String tb2, ArrayList<String>edgeName)throws Exception{
       try{
         System.out.println("---------------- It will take a while to display ------------");
         DijkstraShortestPath<String, ColumnEdge> dijkstraAlg =
@@ -920,8 +980,10 @@ public class MainMainInterface{
         TableGUI joingui = new TableGUI(rs2);
 
       }catch(Exception e){
-        System.out.println("Something wrong in join table.");
-        e.printStackTrace();
+        JOptionPane.showMessageDialog(null,"Error in joining");
+        throw new Exception(e);
+        // System.out.println("Something wrong in join table.");
+        // e.printStackTrace();
       }// end catch
     }// print join table
 
