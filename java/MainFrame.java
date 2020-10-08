@@ -112,6 +112,7 @@ public class MainFrame extends JFrame {
 		this.setVisible(true);
 	}
 
+	// listener for basic function buttons
 	private class BasicListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String action = e.getActionCommand();
@@ -136,11 +137,12 @@ public class MainFrame extends JFrame {
 		}
 	}
 
-	// ButtonListener that handles logic for specific button presses
+	// ButtonListener that handles logic for dropdown
 	private class CommandListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String query = "";
-			// case strings are temporary, buttons aren't added yet
+			
+			// prompt different input depending on command
 			switch(command) {
 				case "Show related tables": {
 					String[] args = {"Table name"};
@@ -224,7 +226,8 @@ public class MainFrame extends JFrame {
 	}
 
 	// creates JInputDialog to gather parameters for MainMainInterface functions
-	// fields is how many parameters, and fieldStrings specifies parameter names
+	// fieldStrings specifies parameter names
+	// special is 0 for default, other numbers are for certain commands that have sql syntax or optional parameters
 	public String promptInput(String function, String[] fieldStrings, int special) {
 		int numFields = fieldStrings.length;
 		JPanel pane = new JPanel();
@@ -256,7 +259,8 @@ public class MainFrame extends JFrame {
 		return function + " " + query;
 	}
 	
-	/* Depending on case, checks whether all required arguments are there
+	/* 
+	 * Depending on case, checks whether all required arguments are there
 	 * Sometimes, arguments are optional
 	 * Other times, arguments may be sql syntax and will need to be surrounded by quotes
 	 */

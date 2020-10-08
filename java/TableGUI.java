@@ -78,6 +78,7 @@ public class TableGUI extends JFrame{
 		}
 	}// end constructor
 
+	// in case input is not a ResultSet
 	public TableGUI(List<String> rows) {
 		try {
 			this.setSize(width_base,height_base);

@@ -2,6 +2,7 @@
 *
 *
 * MainInterface --- name might be changed later
+* Accepts command from MainFrame and output results on GUI
 */
 import java.util.regex.*;
 import java.sql.*;
