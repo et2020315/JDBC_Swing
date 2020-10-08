@@ -68,14 +68,14 @@ public class Test {
 			String testQuery13 = "jdb-customer-info \"customer.TerritoryID < 5\" groupby stateprovince.Name";
 			String testQuery16 = "jdb-customer-orders \"customer.CustomerID < 10\" aggregate";
 
-			String testQuery14 = "select * from customer;";
+			String testQuery14 = "select * from department;";
 			String testQuery15 = "show-specific-columns employee 1:3:5";
 			String testQuery18 = "show-specific-columns employee ALL";
 			String testQuery17 = "show-tables;";
 
 
  			MainMainInterface testMMI = new MainMainInterface();
-			testMMI.setQueryString(testQuery18);
+			testMMI.setQueryString(testQuery14);
 			testMMI.switchOnFirstWord();
 
 		} catch (Exception e){
