@@ -92,6 +92,7 @@ public class MainFrame extends JFrame {
 				"Get customer info", "Get customer orders", "Plot schema", "Show reason count"};
 		dropdown = new JComboBox<String>(choices);
 		dropdown.setBounds(10, 50, 180, 20);
+		command = "Show related tables";
 		dropdown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				command = (String)dropdown.getItemAt(dropdown.getSelectedIndex());
@@ -235,7 +236,8 @@ public class MainFrame extends JFrame {
 	public String promptInput(String function, String[] fieldStrings, int special) {
 		int numFields = fieldStrings.length;
 		JPanel pane = new JPanel();
-		pane.setLayout(new GridLayout(2, numFields, 2, 2));
+		System.out.println(numFields);
+		pane.setLayout(new GridLayout(numFields, 2, 2, 2));
 
 		JTextField[] textFields = new JTextField[numFields];
 
@@ -256,7 +258,10 @@ public class MainFrame extends JFrame {
 			params[i] = textFields[i].getText();
 		}
 		
-		return function + " " + generateQuery(params, special);
+		String query = generateQuery(params, special);
+		if (query.equals(""))
+			return "";
+		return function + " " + query;
 	}
 	
 	/* Depending on case, checks whether all required arguments are there
