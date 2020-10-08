@@ -37,7 +37,6 @@ public class TableGUI extends JFrame{
 		try{
 			this.setSize(width_base,height_base);
 			this.setTitle("Present table in GUI");
-			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int numCols = rsmd.getColumnCount();

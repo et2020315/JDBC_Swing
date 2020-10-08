@@ -10,7 +10,7 @@ import java.awt.event.*;
 // import java.awt.event.*;
 import java.net.URL;
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
+
 // import java.net.MalformedURLException;
 // import java.awt.Desktop;
 // import java.net.URI;
@@ -24,11 +24,11 @@ public class MainFrame extends JFrame {
 	private JFrame window = new JFrame("Main Window");
 
 	// -- PHASE 3 GUI COMPONENTS -- //
+	
 	private JPanel phase3Panel = new JPanel();
 	// JPanel components
 	private JButton submitQuery = new JButton("Submit Query");
 	private JTextField console = new JTextField("Enter query here");
-	private JTextArea display = new JTextArea();
 
 	// Three basic commands
 	private JButton showTablesButton = new JButton("Show All Tables");
@@ -37,17 +37,14 @@ public class MainFrame extends JFrame {
 
 	// Dropdown for predefined commands and button to activate command
 	private String command;
-	private JComboBox dropdown;
+	private JComboBox<String> dropdown;
 	private JButton commandButton = new JButton("Execute");
 
-	// Labels for GUI clarity
-	private JLabel consoleLabel = new JLabel();
-	private JLabel displayLabel = new JLabel();
 	// -- END PHASE 3 COMPONENTS -- //
 
 	// These can be changed
 	private int WIDTH = 950;
-	private int HEIGHT = 300;
+	private int HEIGHT = 200;
 
 	// Constructor for MainFrame
 	MainFrame() {
@@ -60,7 +57,7 @@ public class MainFrame extends JFrame {
 		phase3Panel.setLayout(null);
 
 		// JButtons, add actionlistener here
-		submitQuery.setBounds(10, 100 + HEIGHT / 3, 120, 30);
+		submitQuery.setBounds(10, 120, 120, 30);
 		submitQuery.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String text = getConsoleInput();
@@ -104,19 +101,14 @@ public class MainFrame extends JFrame {
 		commandButton.addActionListener(new CommandListener());
 		phase3Panel.add(commandButton);
 
-		// This is where query results are displayed
-		display.setEditable(false);
-		display.setText("Results");
-		display.setBounds (10, 70, WIDTH - 2*10, HEIGHT / 3);
-		phase3Panel.add(display);
-
-		console.setBounds(10, 60 + HEIGHT / 3, WIDTH - 2*10, 40);
+		console.setBounds(10, 90, WIDTH - 2*10, 20);
 		phase3Panel.add(console);
 
 		// adding JPanel to MainFrame
 		this.add(phase3Panel);
 		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		this.pack();
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 	}
 
@@ -318,10 +310,10 @@ public class MainFrame extends JFrame {
 			if (!command[0].equals("")) {
 				command[0] = "\"" + command[0] + "\"";
 			}
-			if (special == 4) {
+			if (special == 5) {
 				command[1] = "groupby " + command[1];
 			}
-			else if (special == 5) {
+			else if (special == 4) {
 				if (!command[1].equals("") && !command[1].equalsIgnoreCase("aggregate") && !command[1].equalsIgnoreCase("aggregate-by-sales")) {
 					JOptionPane.showMessageDialog(null, "Second argument must be either blank, aggregate, or aggregate-by-sales.");
 					return "";
