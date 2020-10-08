@@ -542,41 +542,51 @@ public class MainMainInterface{
           if (parsed_command.length != 3) {
             JOptionPane.showMessageDialog(null, "Arguments invalid");
           }
-
-          if (parsed_command[2] != "ALL") {
-            String[] colsAsString = parsed_command[2].split(":");
-            int[] columns = new int[colsAsString.length];
-            for (int i = 0; i < colsAsString.length; i++) {
-              columns[i] = Integer.parseInt(colsAsString[i]);
+          System.out.println("arg2-"+parsed_command[1]+"-args-"+parsed_command[2]+"-");
+          if (!parsed_command[2].equalsIgnoreCase("ALL")) {
+            String[] colsAsString = parsed_command[2].trim().split(":");
+            // int[] columns = new int[colsAsString.length];
+            // for (int i = 0; i < colsAsString.length; i++) {
+            //   columns[i] = Integer.parseInt(colsAsString[i]);
+            //   System.out.println("col:"+columns[i]);
+            // }
+            ArrayList<String> intStrlist = new ArrayList<String>();
+            for(int i = 0; i < colsAsString.length;i++){
+              intStrlist.add(colsAsString[i].trim());
             }
+            // now intStrlist contains the index of column
 
             query = "SELECT * FROM " + parsed_command[1];
             ResultSet rs = stmt.executeQuery(query);
             ResultSetMetaData rsmd = rs.getMetaData();
             int colCount = rsmd.getColumnCount();
+            // columns contains the index of displaying columns
 
-            int colIndex = 0;
-            for (int i = 0; i < colCount; i++) {
-              if (columns[colIndex] == i+1) {
-                ArrayList<String> col = new ArrayList<String>();
-                results.add(col);
-                colIndex++;
-              }
+            ArrayList<String> displaySPEC = new ArrayList<String>();
+            String temptemp = "";
+            for(int i = 0; i < colsAsString.length;i++){
+              temptemp += " |" + rsmd.getColumnName(Integer.parseInt(colsAsString[i]));
             }
+            displaySPEC.add(temptemp);
 
-            colIndex = 0;
             while (rs.next()) {
-              for (int i = 0; i < colCount; i++) {
-                if (columns[colIndex] == i+1) {
-                  results.get(colIndex).add(rs.getString(i+1));
-                  colIndex++;
+              String strrow = "";
+              for (int i = 1; i <= colCount; i++){
+                // if (columns[colIndex] == i+1) {
+                //   results.get(colIndex).add(rs.getString(i+1));
+                //   colIndex++;
+                // }
+                if(intStrlist.contains(Integer.toString(i))){
+                  strrow = strrow + "\t|" + rs.getString(i);
                 }
-              }
+              }// end for
+              displaySPEC.add(strrow);
             }
+            TableGUI disSpecGUI = new TableGUI(displaySPEC);
 
             // send to tableGUI
           } else {
-            query = "SELECT * FROM " + parsed_command[1];
+            query = "SELECT * FROM " + parsed_command[1].trim();
             ResultSet rs = stmt.executeQuery(query);
             TableGUI specColGui = new TableGUI(rs);
           }
@@ -865,11 +875,11 @@ public class MainMainInterface{
           onclauseEdge.add(columnName1);
         }
 
-        // if there are more than 3 edges. which means more than 4 tables joined, do not display
-        if(onclauseEdge.size()>3){
-          JOptionPane.showMessageDialog(null,"More than 4 tables joined. we are not going to display it");
-          return;
-        }
+        // // if there are more than 3 edges. which means more than 4 tables joined, do not display
+        // if(onclauseEdge.size()>3){
+        //   JOptionPane.showMessageDialog(null,"More than 4 tables joined. we are not going to display it");
+        //   return;
+        // }
 
 
         String query = "select * from ";

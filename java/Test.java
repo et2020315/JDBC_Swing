@@ -69,12 +69,13 @@ public class Test {
 			String testQuery16 = "jdb-customer-orders \"customer.CustomerID < 10\" aggregate";
 
 			String testQuery14 = "select * from customer;";
-			String testQuery15 = "show-specific-columns employee ALL";
+			String testQuery15 = "show-specific-columns employee 1:3:5";
+			String testQuery18 = "show-specific-columns employee ALL";
 			String testQuery17 = "show-tables;";
 
 
  			MainMainInterface testMMI = new MainMainInterface();
-			testMMI.setQueryString(testQuery17);
+			testMMI.setQueryString(testQuery18);
 			testMMI.switchOnFirstWord();
 
 		} catch (Exception e){
