@@ -24,6 +24,35 @@ https://stackoverflow.com/questions/16706716/using-two-values-for-one-switch-cas
 https://stackoverflow.com/questions/352780/when-to-catch-java-lang-error#:~:text=An%20Error%20usually%20shouldn't,such%20errors%20are%20abnormal%20conditions.
 https://stackoverflow.com/questions/37560236/trying-to-throw-exceptions-in-method-called-in-an-actionlistener/37560897
 https://beginnersbook.com/2017/10/java-string-isempty-method-with-example/
+https://www.w3schools.com/sql/sql_case.asp
+https://www.w3resource.com/mysql/date-and-time-functions/mysql-week-function.php
+https://javadoc.scijava.org/XChart/org/knowm/xchart/QuickChart.html
+https://www.w3schools.com/sql/sql_ref_order_by.asp
+https://knowm.org/javadocs/xchart/org/knowm/xchart/XYChart.html
+
+https://www.w3schools.com/sql/func_mysql_ceil.asp
+
+https://www.w3schools.com/sql/func_mysql_convert.asp
+
+https://stackoverflow.com/questions/6325384/adding-multiple-jpanels-to-jframe
+
+https://stackoverflow.com/questions/17287248/jframe-inside-another-jframe
+https://www.w3schools.com/sql/sql_datatypes.asp
+https://stackoverflow.com/questions/1764881/getting-data-for-histogram-plot
+
+
+https://github.com/knowm/XChart/blob/develop/xchart-demo/src/main/java/org/knowm/xchart/standalone/SwingDemo.java
+
+https://www.w3schools.com/sql/func_sqlserver_month.asp
+https://knowm.org/javadocs/xchart/org/knowm/xchart/SwingWrapper.html
+
+https://knowm.org/javadocs/xchart/index.html
+https://knowm.org/open-source/xchart/xchart-example-code/
+https://github.com/knowm/XChart
+
+
+
+
 
 
 https://stackoverflow.com/questions/12568340/add-custom-message-to-thrown-exception-while-maintaining-stack-trace-in-java

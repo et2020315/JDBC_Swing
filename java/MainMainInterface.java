@@ -1108,6 +1108,9 @@ public class MainMainInterface{
     }// end function
 
 
+
+
+
     public void jdbShowBestSalesperson(int num, Connection conn) throws SQLException {
       String sql="SELECT c.FirstName, c.LastName, bestEmployeeYTD.bestYTD " +
       "from (select SalesPersonID, SalesYTD as bestYTD from salesperson order by SalesYTD desc limit ?) " +
@@ -1166,13 +1169,66 @@ public class MainMainInterface{
 
 
 
-    // private String removeSemicolon(String str) {
-    //   String result = str;
-    //   if (str.charAt(str.length() - 1) == ';') {
-    //     result = str.substring(0, str.length() - 1);
-    //   }
-    //   return result;
-    // }
+    public void dashboard_function(){
+
+      // part 1
+      String num_customer_yearly = "select count(distinct(customerid)) from salesorderheader group by year(orderdate)";
+      String num_customer_monthly_2002 = "select count(distinct(customerid)) from salesorderheader where year(orderdate)='2002' group by month(orderdate)";
+      String num_customer_weekly_2002 = "select count(distinct(customerid)) from salesorderheader where year(orderdate)='2002' group by week(orderdate)";
+
+      String sales_amount_yearly = "select sum(subtotal) from salesorderheader group by year(orderdate)";
+      String sales_amount_monthly_2003 = "select sum(subtotal) from salesorderheader where year(orderdate)='2003' group by month(orderdate)";
+      String sales_amount_weekly_2003 = "select sum(subtotal) from salesorderheader where year(orderdate)='2003' group by week(orderdate)";
+
+      String sales_order_yearly = "select year(orderdate), count(distinct(SalesOrderID)) from salesorderheader group by year(orderdate)";
+      String sales_count_monthly_2004 = "select month(orderdate), count(distinct(SalesorderID)) from salesorderheader where year(orderdate) = '2004' group by month(orderdate)";
+      String sales_count_weekly_2004 = "select week(orderdate) , count(distinct(SalesOrderID)) from salesorderheader where year(orderdate) = '2004' group by week(orderdate)";
+
+      // part 2
+      // 1940-1950, 1950-1960, 1960-1970, 1970-1980, 1980+
+      String employee_birth_year = "select floor(cast(year(birthdate) as signed)/10 )*10 as bucket,count(year(birthdate)) from employee group by bucket";
+      String employee_vacation_hour = "select ceil((vacationhours)/10)*10 as v, count(*) from employee group by v order by v";
+      String employee_salary_histogram_bin = "select ceil(40*(rate)/100)*100 as r, count(*) from employeepayhistory group by r order by r";
+      String employee_salary_median = "select avg(medianrate) from (select 40*rate as medianrate from employeepayhistory order by medianrate limit 157,2) as x";
+      String employee_salary_mean = "select 40*AVG(rate) as r from employeepayhistory";
+
+      // part 3
+      String regional_sales_count = "select count(distinct(salesorderid)) as v,stateprovince.name as n from stateprovince, salesorderheader where stateprovince.territoryid = salesorderheader.territoryid group by n order by v";
+      String regional_sales_amount = "select stateprovince.name as n, sum(salesorderheader.subtotal) as v from stateprovince, salesorderheader where stateprovince.territoryid = salesorderheader.territoryid group by n order by v";
+      String regional_sales_customer = "select stateprovince.name as n, count(distinct(customerid)) as v from stateprovince, salesorderheader where stateprovince.territoryid = salesorderheader.territoryid group by n order by v";
+      String regional_aggregate_sum_rate = "select stateprovince.name, sum(employeepayhistory.rate) from stateprovince inner join address on (stateprovince.stateprovinceid = address.stateprovinceid) inner join employeeaddress on (address.addressid = employeeaddress.addressid ) inner join employeepayhistory on (employeeaddress.employeeid = employeepayhistory.employeeid) group by stateprovince.name";
+
+      // part 4
+      String product_top_10_all_year = "select product.name as n, count(*) as c from product, transactionhistory where product.productid = transactionhistory.productid group by product.productid order by c desc limit 10";
+      String product_top_10_Jan_to_Mar = "select product.name as n, count(*) as c from product, transactionhistory where product.productid = transactionhistory.productid and month(transactiondate) between 1 and 3 group by product.productid order by c desc limit 10";
+
+
+      // part 5
+      
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private String removeSemicolon(String str) {
+      String result = str;
+      if (str.charAt(str.length() - 1) == ';') {
+        result = str.substring(0, str.length() - 1);
+      }
+      return result;
+    }
 
 
 
