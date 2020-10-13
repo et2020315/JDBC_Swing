@@ -29,7 +29,20 @@ https://www.w3resource.com/mysql/date-and-time-functions/mysql-week-function.php
 https://javadoc.scijava.org/XChart/org/knowm/xchart/QuickChart.html
 https://www.w3schools.com/sql/sql_ref_order_by.asp
 https://knowm.org/javadocs/xchart/org/knowm/xchart/XYChart.html
+https://www.w3schools.com/sql/sql_like.asp
 
+https://stackoverflow.com/questions/3436009/every-derived-table-must-have-its-own-alias-error
+https://stackoverflow.com/questions/24194223/mysql-how-to-only-select-from-a-column-if-the-column-exists
+https://stackoverflow.com/questions/2224951/return-the-nth-record-from-mysql-query
+
+https://www.geeksforgeeks.org/calculate-median-in-mysql/
+https://stackoverflow.com/questions/12126991/cast-from-varchar-to-int-mysql
+
+https://stackoverflow.com/questions/193780/how-to-find-all-the-tables-in-mysql-with-specific-column-names-in-them
+
+
+
+https://stackoverflow.com/questions/42631357/how-can-i-round-a-number-down-to-the-nearest-10
 https://www.w3schools.com/sql/func_mysql_ceil.asp
 
 https://www.w3schools.com/sql/func_mysql_convert.asp
