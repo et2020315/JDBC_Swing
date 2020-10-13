@@ -1172,13 +1172,13 @@ public class MainMainInterface{
     public void dashboard_function(){
 
       // part 1
-      String num_customer_yearly = "select count(distinct(customerid)) from salesorderheader group by year(orderdate)";
-      String num_customer_monthly_2002 = "select count(distinct(customerid)) from salesorderheader where year(orderdate)='2002' group by month(orderdate)";
-      String num_customer_weekly_2002 = "select count(distinct(customerid)) from salesorderheader where year(orderdate)='2002' group by week(orderdate)";
+      String num_customer_yearly = "select year(orderdate) , count(distinct(customerid)) from salesorderheader group by year(orderdate)";
+      String num_customer_monthly_2002 = "select month(orderdate) , count(distinct(customerid)) from salesorderheader where year(orderdate)='2002' group by month(orderdate)";
+      String num_customer_weekly_2002 = "select week(orderdate) , count(distinct(customerid)) from salesorderheader where year(orderdate)='2002' group by week(orderdate)";
 
-      String sales_amount_yearly = "select sum(subtotal) from salesorderheader group by year(orderdate)";
-      String sales_amount_monthly_2003 = "select sum(subtotal) from salesorderheader where year(orderdate)='2003' group by month(orderdate)";
-      String sales_amount_weekly_2003 = "select sum(subtotal) from salesorderheader where year(orderdate)='2003' group by week(orderdate)";
+      String sales_amount_yearly = "select year(orderdate) , sum(subtotal) from salesorderheader group by year(orderdate)";
+      String sales_amount_monthly_2003 = "select month(orderdate) , sum(subtotal) from salesorderheader where year(orderdate)='2003' group by month(orderdate)";
+      String sales_amount_weekly_2003 = "select week(orderdate) , sum(subtotal) from salesorderheader where year(orderdate)='2003' group by week(orderdate)";
 
       String sales_order_yearly = "select year(orderdate), count(distinct(SalesOrderID)) from salesorderheader group by year(orderdate)";
       String sales_count_monthly_2004 = "select month(orderdate), count(distinct(SalesorderID)) from salesorderheader where year(orderdate) = '2004' group by month(orderdate)";
@@ -1187,22 +1187,26 @@ public class MainMainInterface{
       // part 2
       // 1940-1950, 1950-1960, 1960-1970, 1970-1980, 1980+
       String employee_birth_year = "select floor(cast(year(birthdate) as signed)/10 )*10 as bucket,count(year(birthdate)) from employee group by bucket";
-      String employee_vacation_hour = "select ceil((vacationhours)/10)*10 as v, count(*) from employee group by v order by v";
+      // note that the historgram below shows:
+      // 200 -300, 300-400, ... 3300 - 3400, 5000 - 5100
+      // !!! ************ Some of the bins are missing! we need to fill those bin names in this dashboard_function() before passing to GUI and put count to be zero ****//
       String employee_salary_histogram_bin = "select ceil(40*(rate)/100)*100 as r, count(*) from employeepayhistory group by r order by r";
+      // these two below will return result set with 1 column with single value
       String employee_salary_median = "select avg(medianrate) from (select 40*rate as medianrate from employeepayhistory order by medianrate limit 157,2) as x";
       String employee_salary_mean = "select 40*AVG(rate) as r from employeepayhistory";
 
       // part 3
-      String regional_sales_count = "select count(distinct(salesorderid)) as v,stateprovince.name as n from stateprovince, salesorderheader where stateprovince.territoryid = salesorderheader.territoryid group by n order by v";
-      String regional_sales_amount = "select stateprovince.name as n, sum(salesorderheader.subtotal) as v from stateprovince, salesorderheader where stateprovince.territoryid = salesorderheader.territoryid group by n order by v";
-      String regional_sales_customer = "select stateprovince.name as n, count(distinct(customerid)) as v from stateprovince, salesorderheader where stateprovince.territoryid = salesorderheader.territoryid group by n order by v";
-      String regional_aggregate_sum_rate = "select stateprovince.name, sum(employeepayhistory.rate) from stateprovince inner join address on (stateprovince.stateprovinceid = address.stateprovinceid) inner join employeeaddress on (address.addressid = employeeaddress.addressid ) inner join employeepayhistory on (employeeaddress.employeeid = employeepayhistory.employeeid) group by stateprovince.name";
+      String regional_sales_count = "select stateprovince.name as statename , count(distinct(salesorderid)) as countsales from stateprovince, salesorderheader where stateprovince.territoryid = salesorderheader.territoryid group by statename order by countsales";
+      String regional_sales_amount = "select stateprovince.name as statename, sum(salesorderheader.subtotal) as sumtotal from stateprovince, salesorderheader where stateprovince.territoryid = salesorderheader.territoryid group by statename order by sumtotal";
+      String regional_sales_customer = "select stateprovince.name as statename, count(distinct(customerid)) as countcustomer from stateprovince, salesorderheader where stateprovince.territoryid = salesorderheader.territoryid group by statename order by countcustomer";
+      String regional_aggregate_sum_rate = "select stateprovince.name as statename, sum(employeepayhistory.rate) as sumPayrate from stateprovince inner join address on (stateprovince.stateprovinceid = address.stateprovinceid) inner join employeeaddress on (address.addressid = employeeaddress.addressid ) inner join employeepayhistory on (employeeaddress.employeeid = employeepayhistory.employeeid) group by statename";
 
       // part 4
-      String product_top_10_all_year = "select product.name as n, count(*) as c from product, transactionhistory where product.productid = transactionhistory.productid group by product.productid order by c desc limit 10";
-      String product_top_10_Jan_to_Mar = "select product.name as n, count(*) as c from product, transactionhistory where product.productid = transactionhistory.productid and month(transactiondate) between 1 and 3 group by product.productid order by c desc limit 10";
-
-
+      // String product_top_10_all_year = "select product.name as statename, count(*) as countNum from product, transactionhistory where product.productid = transactionhistory.productid group by product.productid order by countNum desc limit 10";
+      String product_top_10_Jan_to_Mar = "select product.name as productName, count(*) as countNum from product, transactionhistory where product.productid = transactionhistory.productid and month(transactiondate) between 1 and 3 group by product.productid order by countNum desc limit 10";
+      String product_top_10_Apr_to_Jun = "select product.name as productName, count(*) as countNum from product, transactionhistory where product.productid = transactionhistory.productid and month(transactiondate) between 4 and 6 group by product.productid order by countNum desc limit 10";
+      String product_top_10_Jul_to_Sep = "select product.name as productName, count(*) as countNum from product, transactionhistory where product.productid = transactionhistory.productid and month(transactiondate) between 7 and 9 group by product.productid order by countNum desc limit 10";
+      String product_top_10_Oct_to_Dec = "select product.name as productName, count(*) as countNum from product, transactionhistory where product.productid = transactionhistory.productid and month(transactiondate) between 10 and 12 group by product.productid order by countNum desc limit 10";
       // part 5
       // String customer_demographics = "select ExtractValue(demographics,'IndividualSurvey/Gender') as gender, ExtractValue(demographics,'IndividualSurvey/Education') as education, ExtractValue(demographics,'IndividualSurvey/Occupation') as occupation, ExtractValue(demographics,'IndividualSurvey/MaritalStatus') as married, ExtractValue(demographics,'/IndividualSurvey/YearlyIncome') as yearlyIncome , ExtractValue(demographics,'/IndividualSurvey/BirthDate') as birthdate from individual";
       String customer_birth_year = "select floor(cast(year(birthdate) as signed)/10)*10 as yr  , count(*) from  (select ExtractValue(demographics,'IndividualSurvey/Gender') as gender, ExtractValue(demographics,'IndividualSurvey/Education') as education, ExtractValue(demographics,'IndividualSurvey/Occupation') as occupation, ExtractValue(demographics,'IndividualSurvey/MaritalStatus') as married, ExtractValue(demographics,'/IndividualSurvey/YearlyIncome') as yearlyIncome , ExtractValue(demographics,'/IndividualSurvey/BirthDate') as birthdate from individual) as x  group by yr";
