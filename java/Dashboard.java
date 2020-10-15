@@ -43,7 +43,7 @@ public class Dashboard{
   public void set_customer_birth_year(List<String> x, List<Integer> y) throws Exception{
     try{
       // add the pie chart
-      this.customer_birth_year_chart = new PieChartBuilder().width(300).height(300).title(getClass().getSimpleName()).build();
+      this.customer_birth_year_chart = new PieChartBuilder().width(400).height(400).title(getClass().getSimpleName()).build();
       // loop through to add piechart data to piechart
       for(int i = 0; i < x.size(); i++){
         this.customer_birth_year_chart.addSeries(x.get(i), y.get(i));
@@ -57,7 +57,7 @@ public class Dashboard{
 
   public void set_customer_gender(List<String> x, List<Integer>y) throws Exception{
     try{
-      this.customer_gender_chart = new PieChartBuilder().width(300).height(300).title(getClass().getSimpleName()).build();
+      this.customer_gender_chart = new PieChartBuilder().width(400).height(400).title(getClass().getSimpleName()).build();
       for(int i = 0; i < x.size(); i++){
         this.customer_gender_chart.addSeries(x.get(i),y.get(i));
       }
@@ -85,6 +85,7 @@ public class Dashboard{
       // add sub panels to final panel
       this.finalPanel.add(this.panel5A,BorderLayout.NORTH);
       this.finalPanel.add(this.panel5B,BorderLayout.SOUTH);
+      //..
 
       this.frame.add(this.finalPanel);
       this.frame.pack();
