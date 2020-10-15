@@ -20,6 +20,9 @@ https://stackoverflow.com/questions/43508087/break-up-a-string-literal-over-mult
 https://stackoverflow.com/questions/171952/is-there-a-destructor-for-java
 https://www.geeksforgeeks.org/split-string-java-examples/
 https://stackoverflow.com/questions/16706716/using-two-values-for-one-switch-case-statement/16706729
+https://knowm.org/open-source/xchart/xchart-example-code/
+
+https://programtalk.com/java-api-usage-examples/org.knowm.xchart.PieChart/
 
 https://stackoverflow.com/questions/352780/when-to-catch-java-lang-error#:~:text=An%20Error%20usually%20shouldn't,such%20errors%20are%20abnormal%20conditions.
 https://stackoverflow.com/questions/37560236/trying-to-throw-exceptions-in-method-called-in-an-actionlistener/37560897

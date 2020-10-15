@@ -72,10 +72,11 @@ public class Test {
 			String testQuery15 = "show-specific-columns employee 1:3:5";
 			String testQuery18 = "show-specific-columns employee ALL";
 			String testQuery17 = "show-tables;";
+			String testQuery19 = "dashboard";
 
 
  			MainMainInterface testMMI = new MainMainInterface();
-			testMMI.setQueryString(testQuery14);
+			testMMI.setQueryString(testQuery19);
 			testMMI.switchOnFirstWord();
 
 		} catch (Exception e){

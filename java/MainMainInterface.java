@@ -628,6 +628,11 @@ public class MainMainInterface{
         } break;
 
 
+        case "dashboard":{
+          dashboard_function();
+        }
+
+
         case "CREATE":{
           // create view satement
           if(command.contains("CREATE VIEW") && command.contains("AS")){
@@ -1083,8 +1088,8 @@ public class MainMainInterface{
       ResultSet resultSet=statement.executeQuery();
       displayResultSet(resultSet,'-',150);
       System.out.println();
-      resultSet.close();
-      statement.close();
+      // resultSet.close();
+      // statement.close();
     }// end function
 
     private void displayResultSet(ResultSet resultSet, char symbol, int width) throws SQLException
@@ -1169,8 +1174,8 @@ public class MainMainInterface{
 
 
 
-    public void dashboard_function(){
-
+    public void dashboard_function() throws Exception{
+      try{
       // part 1
       String num_customer_yearly = "select year(orderdate) , count(distinct(customerid)) from salesorderheader group by year(orderdate)";
       String num_customer_monthly_2002 = "select month(orderdate) , count(distinct(customerid)) from salesorderheader where year(orderdate)='2002' group by month(orderdate)";
@@ -1180,7 +1185,7 @@ public class MainMainInterface{
       String sales_amount_monthly_2003 = "select month(orderdate) , sum(subtotal) from salesorderheader where year(orderdate)='2003' group by month(orderdate)";
       String sales_amount_weekly_2003 = "select week(orderdate) , sum(subtotal) from salesorderheader where year(orderdate)='2003' group by week(orderdate)";
 
-      String sales_order_yearly = "select year(orderdate), count(distinct(SalesOrderID)) from salesorderheader group by year(orderdate)";
+      String sales_count_yearly = "select year(orderdate), count(distinct(SalesOrderID)) from salesorderheader group by year(orderdate)";
       String sales_count_monthly_2004 = "select month(orderdate), count(distinct(SalesorderID)) from salesorderheader where year(orderdate) = '2004' group by month(orderdate)";
       String sales_count_weekly_2004 = "select week(orderdate) , count(distinct(SalesOrderID)) from salesorderheader where year(orderdate) = '2004' group by week(orderdate)";
 
@@ -1209,21 +1214,134 @@ public class MainMainInterface{
       String product_top_10_Oct_to_Dec = "select product.name as productName, count(*) as countNum from product, transactionhistory where product.productid = transactionhistory.productid and month(transactiondate) between 10 and 12 group by product.productid order by countNum desc limit 10";
       // part 5
       // String customer_demographics = "select ExtractValue(demographics,'IndividualSurvey/Gender') as gender, ExtractValue(demographics,'IndividualSurvey/Education') as education, ExtractValue(demographics,'IndividualSurvey/Occupation') as occupation, ExtractValue(demographics,'IndividualSurvey/MaritalStatus') as married, ExtractValue(demographics,'/IndividualSurvey/YearlyIncome') as yearlyIncome , ExtractValue(demographics,'/IndividualSurvey/BirthDate') as birthdate from individual";
-      String customer_birth_year = "select floor(cast(year(birthdate) as signed)/10)*10 as yr  , count(*) from  (select ExtractValue(demographics,'IndividualSurvey/Gender') as gender, ExtractValue(demographics,'IndividualSurvey/Education') as education, ExtractValue(demographics,'IndividualSurvey/Occupation') as occupation, ExtractValue(demographics,'IndividualSurvey/MaritalStatus') as married, ExtractValue(demographics,'/IndividualSurvey/YearlyIncome') as yearlyIncome , ExtractValue(demographics,'/IndividualSurvey/BirthDate') as birthdate from individual) as x  group by yr";
-      String customer_gender = "select gender , count(*) from  (select ExtractValue(demographics,'IndividualSurvey/Gender') as gender, ExtractValue(demographics,'IndividualSurvey/Education') as education, ExtractValue(demographics,'IndividualSurvey/Occupation') as occupation, ExtractValue(demographics,'IndividualSurvey/MaritalStatus') as married, ExtractValue(demographics,'/IndividualSurvey/YearlyIncome') as yearlyIncome , ExtractValue(demographics,'/IndividualSurvey/BirthDate') as birthdate from individual) as x  group by gender";
+      String customer_birth_year = "select (floor(cast(year(birthdate) as signed)/10)*10) as yr  , count(*) from  (select ExtractValue(demographics,'IndividualSurvey/Gender') as gender, ExtractValue(demographics,'IndividualSurvey/Education') as education, ExtractValue(demographics,'IndividualSurvey/Occupation') as occupation, ExtractValue(demographics,'IndividualSurvey/MaritalStatus') as married, ExtractValue(demographics,'/IndividualSurvey/YearlyIncome') as yearlyIncome , ExtractValue(demographics,'/IndividualSurvey/BirthDate') as birthdate from individual) as x  group by yr";
+      String customer_gender = "select gender , count(*) from  (select ExtractValue(demographics,'IndividualSurvey/Gender') as gender from individual) as x  group by gender";
       String customer_education = "select education , count(*) from  (select ExtractValue(demographics,'IndividualSurvey/Gender') as gender, ExtractValue(demographics,'IndividualSurvey/Education') as education, ExtractValue(demographics,'IndividualSurvey/Occupation') as occupation, ExtractValue(demographics,'IndividualSurvey/MaritalStatus') as married, ExtractValue(demographics,'/IndividualSurvey/YearlyIncome') as yearlyIncome , ExtractValue(demographics,'/IndividualSurvey/BirthDate') as birthdate from individual) as x  group by education";
       String customer_marrital_status = "select married, count(*) from  (select ExtractValue(demographics,'IndividualSurvey/Gender') as gender, ExtractValue(demographics,'IndividualSurvey/Education') as education, ExtractValue(demographics,'IndividualSurvey/Occupation') as occupation, ExtractValue(demographics,'IndividualSurvey/MaritalStatus') as married, ExtractValue(demographics,'/IndividualSurvey/YearlyIncome') as yearlyIncome , ExtractValue(demographics,'/IndividualSurvey/BirthDate') as birthdate from individual) as x  group by married";
       String customer_yearly_income = "select yearlyIncome, count(*) from  (select ExtractValue(demographics,'IndividualSurvey/Gender') as gender, ExtractValue(demographics,'IndividualSurvey/Education') as education, ExtractValue(demographics,'IndividualSurvey/Occupation') as occupation, ExtractValue(demographics,'IndividualSurvey/MaritalStatus') as married, ExtractValue(demographics,'/IndividualSurvey/YearlyIncome') as yearlyIncome , ExtractValue(demographics,'/IndividualSurvey/BirthDate') as birthdate from individual) as x  group by yearlyIncome";
+
+
+
+      // re initialize statement after requiring each result set
+      Statement state = this.conn.createStatement();
+      // ResultSet rs_num_customer_yearly = state.executeQuery(num_customer_yearly);
+      // state = this.conn.createStatement();
+      // ResultSet rs_num_customer_monthly_2002 = state.executeQuery(num_customer_monthly_2002);
+      // state = this.conn.createStatement();
+      // ResultSet rs_num_customer_weekly_2002 = state.executeQuery(num_customer_weekly_2002);
+      // state = this.conn.createStatement();
+      // //
+      // ResultSet rs_sales_amount_yearly = state.executeQuery(sales_amount_yearly);
+      // state = this.conn.createStatement();
+      // ResultSet rs_sales_amount_monthly_2003 = state.executeQuery(sales_amount_monthly_2003);
+      // state = this.conn.createStatement();
+      // ResultSet rs_sales_amount_weekly_2003 = state.executeQuery(sales_amount_weekly_2003);
+      // state = this.conn.createStatement();
+      // //
+      // ResultSet rs_sales_count_yearly = state.executeQuery(sales_count_yearly);
+      // state = this.conn.createStatement();
+      // ResultSet rs_sales_count_monthly_2004 = state.executeQuery(sales_count_monthly_2004);
+      // state = this.conn.createStatement();
+      // ResultSet rs_sales_count_weekly_2004 = state.executeQuery(sales_count_weekly_2004);
+      // state = this.conn.createStatement();
+      // //
+      // ResultSet rs_employee_birth_year = state.executeQuery(employee_birth_year);
+      // state = this.conn.createStatement();
+      // ResultSet rs_employee_salary_histogram_bin = state.executeQuery(employee_salary_histogram_bin);
+      // state = this.conn.createStatement();
+      // ResultSet rs_employee_salary_median = state.executeQuery(employee_salary_median);
+      // state = this.conn.createStatement();
+      // ResultSet rs_employee_salary_mean = state.executeQuery(employee_salary_mean);
+      // state = this.conn.createStatement();
+      // //
+      // ResultSet rs_regional_sales_count = state.executeQuery(regional_sales_count);
+      // state = this.conn.createStatement();
+      // ResultSet rs_regional_sales_amount = state.executeQuery(regional_sales_amount);
+      // state = this.conn.createStatement();
+      // ResultSet rs_regional_sales_customer = state.executeQuery(regional_sales_customer);
+      // state = this.conn.createStatement();
+      // ResultSet rs_regional_aggregate_sum_rate = state.executeQuery(regional_aggregate_sum_rate);
+      // state = this.conn.createStatement();
+      //
+      // //
+      // ResultSet rs_product_top_10_Jan_to_Mar = state.executeQuery(product_top_10_Jan_to_Mar);
+      // state = this.conn.createStatement();
+      // ResultSet rs_product_top_10_Apr_to_Jun = state.executeQuery(product_top_10_Apr_to_Jun);
+      // state = this.conn.createStatement();
+      // ResultSet rs_product_top_10_Jul_to_Sep = state.executeQuery(product_top_10_Jul_to_Sep);
+      // state = this.conn.createStatement();
+      // ResultSet rs_product_top_10_Oct_to_Dec = state.executeQuery(product_top_10_Oct_to_Dec);
+      // state = this.conn.createStatement();
+
+
+      ResultSet rs_customer_birth_year = state.executeQuery(customer_birth_year);
+      state = this.conn.createStatement();
+      ResultSet rs_customer_gender = state.executeQuery(customer_gender);
+      state = this.conn.createStatement();
+      // ResultSet rs_customer_education = state.executeQuery(customer_education);
+      // ResultSet rs_customer_marrital_status = state.executeQuery(customer_marrital_status);
+      // ResultSet rs_customer_yearly_income = state.executeQuery(customer_yearly_income);
+
+      // // Test: use TableGUI for testing only! not our dashboard!
+      // TableGUI testGUI = new TableGUI(rs_customer_yearly_income);
+
+
+      // create dashboard object
+      Dashboard dashboard_object = new Dashboard();
+
+
+      /*** Customer age demographics ****/
+
+      // create list for customer
+      List<String> customer_birth_x = new ArrayList<String>();
+      List<Integer> customer_birth_y = new ArrayList<Integer>();
+      while(rs_customer_birth_year.next()){
+          Integer yearfloor = rs_customer_birth_year.getInt(1);
+          System.out.println("yearfloor:"+yearfloor.toString());
+          Integer countnum1 = rs_customer_birth_year.getInt(2);
+          Integer upperage = 2020 - yearfloor;
+          Integer lowerage = upperage - 10;
+          String yearbound = "age:" + Integer.toString(lowerage) + "-" + Integer.toString(upperage) + " born: " + yearfloor.toString() +"-"+ Integer.toString(yearfloor+10);
+          customer_birth_x.add(yearbound);
+          System.out.println("yearbound: "+yearbound);
+          System.out.println(" -- count :" + countnum1);
+          customer_birth_y.add(countnum1); // jdbc behaves differently than mysql,year floor is actually the count
+      }
+      // initialize the chart
+      dashboard_object.set_customer_birth_year(customer_birth_x , customer_birth_y);
+
+
+
+      /*** customer gender demographics ****/
+      List<String> customer_gender_x = new ArrayList<String>();
+      List<Integer> customer_gender_y = new ArrayList<Integer>();
+      while(rs_customer_gender.next()){
+          String gentype = rs_customer_gender.getString(1);
+          Integer gencount = rs_customer_gender.getInt(2);
+          System.out.println("gentype: " + gentype + " gencount: " + gencount.toString());
+          customer_gender_x.add(gentype);
+          customer_gender_y.add(gencount);
+      }
+      // initiate gender chart
+      dashboard_object.set_customer_gender(customer_gender_x,customer_gender_y);
+
+
+      // at the end show dashboard
+      dashboard_object.show_dashboard();
+
+
+
+
+
+
+
+
+    } catch (Exception e){
+      System.out.println("Exception caught in dashboard_function in MainMainInterface");
+      throw new Exception(e);
     }
 
-
-
-
-
-
-
-
-
+  }// end function
 
 
 
