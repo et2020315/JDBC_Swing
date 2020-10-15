@@ -1317,9 +1317,9 @@ public class MainMainInterface{
       state = this.conn.createStatement();
       ResultSet rs_customer_gender = state.executeQuery(customer_gender);
       state = this.conn.createStatement();
-      // ResultSet rs_customer_education = state.executeQuery(customer_education);
-      // ResultSet rs_customer_marrital_status = state.executeQuery(customer_marrital_status);
-      // ResultSet rs_customer_yearly_income = state.executeQuery(customer_yearly_income);
+      ResultSet rs_customer_education = state.executeQuery(customer_education);
+      ResultSet rs_customer_marrital_status = state.executeQuery(customer_marrital_status);
+      ResultSet rs_customer_yearly_income = state.executeQuery(customer_yearly_income);
 
       // // Test: use TableGUI for testing only! not our dashboard!
       // TableGUI testGUI = new TableGUI(rs_customer_yearly_income);
