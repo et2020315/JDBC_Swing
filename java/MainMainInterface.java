@@ -1224,54 +1224,54 @@ public class MainMainInterface{
 
       // re initialize statement after requiring each result set
       Statement state = this.conn.createStatement();
-      // ResultSet rs_num_customer_yearly = state.executeQuery(num_customer_yearly);
-      // state = this.conn.createStatement();
-      // ResultSet rs_num_customer_monthly_2002 = state.executeQuery(num_customer_monthly_2002);
-      // state = this.conn.createStatement();
-      // ResultSet rs_num_customer_weekly_2002 = state.executeQuery(num_customer_weekly_2002);
-      // state = this.conn.createStatement();
-      // //
-      // ResultSet rs_sales_amount_yearly = state.executeQuery(sales_amount_yearly);
-      // state = this.conn.createStatement();
-      // ResultSet rs_sales_amount_monthly_2003 = state.executeQuery(sales_amount_monthly_2003);
-      // state = this.conn.createStatement();
-      // ResultSet rs_sales_amount_weekly_2003 = state.executeQuery(sales_amount_weekly_2003);
-      // state = this.conn.createStatement();
-      // //
-      // ResultSet rs_sales_count_yearly = state.executeQuery(sales_count_yearly);
-      // state = this.conn.createStatement();
-      // ResultSet rs_sales_count_monthly_2004 = state.executeQuery(sales_count_monthly_2004);
-      // state = this.conn.createStatement();
-      // ResultSet rs_sales_count_weekly_2004 = state.executeQuery(sales_count_weekly_2004);
-      // state = this.conn.createStatement();
-      // //
-      // ResultSet rs_employee_birth_year = state.executeQuery(employee_birth_year);
-      // state = this.conn.createStatement();
-      // ResultSet rs_employee_salary_histogram_bin = state.executeQuery(employee_salary_histogram_bin);
-      // state = this.conn.createStatement();
-      // ResultSet rs_employee_salary_median = state.executeQuery(employee_salary_median);
-      // state = this.conn.createStatement();
-      // ResultSet rs_employee_salary_mean = state.executeQuery(employee_salary_mean);
-      // state = this.conn.createStatement();
-      // //
-      // ResultSet rs_regional_sales_count = state.executeQuery(regional_sales_count);
-      // state = this.conn.createStatement();
-      // ResultSet rs_regional_sales_amount = state.executeQuery(regional_sales_amount);
-      // state = this.conn.createStatement();
-      // ResultSet rs_regional_sales_customer = state.executeQuery(regional_sales_customer);
-      // state = this.conn.createStatement();
-      // ResultSet rs_regional_aggregate_sum_rate = state.executeQuery(regional_aggregate_sum_rate);
-      // state = this.conn.createStatement();
+      ResultSet rs_num_customer_yearly = state.executeQuery(num_customer_yearly);
+      state = this.conn.createStatement();
+      ResultSet rs_num_customer_monthly_2002 = state.executeQuery(num_customer_monthly_2002);
+      state = this.conn.createStatement();
+      ResultSet rs_num_customer_weekly_2002 = state.executeQuery(num_customer_weekly_2002);
+      state = this.conn.createStatement();
       //
-      // //
-      // ResultSet rs_product_top_10_Jan_to_Mar = state.executeQuery(product_top_10_Jan_to_Mar);
-      // state = this.conn.createStatement();
-      // ResultSet rs_product_top_10_Apr_to_Jun = state.executeQuery(product_top_10_Apr_to_Jun);
-      // state = this.conn.createStatement();
-      // ResultSet rs_product_top_10_Jul_to_Sep = state.executeQuery(product_top_10_Jul_to_Sep);
-      // state = this.conn.createStatement();
-      // ResultSet rs_product_top_10_Oct_to_Dec = state.executeQuery(product_top_10_Oct_to_Dec);
-      // state = this.conn.createStatement();
+      ResultSet rs_sales_amount_yearly = state.executeQuery(sales_amount_yearly);
+      state = this.conn.createStatement();
+      ResultSet rs_sales_amount_monthly_2003 = state.executeQuery(sales_amount_monthly_2003);
+      state = this.conn.createStatement();
+      ResultSet rs_sales_amount_weekly_2003 = state.executeQuery(sales_amount_weekly_2003);
+      state = this.conn.createStatement();
+      //
+      ResultSet rs_sales_count_yearly = state.executeQuery(sales_count_yearly);
+      state = this.conn.createStatement();
+      ResultSet rs_sales_count_monthly_2004 = state.executeQuery(sales_count_monthly_2004);
+      state = this.conn.createStatement();
+      ResultSet rs_sales_count_weekly_2004 = state.executeQuery(sales_count_weekly_2004);
+      state = this.conn.createStatement();
+      //
+      ResultSet rs_employee_birth_year = state.executeQuery(employee_birth_year);
+      state = this.conn.createStatement();
+      ResultSet rs_employee_salary_histogram_bin = state.executeQuery(employee_salary_histogram_bin);
+      state = this.conn.createStatement();
+      ResultSet rs_employee_salary_median = state.executeQuery(employee_salary_median);
+      state = this.conn.createStatement();
+      ResultSet rs_employee_salary_mean = state.executeQuery(employee_salary_mean);
+      state = this.conn.createStatement();
+      //
+      ResultSet rs_regional_sales_count = state.executeQuery(regional_sales_count);
+      state = this.conn.createStatement();
+      ResultSet rs_regional_sales_amount = state.executeQuery(regional_sales_amount);
+      state = this.conn.createStatement();
+      ResultSet rs_regional_sales_customer = state.executeQuery(regional_sales_customer);
+      state = this.conn.createStatement();
+      ResultSet rs_regional_aggregate_sum_rate = state.executeQuery(regional_aggregate_sum_rate);
+      state = this.conn.createStatement();
+
+      //
+      ResultSet rs_product_top_10_Jan_to_Mar = state.executeQuery(product_top_10_Jan_to_Mar);
+      state = this.conn.createStatement();
+      ResultSet rs_product_top_10_Apr_to_Jun = state.executeQuery(product_top_10_Apr_to_Jun);
+      state = this.conn.createStatement();
+      ResultSet rs_product_top_10_Jul_to_Sep = state.executeQuery(product_top_10_Jul_to_Sep);
+      state = this.conn.createStatement();
+      ResultSet rs_product_top_10_Oct_to_Dec = state.executeQuery(product_top_10_Oct_to_Dec);
+      state = this.conn.createStatement();
 
 
       ResultSet rs_customer_birth_year = state.executeQuery(customer_birth_year);
