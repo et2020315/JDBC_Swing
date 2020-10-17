@@ -1206,15 +1206,19 @@ public class MainMainInterface{
 
 
       // part 2Aa
-      // 1940-1950, 1950-1960, 1960-1970, 1970-1980, 1980+
-      String employee_birth_year = "select floor(cast(year(birthdate) as signed)/10 )*10 as bucket,count(year(birthdate)) from employee group by bucket";
+      // 1940-1950, 1950-1960, 1960-1970, 1970-1980, 1980+ -- for categorical
+      // String employee_birth_year = "select floor(cast(year(birthdate) as signed)/10 )*10 as bucket,count(year(birthdate)) from employee group by bucket";
+      // employee birth year for histogram,this data contains duplicates so that histogram can count
+      String employee_age = "select (2020 - year(birthdate)) as age from employee order by age";
+
       // note that the historgram below shows:
       // 200 -300, 300-400, ... 3300 - 3400, 5000 - 5100
       // !!! ************ Some of the bins are missing! we need to fill those bin names in this dashboard_function() before passing to GUI and put count to be zero ****//
 
       // part 2Ab
-      String employee_salary_histogram_bin = "select ceil(40*(rate)/100)*100 as r, count(*) from employeepayhistory group by r order by r";
-
+      // String employee_salary_histogram_bin = "select ceil(40*(rate)/100)*100 as r, count(*) from employeepayhistory group by r order by r";
+      // this will give a column with
+      String employee_salary = "select (40*rate) as pay from employeepayhistory order by pay";
       // these two below will return result set with 1 column with single value
 
       // part 2Ab - same panel, we want to extract 1 number from the result set of the query below
@@ -1284,9 +1288,9 @@ public class MainMainInterface{
       ResultSet rs_sales_count_weekly_2004 = state.executeQuery(sales_count_weekly_2004);
       state = this.conn.createStatement();
       //
-      ResultSet rs_employee_birth_year = state.executeQuery(employee_birth_year);
+      ResultSet rs_employee_age = state.executeQuery(employee_age);
       state = this.conn.createStatement();
-      ResultSet rs_employee_salary_histogram_bin = state.executeQuery(employee_salary_histogram_bin);
+      ResultSet rs_employee_salary = state.executeQuery(employee_salary);
       state = this.conn.createStatement();
       ResultSet rs_employee_salary_median = state.executeQuery(employee_salary_median);
       state = this.conn.createStatement();
@@ -1330,6 +1334,17 @@ public class MainMainInterface{
 
       // create dashboard object
       Dashboard dashboard_object = new Dashboard();
+
+      // Part 2A: employee age statistics in historgram, using 1 column only
+      List<Double> employee_age_x = new ArrayList<Double>();
+      while(rs_employee_age.next()){
+        Double agestat = rs_employee_age.getDouble(1);
+        System.out.println("stats of employee age: " + agestat);
+        employee_age_x.add(agestat);
+      }
+      dashboard_object.set_employee_age(employee_age_x);
+
+      // Part 2B: employee salary statistics in histogram, using 1 column only
 
 
       /*** Part 5A: Customer age -- demographics ****/

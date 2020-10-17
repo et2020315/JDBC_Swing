@@ -13,9 +13,11 @@ public class Dashboard{
   JFrame frame; // the pop up window for our dashboard
   // JPanel finalpanel; // the final panel that all the sub panels will be added to it in show_dashboard() function
 
+
   JPanel panel1Ca; // panel for part 1Ca: sales_count_yearly
   JPanel panel1Cb; // panel for part 1Cb: sales_count_monthly_2004
   JPanel panel1Cc; // panel for part 1Cc: sales_count_weekly_2004
+  JPanel panel2A; // panel for part 2A: employee age histogram
 
   JPanel panel5A; // panel for part 5A : customer birth year
   JPanel panel5B; // panel for part 5B: customer gender
@@ -34,6 +36,10 @@ public class Dashboard{
   PieChart customer_marrital_status_chart;
   CategoryChart customer_yearly_income_chart;
 
+  Histogram employee_age_histogram;
+  CategoryChart employee_age_chart;
+
+
 
   // constructor
   Dashboard(){
@@ -44,6 +50,7 @@ public class Dashboard{
 
     this.frame.setVisible(false);
   }
+
 
   // Part 5A setter: pie chart example
   public void set_customer_birth_year(List<String> x, List<Integer> y) throws Exception{
@@ -90,6 +97,7 @@ public class Dashboard{
     }
   }
 
+  // part 5D: customer marrital status setter
   public void set_customer_marrital_status(List<String>x, List<Integer>y) throws Exception{
     try{
       this.customer_marrital_status_chart = new PieChartBuilder().width(400).height(400).title("customer marrital status").build();
@@ -103,11 +111,11 @@ public class Dashboard{
     }
   }
 
+  // part 5E: customer yearly income setter
   public void set_customer_yearly_income(List<String>x,List<Integer>y)throws Exception{
     try{
       this.customer_yearly_income_chart = new CategoryChartBuilder().width(400).height(400).title("customer yearly income").build();
       // CategoryChart chart = new CategoryChartBuilder().width(800).height(600).title("Stick").build();
-
       // Customize Chart
       this.customer_yearly_income_chart.getStyler().setChartTitleVisible(true);
       this.customer_yearly_income_chart.getStyler().setLegendPosition(LegendPosition.InsideNW);
@@ -119,9 +127,23 @@ public class Dashboard{
     } catch(Exception e){
       throw new Exception(e);
     }
-
-
   }
+
+    // Part 2A setter: Histogram
+    public void set_employee_age(List<Double>x)throws Exception{
+      try{
+        this.employee_age_histogram = new Histogram(x,7);
+        this.employee_age_chart = new CategoryChartBuilder().width(400).height(400).title("customer yearly income").build();
+        this.employee_age_chart.addSeries("employee age", this.employee_age_histogram.getxAxisData(), this.employee_age_histogram.getyAxisData());
+        this.panel2A = new XChartPanel(this.employee_age_chart);
+        this.employee_age_chart.getStyler().setXAxisLabelRotation(70);
+      } catch(Exception e){
+        throw new Exception(e);
+      }
+    }
+
+
+
 
   // when finish adding all the plots, call the function below to show it
   // add all intermediate panels to the final panel and add final panel to jframe
@@ -134,6 +156,9 @@ public class Dashboard{
       this.finalPanel.add(this.panel5C,BorderLayout.SOUTH);
       this.finalPanel.add(this.panel5D,BorderLayout.SOUTH);
       this.finalPanel.add(this.panel5E,BorderLayout.EAST);
+
+
+      this.finalPanel.add(this.panel2A,BorderLayout.SOUTH);
       //..
 
       this.frame.add(this.finalPanel);
