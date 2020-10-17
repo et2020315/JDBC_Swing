@@ -3,6 +3,8 @@ import java.util.*;
 // import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.*;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.sql.*; // resultset
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.CategorySeries.CategorySeriesRenderStyle;
@@ -48,9 +50,9 @@ public class Dashboard{
   // constructor
   Dashboard(){
     this.frame = new JFrame("dashboard for adventureworks");
+
     this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     this.frame.setSize(2000,2000);
-
 
     this.frame.setVisible(false);
   }
@@ -208,8 +210,17 @@ public class Dashboard{
       this.finalPanel.add(this.panel5E,BorderLayout.EAST);
       //..
 
+
       this.frame.add(this.finalPanel);
       this.frame.pack();
+
+      // add scroll bar
+      this.frame.setLayout(new BorderLayout());
+      this.scroll = new JScrollPane(this.finalPanel);
+      this.scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+      this.scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+
+      this.frame.add(this.scroll);
       this.frame.setVisible(true);
 
     } catch(Exception e){
