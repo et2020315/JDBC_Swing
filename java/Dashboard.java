@@ -144,7 +144,7 @@ public class Dashboard{
     public void set_employee_age(List<Double>x)throws Exception{
       try{
         this.employee_age_histogram = new Histogram(x,7);
-        this.employee_age_chart = new CategoryChartBuilder().width(400).height(400).title("customer yearly income").build();
+        this.employee_age_chart = new CategoryChartBuilder().width(400).height(400).title("employee age").build();
         this.employee_age_chart.addSeries("employee age", this.employee_age_histogram.getxAxisData(), this.employee_age_histogram.getyAxisData());
         this.panel2A = new XChartPanel(this.employee_age_chart);
         // rotate/ tilt the captions of the x axis
