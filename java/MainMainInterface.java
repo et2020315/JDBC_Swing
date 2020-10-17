@@ -1331,6 +1331,42 @@ public class MainMainInterface{
       // create dashboard object
       Dashboard dashboard_object = new Dashboard();
 
+      /*** Part 1Aa: num_customer_yearly ***/
+      List<Integer> num_customer_yearly_x = new ArrayList<Integer>();
+      List<Integer> num_customer_yearly_y = new ArrayList<Integer>();
+      while(rs_num_customer_yearly.next()){
+        Integer year = rs_num_customer_yearly.getInt(1);
+        Integer numCustomerInYear = rs_num_customer_yearly.getInt(2);
+        System.out.println("year: " + year.toString() + " number of customers: " + numCustomerInYear.toString());
+        num_customer_yearly_x.add(year);
+        num_customer_yearly_y.add(numCustomerInYear);
+      }
+      dashboard_object.set_num_customer_yearly(num_customer_yearly_x,num_customer_yearly_y);
+
+      /*** Part 1Ab: num_customer_monthly_2002 ***/
+      List<Integer> num_customer_monthly_2002_x = new ArrayList<Integer>();
+      List<Integer> num_customer_monthly_2002_y = new ArrayList<Integer>();
+      while(rs_num_customer_monthly_2002.next()){
+        Integer month = rs_num_customer_monthly_2002.getInt(1);
+        Integer numCustomerInMonth = rs_num_customer_monthly_2002.getInt(2);
+        System.out.println("month: " + month.toString() + " number of customers: " + numCustomerInMonth.toString());
+        num_customer_monthly_2002_x.add(month);
+        num_customer_monthly_2002_y.add(numCustomerInMonth);
+      }
+      // dashboard_object.set_num_customer_monthly_2002(num_customer_monthly_2002_x,num_customer_monthly_2002_y);
+
+      /*** Part 1Ac: num_customer_weekly_2002 ***/
+      List<Integer> num_customer_weekly_2002_x = new ArrayList<Integer>();
+      List<Integer> num_customer_weekly_2002_y = new ArrayList<Integer>();
+      while(rs_num_customer_yearly.next()){
+        Integer week = rs_num_customer_weekly_2002.getInt(1);
+        Integer numCustomerInWeek = rs_num_customer_weekly_2002.getInt(2);
+        System.out.println("week: " + week.toString() + " number of customers: " + numCustomerInWeek.toString());
+        num_customer_weekly_2002_x.add(week);
+        num_customer_weekly_2002_y.add(numCustomerInWeek);
+      }
+      // dashboard_object.set_num_customer_weekly_2002(num_customer_weekly_2002_x,num_customer_weekly_2002_y);
+
       /*** Part 4A: Product demand by season: top 10 popular products during months 1 to 3 ****/
       List<String> product_top_10_Jan_to_Mar_x = new ArrayList<String>();
       List<Integer> product_top_10_Jan_to_Mar_y = new ArrayList<Integer>();

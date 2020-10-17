@@ -15,6 +15,8 @@ public class Dashboard{
   JFrame frame; // the pop up window for our dashboard
   // JPanel finalpanel; // the final panel that all the sub panels will be added to it in show_dashboard() function
 
+  JPanel panel1Aa;
+
   JPanel panel1Ca; // panel for part 1Ca: sales_count_yearly
   JPanel panel1Cb; // panel for part 1Cb: sales_count_monthly_2004
   JPanel panel1Cc; // panel for part 1Cc: sales_count_weekly_2004
@@ -32,6 +34,9 @@ public class Dashboard{
   JPanel finalPanel;
 
   JScrollPane scroll; // added when needed, not being used now
+
+  // Part 1A chart members
+  BubbleChart num_customer_yearly_chart;
 
   // Part 4 chart members
   PieChart product_top_10_Jan_to_Mar_chart;
@@ -55,6 +60,22 @@ public class Dashboard{
     this.frame.setSize(2000,2000);
 
     this.frame.setVisible(false);
+  }
+
+  // Part 1Aa setter: Bubble graph example
+  public void set_num_customer_yearly(List<Integer>x, List<Integer>y) throws Exception {
+    try {
+      this.num_customer_yearly_chart = new BubbleChartBuilder().width(400).height(400).title("number of customers each year").build();
+      for(int i = 0; i < x.size(); i++){
+        // this.num_customer_yearly_chart.addSeries(Double.valueOf(x.get(i)), Double.valueOf(y.get(i)));
+      }
+
+      this.panel1Aa = new XChartPanel(this.num_customer_yearly_chart);
+
+
+    } catch(Exception e){
+      throw new Exception(e);
+    }
   }
 
   // Part 5A setter: pie chart example
@@ -135,6 +156,7 @@ public class Dashboard{
 
   }
 
+
   public void set_product_top_10_Jan_to_Mar(List<String>x, List<Integer>y)throws Exception{
     try{
       this.product_top_10_Jan_to_Mar_chart = new PieChartBuilder().width(400).height(400).title("top 10 products Jan to Mar").build();
@@ -198,6 +220,8 @@ public class Dashboard{
     try{
       this.finalPanel = new JPanel();
       // add sub panels to final panel
+      this.finalPanel.add(this.panel1Aa, BorderLayout.NORTH);
+
       this.finalPanel.add(this.panel4A,BorderLayout.NORTH);
       this.finalPanel.add(this.panel4B,BorderLayout.NORTH);
       this.finalPanel.add(this.panel4C,BorderLayout.NORTH);
