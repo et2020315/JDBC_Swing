@@ -12,7 +12,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import javax.swing.*;
 
-public class XchartTest {
+public class XchartDemo {
 
   public static void main(String[] args) throws Exception {
 

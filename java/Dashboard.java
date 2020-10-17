@@ -17,6 +17,11 @@ public class Dashboard{
   JPanel panel1Cb; // panel for part 1Cb: sales_count_monthly_2004
   JPanel panel1Cc; // panel for part 1Cc: sales_count_weekly_2004
 
+  JPanel panel4A; // panel for part 4A: product_top_10_Jan_to_Mar
+  JPanel panel4B; // panel for part 4B: product_top_10_Apr_to_Jun
+  JPanel panel4C; // panel for part 4C: product_top_10_Jul_to_Sep
+  JPanel panel4D; // panel for part 4D: product_top_10_Oct_to_Dec
+
   JPanel panel5A; // panel for part 5A : customer birth year
   JPanel panel5B; // panel for part 5B: customer gender
   JPanel panel5C; // panel for part 5C: customer education
@@ -26,6 +31,11 @@ public class Dashboard{
 
   JScrollPane scroll; // added when needed, not being used now
 
+  // Part 4 chart members
+  PieChart product_top_10_Jan_to_Mar_chart;
+  PieChart product_top_10_Apr_to_Jun_chart;
+  PieChart product_top_10_Jul_to_Sep_chart;
+  PieChart product_top_10_Oct_to_Dec_chart;
 
   // Part 5 chart members
   PieChart customer_birth_year_chart;
@@ -123,12 +133,74 @@ public class Dashboard{
 
   }
 
+  public void set_product_top_10_Jan_to_Mar(List<String>x, List<Integer>y)throws Exception{
+    try{
+      this.product_top_10_Jan_to_Mar_chart = new PieChartBuilder().width(400).height(400).title("top 10 products Jan to Mar").build();
+      for(int i = 0; i < x.size(); i++){
+        this.product_top_10_Jan_to_Mar_chart.addSeries(x.get(i),y.get(i));
+      }
+      this.panel4A = new XChartPanel(this.product_top_10_Jan_to_Mar_chart);
+
+
+      // this.product_top_10_Jan_to_Mar_chart = new CategoryChartBuilder().width(400).height(400).title("top 10 products Jan to Mar").build();
+      // // category chart can add data at once
+      // this.product_top_10_Jan_to_Mar_chart.addSeries("Jan to Mar",x,y);
+      // this.panel4A = new XChartPanel(this.product_top_10_Jan_to_Mar_chart);
+      // // label overlapping, tilt / rotate ticks
+      // this.product_top_10_Jan_to_Mar_chart.getStyler().setXAxisLabelRotation(45);
+
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+
+  public void set_product_top_10_Apr_to_Jun(List<String>x, List<Integer>y)throws Exception{
+    try{
+      this.product_top_10_Apr_to_Jun_chart = new PieChartBuilder().width(400).height(400).title("top 10 products Apr to Jun").build();
+      for(int i = 0; i < x.size(); i++){
+        this.product_top_10_Apr_to_Jun_chart.addSeries(x.get(i),y.get(i));
+      }
+      this.panel4B = new XChartPanel(this.product_top_10_Apr_to_Jun_chart);
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+
+  public void set_product_top_10_Jul_to_Sep(List<String>x, List<Integer>y)throws Exception{
+    try{
+      this.product_top_10_Jul_to_Sep_chart = new PieChartBuilder().width(400).height(400).title("top 10 products Jul to Sep").build();
+      for(int i = 0; i < x.size(); i++){
+        this.product_top_10_Jul_to_Sep_chart.addSeries(x.get(i),y.get(i));
+      }
+      this.panel4C = new XChartPanel(this.product_top_10_Jul_to_Sep_chart);
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+
+  public void set_product_top_10_Oct_to_Dec(List<String>x, List<Integer>y)throws Exception{
+    try{
+      this.product_top_10_Oct_to_Dec_chart = new PieChartBuilder().width(400).height(400).title("top 10 products Oct to Dec").build();
+      for(int i = 0; i < x.size(); i++){
+        this.product_top_10_Oct_to_Dec_chart.addSeries(x.get(i),y.get(i));
+      }
+      this.panel4D = new XChartPanel(this.product_top_10_Oct_to_Dec_chart);
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+
   // when finish adding all the plots, call the function below to show it
   // add all intermediate panels to the final panel and add final panel to jframe
   public void show_dashboard() throws Exception{
     try{
       this.finalPanel = new JPanel();
       // add sub panels to final panel
+      this.finalPanel.add(this.panel4A,BorderLayout.NORTH);
+      this.finalPanel.add(this.panel4B,BorderLayout.NORTH);
+      this.finalPanel.add(this.panel4C,BorderLayout.NORTH);
+      this.finalPanel.add(this.panel4D,BorderLayout.NORTH);
+
       this.finalPanel.add(this.panel5A,BorderLayout.NORTH);
       this.finalPanel.add(this.panel5B,BorderLayout.SOUTH);
       this.finalPanel.add(this.panel5C,BorderLayout.SOUTH);

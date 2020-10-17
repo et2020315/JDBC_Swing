@@ -1331,6 +1331,58 @@ public class MainMainInterface{
       // create dashboard object
       Dashboard dashboard_object = new Dashboard();
 
+      /*** Part 4A: Product demand by season: top 10 popular products during months 1 to 3 ****/
+      List<String> product_top_10_Jan_to_Mar_x = new ArrayList<String>();
+      List<Integer> product_top_10_Jan_to_Mar_y = new ArrayList<Integer>();
+      while(rs_product_top_10_Jan_to_Mar.next()) {
+        String topProductName = rs_product_top_10_Jan_to_Mar.getString(1);
+        Integer countNumProducts = rs_product_top_10_Jan_to_Mar.getInt(2);
+        System.out.println("product: " + topProductName + " countNum: " + countNumProducts.toString());
+        product_top_10_Jan_to_Mar_x.add(topProductName);
+        product_top_10_Jan_to_Mar_y.add(countNumProducts);
+      }
+      // initiate the chart
+      dashboard_object.set_product_top_10_Jan_to_Mar(product_top_10_Jan_to_Mar_x,product_top_10_Jan_to_Mar_y);
+
+      /*** Part 4B: Product demand by season: top 10 popular products during months 4 to 6 ****/
+      List<String> product_top_10_Apr_to_Jun_x = new ArrayList<String>();
+      List<Integer> product_top_10_Apr_to_Jun_y = new ArrayList<Integer>();
+      while(rs_product_top_10_Apr_to_Jun.next()) {
+        String topProductName = rs_product_top_10_Apr_to_Jun.getString(1);
+        Integer countNumProducts = rs_product_top_10_Apr_to_Jun.getInt(2);
+        System.out.println("product: " + topProductName + " countNum: " + countNumProducts.toString());
+        product_top_10_Apr_to_Jun_x.add(topProductName);
+        product_top_10_Apr_to_Jun_y.add(countNumProducts);
+      }
+      // initiate the chart
+      dashboard_object.set_product_top_10_Apr_to_Jun(product_top_10_Apr_to_Jun_x,product_top_10_Apr_to_Jun_y);
+
+      /*** Part 4C: Product demand by season: top 10 popular products during months 7 to 9 ****/
+      List<String> product_top_10_Jul_to_Sep_x = new ArrayList<String>();
+      List<Integer> product_top_10_Jul_to_Sep_y = new ArrayList<Integer>();
+      while(rs_product_top_10_Jul_to_Sep.next()) {
+        String topProductName = rs_product_top_10_Jul_to_Sep.getString(1);
+        Integer countNumProducts = rs_product_top_10_Jul_to_Sep.getInt(2);
+        System.out.println("product: " + topProductName + " countNum: " + countNumProducts.toString());
+        product_top_10_Jul_to_Sep_x.add(topProductName);
+        product_top_10_Jul_to_Sep_y.add(countNumProducts);
+      }
+      // initiate the chart
+      dashboard_object.set_product_top_10_Jul_to_Sep(product_top_10_Jul_to_Sep_x,product_top_10_Jul_to_Sep_y);
+
+
+      /*** Part 4D: Product demand by season: top 10 popular products during months 10 to 12 ****/
+      List<String> product_top_10_Oct_to_Dec_x = new ArrayList<String>();
+      List<Integer> product_top_10_Oct_to_Dec_y = new ArrayList<Integer>();
+      while(rs_product_top_10_Oct_to_Dec.next()) {
+        String topProductName = rs_product_top_10_Oct_to_Dec.getString(1);
+        Integer countNumProducts = rs_product_top_10_Oct_to_Dec.getInt(2);
+        System.out.println("product: " + topProductName + " countNum: " + countNumProducts.toString());
+        product_top_10_Oct_to_Dec_x.add(topProductName);
+        product_top_10_Oct_to_Dec_y.add(countNumProducts);
+      }
+      // initiate the chart
+      dashboard_object.set_product_top_10_Oct_to_Dec(product_top_10_Oct_to_Dec_x,product_top_10_Oct_to_Dec_y);
 
       /*** Part 5A: Customer age -- demographics ****/
 
