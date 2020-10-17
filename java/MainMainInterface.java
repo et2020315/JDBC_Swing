@@ -1335,6 +1335,49 @@ public class MainMainInterface{
       // create dashboard object
       Dashboard dashboard_object = new Dashboard();
 
+      // Part 1Ca: sales_count_yearly
+      List<Integer> sales_count_yearly_x = new ArrayList<Integer>();
+      List<Double> sales_count_yearly_y = new ArrayList<Double>();
+      List<Double> bubble_size_sales_count_yearly = new ArrayList<Double>();
+      while(rs_sales_count_yearly.next()){
+        Integer salesyear = rs_sales_count_yearly.getInt(1);
+        Double salescountyear = rs_sales_count_yearly.getDouble(2);
+        System.out.println("sales year:"+salesyear+" salescount:"+salescountyear);
+        sales_count_yearly_x.add(salesyear);
+        sales_count_yearly_y.add(salescountyear);
+        bubble_size_sales_count_yearly.add(salescountyear/100);
+      }
+      // initiate sales_count_yearly chart
+      dashboard_object.set_sales_count_yearly(sales_count_yearly_x,sales_count_yearly_y,bubble_size_sales_count_yearly);
+
+      // Part 1Cb: sales_count_monthly_2004
+      List<Integer> sales_count_monthly_2004_x = new ArrayList<Integer>();
+      List<Double> sales_count_monthly_2004_y = new ArrayList<Double>();
+      List<Double> bubble_size_sales_count_monthly_2004 = new ArrayList<Double>();
+      while(rs_sales_count_monthly_2004.next()){
+        Integer salesmonth = rs_sales_count_monthly_2004.getInt(1);
+        Double salescountmonth = rs_sales_count_monthly_2004.getDouble(2);
+        System.out.println("sales month:"+salesmonth + " salescountmonthly:"+salescountmonth);
+        sales_count_monthly_2004_x.add(salesmonth);
+        sales_count_monthly_2004_y.add(salescountmonth);
+        bubble_size_sales_count_monthly_2004.add(salescountmonth/100);
+      }
+      // initialize sales_count_monthly_2004 chart
+      dashboard_object.set_sales_count_monthly_2004(sales_count_monthly_2004_x,sales_count_monthly_2004_y,bubble_size_sales_count_monthly_2004);
+
+      // Part 1Cc:  sales_count_weekly_2004
+      List<Integer> sales_count_weekly_2004_x = new ArrayList<Integer>();
+      List<Integer> sales_count_weekly_2004_y = new ArrayList<Integer>();
+      while(rs_sales_count_weekly_2004.next()){
+        Integer salesweek = rs_sales_count_weekly_2004.getInt(1);
+        Integer salescountweek = rs_sales_count_weekly_2004.getInt(2);
+        System.out.println("sales week: " + salesweek + " salescount week: " + salescountweek);
+        sales_count_weekly_2004_x.add(salesweek);
+        sales_count_weekly_2004_y.add(salescountweek);
+      }
+      // initiate sales_count_weekly_2004
+      dashboard_object.set_sales_count_weekly_2004(sales_count_weekly_2004_x,sales_count_weekly_2004_y);
+
       // Part 2A: employee age statistics in historgram, using 1 column only
       List<Double> employee_age_x = new ArrayList<Double>();
       while(rs_employee_age.next()){

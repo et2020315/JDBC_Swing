@@ -6,6 +6,11 @@ import java.awt.BorderLayout;
 import java.sql.*; // resultset
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.CategorySeries.CategorySeriesRenderStyle;
+import org.knowm.xchart.XYSeries.*;
+import org.knowm.xchart.style.markers.*;
+import org.knowm.xchart.DialSeries;
+import org.knowm.xchart.internal.series.Series;
+import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 
 
 public class Dashboard{
@@ -36,8 +41,14 @@ public class Dashboard{
   PieChart customer_marrital_status_chart;
   CategoryChart customer_yearly_income_chart;
 
-  Histogram employee_age_histogram;
+  // Part 2 chart members
+  Histogram employee_age_histogram; // histogram needs to be added a category chart to display histogram
   CategoryChart employee_age_chart;
+
+  // Part 1C chart member
+  BubbleChart sales_count_yearly_chart;
+  BubbleChart sales_count_monthly_2004_chart;
+  XYChart sales_count_weekly_2004_chart;
 
 
 
@@ -136,12 +147,56 @@ public class Dashboard{
         this.employee_age_chart = new CategoryChartBuilder().width(400).height(400).title("customer yearly income").build();
         this.employee_age_chart.addSeries("employee age", this.employee_age_histogram.getxAxisData(), this.employee_age_histogram.getyAxisData());
         this.panel2A = new XChartPanel(this.employee_age_chart);
+        // rotate/ tilt the captions of the x axis
         this.employee_age_chart.getStyler().setXAxisLabelRotation(70);
       } catch(Exception e){
         throw new Exception(e);
       }
     }
 
+    // Part 1Ca setter: sales_count_yearly
+    public void set_sales_count_yearly(List<Integer>x,List<Double>y,List<Double>z) throws Exception{
+      try{
+        this.sales_count_yearly_chart = new BubbleChartBuilder().width(400).height(400).title("sales count yearly").build();
+        System.out.println("length x:"+x.size() + " y length:"+y.size());
+        this.sales_count_yearly_chart.addSeries("sales_count_yearly",x,y,z);
+        this.panel1Ca = new XChartPanel(this.sales_count_yearly_chart);
+        // hide the legend to make the graph area bigger
+        this.sales_count_yearly_chart.getStyler().setLegendVisible(false);
+
+      } catch(Exception e){
+        throw new Exception(e);
+      }
+    }
+
+    // Part 1Cb setter : sales_count_monthly_2004
+    public void set_sales_count_monthly_2004(List<Integer>x,List<Double>y,List<Double>z) throws Exception {
+      try{
+        this.sales_count_monthly_2004_chart = new BubbleChartBuilder().width(400).height(400).title("sales count monthly 2004").build();
+        System.out.println("length x:"+x.size() + " y length:"+y.size()+" Z length: " + z.size());
+        this.sales_count_monthly_2004_chart.addSeries("sales_count_monthly",x,y,z);
+        this.panel1Cb = new XChartPanel(this.sales_count_monthly_2004_chart);
+        // hide the legend
+        this.sales_count_monthly_2004_chart.getStyler().setLegendVisible(false);
+
+      } catch(Exception e){
+        throw new Exception(e);
+      }
+    }
+
+    // Part 1Cc setter: sales_count_weekly_2004
+    public void set_sales_count_weekly_2004(List<Integer>x,List<Integer>y) throws Exception{
+      try{
+        this.sales_count_weekly_2004_chart = new XYChartBuilder().width(400).height(400).title("sales count weekly 2004").build();
+        this.sales_count_weekly_2004_chart.addSeries("sale_count_weekly_2004",x,y);
+        this.panel1Cc = new XChartPanel(this.sales_count_weekly_2004_chart);
+        // hide the legend
+        this.sales_count_weekly_2004_chart.getStyler().setLegendVisible(false);
+
+      } catch(Exception e){
+        throw new Exception(e);
+      }
+    }
 
 
 
@@ -151,6 +206,10 @@ public class Dashboard{
     try{
       this.finalPanel = new JPanel();
       // add sub panels to final panel
+      this.finalPanel.add(this.panel1Ca,BorderLayout.SOUTH);
+      this.finalPanel.add(this.panel1Cb,BorderLayout.SOUTH);
+      this.finalPanel.add(this.panel1Cc,BorderLayout.NORTH);
+
       this.finalPanel.add(this.panel5A,BorderLayout.NORTH);
       this.finalPanel.add(this.panel5B,BorderLayout.SOUTH);
       this.finalPanel.add(this.panel5C,BorderLayout.SOUTH);
