@@ -205,9 +205,10 @@ public class Dashboard{
   public void show_dashboard() throws Exception{
     try{
       this.finalPanel = new JPanel();
+      // this.scroll = new JScrollPane(finalPanel);
       // add sub panels to final panel
-      this.finalPanel.add(this.panel1Ca,BorderLayout.SOUTH);
-      this.finalPanel.add(this.panel1Cb,BorderLayout.SOUTH);
+      this.finalPanel.add(this.panel1Ca,BorderLayout.NORTH);
+      this.finalPanel.add(this.panel1Cb,BorderLayout.NORTH);
       this.finalPanel.add(this.panel1Cc,BorderLayout.NORTH);
 
       this.finalPanel.add(this.panel5A,BorderLayout.NORTH);
@@ -221,6 +222,7 @@ public class Dashboard{
       //..
 
       this.frame.add(this.finalPanel);
+      // this.frame.add(this.scroll);
       this.frame.pack();
       this.frame.setVisible(true);
 
