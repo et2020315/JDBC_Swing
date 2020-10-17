@@ -1332,7 +1332,7 @@ public class MainMainInterface{
       Dashboard dashboard_object = new Dashboard();
 
 
-      /*** Customer age demographics ****/
+      /*** Part 5A: Customer age -- demographics ****/
 
       // create list for customer
       List<String> customer_birth_x = new ArrayList<String>();
@@ -1354,7 +1354,7 @@ public class MainMainInterface{
 
 
 
-      /*** customer gender demographics ****/
+      /*** Part5B: customer gender -- demographics ****/
       List<String> customer_gender_x = new ArrayList<String>();
       List<Integer> customer_gender_y = new ArrayList<Integer>();
       while(rs_customer_gender.next()){
@@ -1366,6 +1366,50 @@ public class MainMainInterface{
       }
       // initiate gender chart
       dashboard_object.set_customer_gender(customer_gender_x,customer_gender_y);
+
+
+
+      // part 5C: customer education info
+      List<String> customer_education_x = new ArrayList<String>();
+      List<Integer> customer_education_y = new ArrayList<Integer>();
+      while(rs_customer_education.next()){
+        String edu_type = rs_customer_education.getString(1);
+        Integer edu_count = rs_customer_education.getInt(2);
+        System.out.println("edu_type:"+edu_type+" count:"+edu_count);
+        customer_education_x.add(edu_type);
+        customer_education_y.add(edu_count);
+      }
+      // initialize customer education chart
+      dashboard_object.set_customer_education(customer_education_x,customer_education_y);
+
+
+      // part 5D: customer marrital status
+      List<String> customer_marrital_status_x = new ArrayList<String>();
+      List<Integer> customer_marrital_status_y = new ArrayList<Integer>();
+      while(rs_customer_marrital_status.next()){
+        String customer_marrital_status_type = rs_customer_marrital_status.getString(1);
+        Integer customer_marrital_status_count = rs_customer_marrital_status.getInt(2);
+        System.out.println("marrital_status_type:"+customer_marrital_status_type + " count:"+customer_marrital_status_count);
+        customer_marrital_status_x.add(customer_marrital_status_type);
+        customer_marrital_status_y.add(customer_marrital_status_count);
+      }
+      // initiate customer marrital status chart
+      dashboard_object.set_customer_marrital_status(customer_marrital_status_x,customer_marrital_status_y);
+
+
+      List<String> customer_yearly_income_x = new ArrayList<String>();
+      List<Integer> customer_yearly_income_y = new ArrayList<Integer>();
+      while(rs_customer_yearly_income.next()){
+        String income_type = rs_customer_yearly_income.getString(1);
+        Integer income_count = rs_customer_yearly_income.getInt(2);
+        System.out.println("income range: " + income_type + " count : "+income_count);
+        customer_yearly_income_x.add(income_type);
+        customer_yearly_income_y.add(income_count);
+      }
+      // initiate yearly income
+      dashboard_object.set_customer_yearly_income(customer_yearly_income_x,customer_yearly_income_y);
+
+
 
 
       // at the end show dashboard
