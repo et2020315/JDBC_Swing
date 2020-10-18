@@ -10,7 +10,11 @@ import org.jgrapht.graph.*;
 // follow ReglationshipEdge example at https://jgrapht.org/guide/LabeledEdges
 
 public class ColumnEdge extends DefaultWeightedEdge{
-  public String label = "";
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+public String label = "";
 
   public ColumnEdge(String lab){
     this.label = lab;

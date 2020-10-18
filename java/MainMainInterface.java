@@ -1224,14 +1224,20 @@ public class MainMainInterface{
 
 
       // part 2Aa
-      // 1940-1950, 1950-1960, 1960-1970, 1970-1980, 1980+
-      String employee_birth_year = "select floor(cast(year(birthdate) as signed)/10 )*10 as bucket,count(year(birthdate)) from employee group by bucket";
+      // 1940-1950, 1950-1960, 1960-1970, 1970-1980, 1980+ -- for categorical
+      // String employee_birth_year = "select floor(cast(year(birthdate) as signed)/10 )*10 as bucket,count(year(birthdate)) from employee group by bucket";
+      // employee birth year for histogram,this data contains duplicates so that histogram can count
+      String employee_age = "select (2005 - year(birthdate)) as age from employee order by age";
+
       // note that the historgram below shows:
       // 200 -300, 300-400, ... 3300 - 3400, 5000 - 5100
       // !!! ************ Some of the bins are missing! we need to fill those bin names in this dashboard_function() before passing to GUI and put count to be zero ****//
 
       // part 2Ab
-      String employee_salary_histogram_bin = "select ceil(40*(rate)/100)*100 as r, count(*) from employeepayhistory group by r order by r";
+      // String employee_salary_histogram_bin = "select ceil(40*(rate)/100)*100 as r, count(*) from employeepayhistory group by r order by r";
+      // this will give a column with
+      String employee_salary = "SELECT 40*Rate as pay FROM adventureworks.employeepayhistory eh1 where ModifiedDate= "
+      		+ "(select Max(ModifiedDate) from employeepayhistory  eh2 where eh1.EmployeeID= eh2.EmployeeID)";
 
       // these two below will return result set with 1 column with single value
 
@@ -1239,10 +1245,6 @@ public class MainMainInterface{
       String employee_salary_median = "select avg(medianrate) from (select 40*rate as medianrate from employeepayhistory order by medianrate limit 157,2) as x";
       // Part 2Ab - Same panel, we want to extract 1 number from the result set of the query below
       String employee_salary_mean = "select 40*AVG(rate) as r from employeepayhistory";
-
-
-
-
 
 
       // part 3A
@@ -1343,9 +1345,9 @@ public class MainMainInterface{
       ResultSet rs_sales_count_weekly_2004 = state.executeQuery(sales_count_weekly_2004);
       state = this.conn.createStatement();
       //
-      ResultSet rs_employee_birth_year = state.executeQuery(employee_birth_year);
+      ResultSet rs_employee_age = state.executeQuery(employee_age);
       state = this.conn.createStatement();
-      ResultSet rs_employee_salary_histogram_bin = state.executeQuery(employee_salary_histogram_bin);
+      ResultSet rs_employee_salary = state.executeQuery(employee_salary);
       state = this.conn.createStatement();
       ResultSet rs_employee_salary_median = state.executeQuery(employee_salary_median);
       state = this.conn.createStatement();
@@ -1389,6 +1391,7 @@ public class MainMainInterface{
 
       // create dashboard object
       Dashboard dashboard_object = new Dashboard();
+
 
       /*** Part 1Aa: num_customer_yearly ***/
       List<Integer> num_customer_yearly_x = new ArrayList<Integer>();
@@ -1713,6 +1716,68 @@ public class MainMainInterface{
       // initiate the chart
       dashboard_object.set_product_top_10_Oct_to_Dec(product_top_10_Oct_to_Dec_x,product_top_10_Oct_to_Dec_y);
 
+
+      // Part 2A: employee age statistics in historgram, using 1 column only
+      List<Double> employee_age_x = new ArrayList<Double>();
+      while(rs_employee_age.next()){
+        Double agestat = rs_employee_age.getDouble(1);
+        System.out.println("stats of employee age: " + agestat);
+        employee_age_x.add(agestat);
+      }
+      dashboard_object.set_employee_age(employee_age_x);
+
+      // Part 2B: employee salary statistics in histogram, using 1 column only
+
+      // ------------------------------ Part 3 -------------------------------------
+
+      // Part 3A
+      // rs_regional_sales_count
+      List<String> states_1 = new ArrayList<String>();
+      List<Integer> sales_count_by_state = new ArrayList<Integer>();
+      while (rs_regional_sales_count.next()) {
+    	  states_1.add(rs_regional_sales_count.getString(1));
+    	  sales_count_by_state.add(rs_regional_sales_count.getInt(2));
+      }
+      dashboard_object.set_regional_sales_count(states_1, sales_count_by_state);
+
+      // Part 3B
+      // rs_regional_sales_amount
+      List<String> states_2 = new ArrayList<String>();
+      List<Double> sales_amount_by_state = new ArrayList<Double>();
+      while (rs_regional_sales_amount.next()) {
+    	  states_2.add(rs_regional_sales_amount.getString(1));
+    	  sales_amount_by_state.add(rs_regional_sales_amount.getDouble(2));
+      }
+      dashboard_object.set_regional_sales_amount(states_2, sales_amount_by_state);
+
+      // Part 3C
+      // rs_regional_sales_customer
+      List<String> states_3 = new ArrayList<String>();
+      List<Integer> sales_customers_by_state = new ArrayList<Integer>();
+      while (rs_regional_sales_customer.next()) {
+    	  states_3.add(rs_regional_sales_customer.getString(1));
+    	  sales_customers_by_state.add(rs_regional_sales_customer.getInt(2));
+      }
+      dashboard_object.set_regional_sales_customer(states_3, sales_customers_by_state);
+
+      // Part 3D
+      // rs_regional_aggregate_sum_rate
+      List<String> states_4 = new ArrayList<String>();
+      List<Double> sales_aggregate_by_state = new ArrayList<Double>();
+      while (rs_regional_aggregate_sum_rate.next()) {
+    	  states_4.add(rs_regional_aggregate_sum_rate.getString(1));
+    	  sales_aggregate_by_state.add(rs_regional_aggregate_sum_rate.getDouble(2));
+      }
+      dashboard_object.set_regional_aggregate_sums(states_4, sales_aggregate_by_state);
+
+      List<Double> employee_salary_x = new ArrayList<Double>();
+      while(rs_employee_salary.next()){
+        Double salarystat = rs_employee_salary.getDouble(1);
+        System.out.println("stats of employee salary: " + salarystat);
+        employee_salary_x.add(salarystat);
+      }
+
+      dashboard_object.set_employee_salary(employee_salary_x);
       /*** Part 5A: Customer age -- demographics ****/
 
       // create list for customer

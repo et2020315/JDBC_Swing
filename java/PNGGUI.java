@@ -32,7 +32,7 @@ public class PNGGUI extends JFrame{
   /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L; // this line is needed or else other classes will not recognize this
+	private static final long serialVersionUID = 2L; // this line is needed or else other classes will not recognize this
 
 public PNGGUI(String img){
     try{

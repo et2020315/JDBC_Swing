@@ -8,6 +8,10 @@ import java.awt.FlowLayout;
 import java.sql.*; // resultset
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.CategorySeries.CategorySeriesRenderStyle;
+import org.knowm.xchart.XYSeries.*;
+import org.knowm.xchart.style.markers.*;
+import org.knowm.xchart.internal.series.Series;
+import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 
 
 public class Dashboard{
@@ -24,8 +28,17 @@ public class Dashboard{
   JPanel panel1Bc; // panel for part 1Ac: sales_amount_weekly
 
   JPanel panel1Ca; // panel for part 1Ca: sales_count_yearly
-  JPanel panel1Cb; // panel for part 1Cb: sales_count_monthly_2004
-  JPanel panel1Cc; // panel for part 1Cc: sales_count_weekly_2004
+  JPanel panel1Cb; // panel for part 1Cb: sales_count_monthly
+  JPanel panel1Cc; // panel for part 1Cc: sales_count_weekly
+
+  JPanel panel2A; // panel for part 2A: employee age histogram
+
+  JPanel panel3A;
+  JPanel panel3B;
+  JPanel panel3C;
+  JPanel panel3D;
+
+  JPanel panel2B;  // pane1 for part 2B: emloyee total salary histogram
 
   JPanel panel4A; // panel for part 4A: product_top_10_Jan_to_Mar
   JPanel panel4B; // panel for part 4B: product_top_10_Apr_to_Jun
@@ -70,6 +83,22 @@ public class Dashboard{
   PieChart customer_marrital_status_chart;
   CategoryChart customer_yearly_income_chart;
 
+  // Part 2 chart members
+  Histogram employee_age_histogram; // histogram needs to be added a category chart to display histogram
+  CategoryChart employee_age_chart;
+  private Histogram employee_salary_histogram;
+  private CategoryChart employee_salary_chart;
+
+  // Part 1C chart member
+  BubbleChart sales_count_yearly_chart;
+  BubbleChart sales_count_monthly_2004_chart;
+  XYChart sales_count_weekly_2004_chart;
+
+  // Part 3 chart members
+  CategoryChart regional_sales_count_chart;
+  CategoryChart regional_sales_amount_chart;
+  CategoryChart regional_sales_customer_chart;
+  CategoryChart regional_aggregate_sum_chart;
 
   // constructor
   Dashboard(){
@@ -262,6 +291,7 @@ public class Dashboard{
     }
   }
 
+  // part 5D: customer marrital status setter
   public void set_customer_marrital_status(List<String>x, List<Integer>y) throws Exception{
     try{
       this.customer_marrital_status_chart = new PieChartBuilder().width(400).height(400).title("customer marrital status").build();
@@ -275,11 +305,11 @@ public class Dashboard{
     }
   }
 
+  // part 5E: customer yearly income setter
   public void set_customer_yearly_income(List<String>x,List<Integer>y)throws Exception{
     try{
       this.customer_yearly_income_chart = new CategoryChartBuilder().width(400).height(400).title("customer yearly income").build();
       // CategoryChart chart = new CategoryChartBuilder().width(800).height(600).title("Stick").build();
-
       // Customize Chart
       this.customer_yearly_income_chart.getStyler().setChartTitleVisible(true);
       this.customer_yearly_income_chart.getStyler().setLegendPosition(LegendPosition.InsideNW);
@@ -291,8 +321,28 @@ public class Dashboard{
     } catch(Exception e){
       throw new Exception(e);
     }
+  }
 
+  // Part 2A setter (age) : Histogram
+  public void set_employee_age(List<Double>x)throws Exception{
+    try{
 
+      this.employee_age_histogram = new Histogram(x, 9, 20, 65);
+      this.employee_age_chart = new CategoryChartBuilder().width(400).height(400).title("employee age").
+      		xAxisTitle("Age Range").yAxisTitle("Count").build();
+
+      List<String> xAgeRange = new ArrayList<>(); // labeling x axis age range values in histograms
+      for(int i =0; i <9; i++) {
+      	xAgeRange.add(Integer.toString(20+ (5*i)) + " - " + Integer.toString(24+ (5*i)));
+      }
+
+      this.employee_age_chart.addSeries("employee age", xAgeRange, this.employee_age_histogram.getyAxisData());
+      this.panel2A = new XChartPanel(this.employee_age_chart);
+      // rotate/ tilt the captions of the x axis
+      this.employee_age_chart.getStyler().setXAxisLabelRotation(70);
+    } catch(Exception e){
+      throw new Exception(e);
+    }
   }
 
 
@@ -353,6 +403,76 @@ public class Dashboard{
     }
   }
 
+  // Part 2B setter (total salary): Histogram
+  public void set_employee_salary(List<Double>x)throws Exception{
+      try{
+      	int minHistogram = (int)(Collections.min(x)/500) * 500;
+      	int maxHistogram = (int)(Collections.max(x)/500) * 500 + 500;
+      	int numBins = (maxHistogram - minHistogram)/500;
+
+        this.employee_salary_histogram = new Histogram(x, numBins, minHistogram, maxHistogram);
+        this.employee_salary_chart = new CategoryChartBuilder().width(400).height(400).title("Employee Total Salary (Median:560, Mean:767)").
+      		  xAxisTitle("Salary Range").yAxisTitle("Count").build();
+
+        List<String> xSalaryRange = new ArrayList<>();
+        for(int i =0; i <numBins; i++) {
+        	xSalaryRange.add(Integer.toString(minHistogram+ (500*i)) + " - " + Integer.toString((minHistogram + 499)+ (500*i)));
+        }
+
+
+        this.employee_salary_chart.addSeries("Total Salary", xSalaryRange, employee_salary_histogram.getyAxisData());
+        this.panel2B = new XChartPanel(this.employee_salary_chart);
+        // rotate/ tilt the captions of the x axis
+        this.employee_salary_chart.getStyler().setXAxisLabelRotation(70);
+      } catch(Exception e){
+        throw new Exception(e);
+      }
+    }
+
+    // Part 3A setter
+    public void set_regional_sales_count(List<String> states, List<Integer> counts) throws Exception {
+    	try {
+    		regional_sales_count_chart = new CategoryChartBuilder().width(400).height(400).title("Sales Count by Region").xAxisTitle("Region").yAxisTitle("Sales count").build();
+    		regional_sales_count_chart.addSeries("regional_sales_count", states, counts);
+    		panel3A = new XChartPanel(regional_sales_count_chart);
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    }
+
+    // Part 3B setter
+    public void set_regional_sales_amount(List<String> states, List<Double> amounts) throws Exception {
+    	try {
+    		regional_sales_amount_chart = new CategoryChartBuilder().width(400).height(400).title("Sales Amount by Region").xAxisTitle("Region").yAxisTitle("Sales amount").build();
+    		regional_sales_amount_chart.addSeries("regional_sales_amount", states, amounts);
+    		panel3B = new XChartPanel(regional_sales_amount_chart);
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    }
+
+    // Part 3C setter
+    public void set_regional_sales_customer(List<String> states, List<Integer> customers) throws Exception {
+    	try {
+    		regional_sales_customer_chart = new CategoryChartBuilder().width(400).height(400).title("Customers by Region").xAxisTitle("Region").yAxisTitle("Number of customers").build();
+    		regional_sales_customer_chart.addSeries("regional_sales_customers", states, customers);
+    		panel3C = new XChartPanel(regional_sales_customer_chart);
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+     }
+
+    // Part 3D setter
+    public void set_regional_aggregate_sums(List<String> states, List<Double> sums) throws Exception {
+    	try {
+    		regional_aggregate_sum_chart = new CategoryChartBuilder().width(400).height(400).title("Aggregate sum by region").xAxisTitle("Region").yAxisTitle("Sums").build();
+    		regional_aggregate_sum_chart.addSeries("regional_aggregate_sums", states, sums);
+    		panel3D = new XChartPanel(regional_aggregate_sum_chart);
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    }
+
   // when finish adding all the plots, call the function below to show it
   // add all intermediate panels to the final panel and add final panel to jframe
   public void show_dashboard() throws Exception{
@@ -381,6 +501,10 @@ public class Dashboard{
       this.finalPanel.add(this.panel5C,BorderLayout.SOUTH);
       this.finalPanel.add(this.panel5D,BorderLayout.SOUTH);
       this.finalPanel.add(this.panel5E,BorderLayout.EAST);
+
+
+      this.finalPanel.add(this.panel2A,BorderLayout.SOUTH);
+      this.finalPanel.add(this.panel2B,BorderLayout.SOUTH);
       //..
 
 
