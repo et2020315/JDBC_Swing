@@ -89,11 +89,6 @@ public class Dashboard{
   private Histogram employee_salary_histogram;
   private CategoryChart employee_salary_chart;
 
-  // Part 1C chart member
-  BubbleChart sales_count_yearly_chart;
-  BubbleChart sales_count_monthly_2004_chart;
-  XYChart sales_count_weekly_2004_chart;
-
   // Part 3 chart members
   CategoryChart regional_sales_count_chart;
   CategoryChart regional_sales_amount_chart;
@@ -189,7 +184,7 @@ public class Dashboard{
   // Part 1Bc setter: XY graph example
   public void set_sales_amount_weekly(List<Integer>x2001, List<Double>y2001,List<Integer>x2002, List<Double>y2002,List<Integer>x2003, List<Double>y2003,List<Integer>x2004, List<Double>y2004) throws Exception {
     try {
-      this.sales_amount_weekly_chart = new XYChartBuilder().width(400).height(400).title("sales amount each month").build();
+      this.sales_amount_weekly_chart = new XYChartBuilder().width(400).height(400).title("sales amount each week").build();
       this.sales_amount_weekly_chart.addSeries("2001",x2001,y2001);
       this.sales_amount_weekly_chart.addSeries("2002",x2002,y2002);
       this.sales_amount_weekly_chart.addSeries("2003",x2003,y2003);
@@ -234,7 +229,7 @@ public class Dashboard{
   // Part 1Cc setter: XY graph example
   public void set_sales_count_weekly(List<Integer>x2001, List<Integer>y2001,List<Integer>x2002, List<Integer>y2002,List<Integer>x2003, List<Integer>y2003,List<Integer>x2004, List<Integer>y2004) throws Exception {
     try {
-      this.sales_count_weekly_chart = new XYChartBuilder().width(400).height(400).title("sales count each month").build();
+      this.sales_count_weekly_chart = new XYChartBuilder().width(400).height(400).title("sales count each week").build();
       this.sales_count_weekly_chart.addSeries("2001",x2001,y2001);
       this.sales_count_weekly_chart.addSeries("2002",x2002,y2002);
       this.sales_count_weekly_chart.addSeries("2003",x2003,y2003);
