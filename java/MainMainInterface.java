@@ -1209,7 +1209,7 @@ public class MainMainInterface{
       // 1940-1950, 1950-1960, 1960-1970, 1970-1980, 1980+ -- for categorical
       // String employee_birth_year = "select floor(cast(year(birthdate) as signed)/10 )*10 as bucket,count(year(birthdate)) from employee group by bucket";
       // employee birth year for histogram,this data contains duplicates so that histogram can count
-      String employee_age = "select (2020 - year(birthdate)) as age from employee order by age";
+      String employee_age = "select (2005 - year(birthdate)) as age from employee order by age";
 
       // note that the historgram below shows:
       // 200 -300, 300-400, ... 3300 - 3400, 5000 - 5100
@@ -1218,17 +1218,15 @@ public class MainMainInterface{
       // part 2Ab
       // String employee_salary_histogram_bin = "select ceil(40*(rate)/100)*100 as r, count(*) from employeepayhistory group by r order by r";
       // this will give a column with
-      String employee_salary = "select (40*rate) as pay from employeepayhistory order by pay";
+      String employee_salary = "SELECT 40*Rate as pay FROM adventureworks.employeepayhistory eh1 where ModifiedDate= "
+      		+ "(select Max(ModifiedDate) from employeepayhistory  eh2 where eh1.EmployeeID= eh2.EmployeeID)";
+
       // these two below will return result set with 1 column with single value
 
       // part 2Ab - same panel, we want to extract 1 number from the result set of the query below
       String employee_salary_median = "select avg(medianrate) from (select 40*rate as medianrate from employeepayhistory order by medianrate limit 157,2) as x";
       // Part 2Ab - Same panel, we want to extract 1 number from the result set of the query below
       String employee_salary_mean = "select 40*AVG(rate) as r from employeepayhistory";
-
-
-
-
 
 
       // part 3A
@@ -1388,8 +1386,14 @@ public class MainMainInterface{
       dashboard_object.set_employee_age(employee_age_x);
 
       // Part 2B: employee salary statistics in histogram, using 1 column only
-
-
+      List<Double> employee_salary_x = new ArrayList<Double>();
+      while(rs_employee_salary.next()){
+        Double salarystat = rs_employee_salary.getDouble(1);
+        System.out.println("stats of employee salary: " + salarystat);
+        employee_salary_x.add(salarystat);
+      }
+      
+      dashboard_object.set_employee_salary(employee_salary_x);
       /*** Part 5A: Customer age -- demographics ****/
 
       // create list for customer
