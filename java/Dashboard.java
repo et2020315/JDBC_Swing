@@ -8,7 +8,6 @@ import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.CategorySeries.CategorySeriesRenderStyle;
 import org.knowm.xchart.XYSeries.*;
 import org.knowm.xchart.style.markers.*;
-import org.knowm.xchart.DialSeries;
 import org.knowm.xchart.internal.series.Series;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 
@@ -62,6 +61,9 @@ public class Dashboard{
   CategoryChart regional_sales_amount_chart;
   CategoryChart regional_sales_customer_chart;
   CategoryChart regional_aggregate_sum_chart;
+
+  Histogram employee_salary_histogram;
+  CategoryChart employee_salary_chart;
 
   // constructor
   Dashboard(){
