@@ -23,6 +23,7 @@ public class Dashboard{
   JPanel panel1Cb; // panel for part 1Cb: sales_count_monthly_2004
   JPanel panel1Cc; // panel for part 1Cc: sales_count_weekly_2004
   JPanel panel2A; // panel for part 2A: employee age histogram
+  JPanel panel2B;  // pane1 for part 2B: emloyee total salary histogram
 
   JPanel panel5A; // panel for part 5A : customer birth year
   JPanel panel5B; // panel for part 5B: customer gender
@@ -140,15 +141,49 @@ public class Dashboard{
     }
   }
 
-    // Part 2A setter: Histogram
-    public void set_employee_age(List<Double>x)throws Exception{
+  // Part 2A setter (age) : Histogram
+  public void set_employee_age(List<Double>x)throws Exception{
+    try{
+  	 
+      this.employee_age_histogram = new Histogram(x, 9, 20, 65);
+      this.employee_age_chart = new CategoryChartBuilder().width(400).height(400).title("employee age").
+      		xAxisTitle("Age Range").yAxisTitle("Count").build();
+      
+      List<String> xAgeRange = new ArrayList<>(); // labeling x axis age range values in histograms
+      for(int i =0; i <9; i++) {
+      	xAgeRange.add(Integer.toString(20+ (5*i)) + " - " + Integer.toString(24+ (5*i)));
+      }
+      
+      this.employee_age_chart.addSeries("employee age", xAgeRange, this.employee_age_histogram.getyAxisData());
+      this.panel2A = new XChartPanel(this.employee_age_chart);
+      // rotate/ tilt the captions of the x axis
+      this.employee_age_chart.getStyler().setXAxisLabelRotation(70);
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+
+  // Part 2B setter (total salary): Histogram
+  public void set_employee_salary(List<Double>x)throws Exception{
       try{
-        this.employee_age_histogram = new Histogram(x,7);
-        this.employee_age_chart = new CategoryChartBuilder().width(400).height(400).title("employee age").build();
-        this.employee_age_chart.addSeries("employee age", this.employee_age_histogram.getxAxisData(), this.employee_age_histogram.getyAxisData());
-        this.panel2A = new XChartPanel(this.employee_age_chart);
+      	int minHistogram = (int)(Collections.min(x)/500) * 500;
+      	int maxHistogram = (int)(Collections.max(x)/500) * 500 + 500;
+      	int numBins = (maxHistogram - minHistogram)/500;
+      			
+        this.employee_salary_histogram = new Histogram(x, numBins, minHistogram, maxHistogram);
+        this.employee_salary_chart = new CategoryChartBuilder().width(400).height(400).title("Employee Total Salary").
+      		  xAxisTitle("Salary Range").yAxisTitle("Count").build();
+        
+        List<String> xSalaryRange = new ArrayList<>();
+        for(int i =0; i <numBins; i++) {
+        	xSalaryRange.add(Integer.toString(minHistogram+ (500*i)) + " - " + Integer.toString((minHistogram + 499)+ (500*i)));
+        }         
+        
+        
+        this.employee_salary_chart.addSeries("Total Salary", xSalaryRange, employee_salary_histogram.getyAxisData());
+        this.panel2B = new XChartPanel(this.employee_salary_chart);
         // rotate/ tilt the captions of the x axis
-        this.employee_age_chart.getStyler().setXAxisLabelRotation(70);
+        this.employee_salary_chart.getStyler().setXAxisLabelRotation(70);
       } catch(Exception e){
         throw new Exception(e);
       }
@@ -218,6 +253,7 @@ public class Dashboard{
 
 
       this.finalPanel.add(this.panel2A,BorderLayout.SOUTH);
+      this.finalPanel.add(this.panel2B,BorderLayout.SOUTH);
       //..
 
       this.frame.add(this.finalPanel);
