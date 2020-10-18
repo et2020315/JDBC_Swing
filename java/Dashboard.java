@@ -64,9 +64,6 @@ public class Dashboard{
   CategoryChart regional_sales_customer_chart;
   CategoryChart regional_aggregate_sum_chart;
 
-  Histogram employee_salary_histogram;
-  CategoryChart employee_salary_chart;
-
   // constructor
   Dashboard(){
     this.frame = new JFrame("dashboard for adventureworks");
