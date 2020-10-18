@@ -1504,33 +1504,33 @@ public class MainMainInterface{
       List<Integer> sales_amount_monthly_2001_x = new ArrayList<Integer>();
       List<Double> sales_amount_monthly_2001_y = new ArrayList<Double>();
       while(rs_sales_amount_monthly_2001.next()){
-        Integer year = rs_sales_amount_monthly_2001.getInt(1);
+        Integer month = rs_sales_amount_monthly_2001.getInt(1);
         Double amountSalesInMonth = rs_sales_amount_monthly_2001.getDouble(2);
-        sales_amount_monthly_2001_x.add(year);
+        sales_amount_monthly_2001_x.add(month);
         sales_amount_monthly_2001_y.add(amountSalesInMonth);
       }
       List<Integer> sales_amount_monthly_2002_x = new ArrayList<Integer>();
       List<Double> sales_amount_monthly_2002_y = new ArrayList<Double>();
       while(rs_sales_amount_monthly_2002.next()){
-        Integer year = rs_sales_amount_monthly_2002.getInt(1);
+        Integer month = rs_sales_amount_monthly_2002.getInt(1);
         Double amountSalesInMonth = rs_sales_amount_monthly_2002.getDouble(2);
-        sales_amount_monthly_2002_x.add(year);
+        sales_amount_monthly_2002_x.add(month);
         sales_amount_monthly_2002_y.add(amountSalesInMonth);
       }
       List<Integer> sales_amount_monthly_2003_x = new ArrayList<Integer>();
       List<Double> sales_amount_monthly_2003_y = new ArrayList<Double>();
       while(rs_sales_amount_monthly_2003.next()){
-        Integer year = rs_sales_amount_monthly_2003.getInt(1);
+        Integer month = rs_sales_amount_monthly_2003.getInt(1);
         Double amountSalesInMonth = rs_sales_amount_monthly_2003.getDouble(2);
-        sales_amount_monthly_2003_x.add(year);
+        sales_amount_monthly_2003_x.add(month);
         sales_amount_monthly_2003_y.add(amountSalesInMonth);
       }
       List<Integer> sales_amount_monthly_2004_x = new ArrayList<Integer>();
       List<Double> sales_amount_monthly_2004_y = new ArrayList<Double>();
       while(rs_sales_amount_monthly_2004.next()){
-        Integer year = rs_sales_amount_monthly_2004.getInt(1);
+        Integer month = rs_sales_amount_monthly_2004.getInt(1);
         Double amountSalesInMonth = rs_sales_amount_monthly_2004.getDouble(2);
-        sales_amount_monthly_2004_x.add(year);
+        sales_amount_monthly_2004_x.add(month);
         sales_amount_monthly_2004_y.add(amountSalesInMonth);
       }
       dashboard_object.set_sales_amount_monthly(sales_amount_monthly_2001_x,sales_amount_monthly_2001_y,
@@ -1542,34 +1542,34 @@ public class MainMainInterface{
       List<Integer> sales_amount_weekly_2001_x = new ArrayList<Integer>();
       List<Double> sales_amount_weekly_2001_y = new ArrayList<Double>();
       while(rs_sales_amount_weekly_2001.next()){
-        Integer year = rs_sales_amount_weekly_2001.getInt(1);
-        Double amountSalesInMonth = rs_sales_amount_weekly_2001.getDouble(2);
-        sales_amount_weekly_2001_x.add(year);
-        sales_amount_weekly_2001_y.add(amountSalesInMonth);
+        Integer week = rs_sales_amount_weekly_2001.getInt(1);
+        Double amountSalesInWeek = rs_sales_amount_weekly_2001.getDouble(2);
+        sales_amount_weekly_2001_x.add(week);
+        sales_amount_weekly_2001_y.add(amountSalesInWeek);
       }
       List<Integer> sales_amount_weekly_2002_x = new ArrayList<Integer>();
       List<Double> sales_amount_weekly_2002_y = new ArrayList<Double>();
       while(rs_sales_amount_weekly_2002.next()){
-        Integer year = rs_sales_amount_weekly_2002.getInt(1);
-        Double amountSalesInMonth = rs_sales_amount_weekly_2002.getDouble(2);
-        sales_amount_weekly_2002_x.add(year);
-        sales_amount_weekly_2002_y.add(amountSalesInMonth);
+        Integer week = rs_sales_amount_weekly_2002.getInt(1);
+        Double amountSalesInWeek = rs_sales_amount_weekly_2002.getDouble(2);
+        sales_amount_weekly_2002_x.add(week);
+        sales_amount_weekly_2002_y.add(amountSalesInWeek);
       }
       List<Integer> sales_amount_weekly_2003_x = new ArrayList<Integer>();
       List<Double> sales_amount_weekly_2003_y = new ArrayList<Double>();
       while(rs_sales_amount_weekly_2003.next()){
-        Integer year = rs_sales_amount_weekly_2003.getInt(1);
-        Double amountSalesInMonth = rs_sales_amount_weekly_2003.getDouble(2);
-        sales_amount_weekly_2003_x.add(year);
-        sales_amount_weekly_2003_y.add(amountSalesInMonth);
+        Integer week = rs_sales_amount_weekly_2003.getInt(1);
+        Double amountSalesInWeek = rs_sales_amount_weekly_2003.getDouble(2);
+        sales_amount_weekly_2003_x.add(week);
+        sales_amount_weekly_2003_y.add(amountSalesInWeek);
       }
       List<Integer> sales_amount_weekly_2004_x = new ArrayList<Integer>();
       List<Double> sales_amount_weekly_2004_y = new ArrayList<Double>();
       while(rs_sales_amount_weekly_2004.next()){
-        Integer year = rs_sales_amount_weekly_2004.getInt(1);
-        Double amountSalesInMonth = rs_sales_amount_weekly_2004.getDouble(2);
-        sales_amount_weekly_2004_x.add(year);
-        sales_amount_weekly_2004_y.add(amountSalesInMonth);
+        Integer week = rs_sales_amount_weekly_2004.getInt(1);
+        Double amountSalesInWeek = rs_sales_amount_weekly_2004.getDouble(2);
+        sales_amount_weekly_2004_x.add(week);
+        sales_amount_weekly_2004_y.add(amountSalesInWeek);
       }
       dashboard_object.set_sales_amount_weekly(sales_amount_weekly_2001_x,sales_amount_weekly_2001_y,
       sales_amount_weekly_2002_x,sales_amount_weekly_2002_y,
@@ -1591,33 +1591,33 @@ public class MainMainInterface{
       List<Integer> sales_count_monthly_2001_x = new ArrayList<Integer>();
       List<Integer> sales_count_monthly_2001_y = new ArrayList<Integer>();
       while(rs_sales_count_monthly_2001.next()){
-        Integer year = rs_sales_count_monthly_2001.getInt(1);
+        Integer month = rs_sales_count_monthly_2001.getInt(1);
         Integer countSalesInMonth = rs_sales_count_monthly_2001.getInt(2);
-        sales_count_monthly_2001_x.add(year);
+        sales_count_monthly_2001_x.add(month);
         sales_count_monthly_2001_y.add(countSalesInMonth);
       }
       List<Integer> sales_count_monthly_2002_x = new ArrayList<Integer>();
       List<Integer> sales_count_monthly_2002_y = new ArrayList<Integer>();
       while(rs_sales_count_monthly_2002.next()){
-        Integer year = rs_sales_count_monthly_2002.getInt(1);
+        Integer month = rs_sales_count_monthly_2002.getInt(1);
         Integer countSalesInMonth = rs_sales_count_monthly_2002.getInt(2);
-        sales_count_monthly_2002_x.add(year);
+        sales_count_monthly_2002_x.add(month);
         sales_count_monthly_2002_y.add(countSalesInMonth);
       }
       List<Integer> sales_count_monthly_2003_x = new ArrayList<Integer>();
       List<Integer> sales_count_monthly_2003_y = new ArrayList<Integer>();
       while(rs_sales_count_monthly_2003.next()){
-        Integer year = rs_sales_count_monthly_2003.getInt(1);
+        Integer month = rs_sales_count_monthly_2003.getInt(1);
         Integer countSalesInMonth = rs_sales_count_monthly_2003.getInt(2);
-        sales_count_monthly_2003_x.add(year);
+        sales_count_monthly_2003_x.add(month);
         sales_count_monthly_2003_y.add(countSalesInMonth);
       }
       List<Integer> sales_count_monthly_2004_x = new ArrayList<Integer>();
       List<Integer> sales_count_monthly_2004_y = new ArrayList<Integer>();
       while(rs_sales_count_monthly_2004.next()){
-        Integer year = rs_sales_count_monthly_2004.getInt(1);
+        Integer month = rs_sales_count_monthly_2004.getInt(1);
         Integer countSalesInMonth = rs_sales_count_monthly_2004.getInt(2);
-        sales_count_monthly_2004_x.add(year);
+        sales_count_monthly_2004_x.add(month);
         sales_count_monthly_2004_y.add(countSalesInMonth);
       }
       dashboard_object.set_sales_count_monthly(sales_count_monthly_2001_x,sales_count_monthly_2001_y,
@@ -1629,34 +1629,34 @@ public class MainMainInterface{
       List<Integer> sales_count_weekly_2001_x = new ArrayList<Integer>();
       List<Integer> sales_count_weekly_2001_y = new ArrayList<Integer>();
       while(rs_sales_count_weekly_2001.next()){
-        Integer year = rs_sales_count_weekly_2001.getInt(1);
-        Integer countSalesInMonth = rs_sales_count_weekly_2001.getInt(2);
-        sales_count_weekly_2001_x.add(year);
-        sales_count_weekly_2001_y.add(countSalesInMonth);
+        Integer week = rs_sales_count_weekly_2001.getInt(1);
+        Integer countSalesInWeek = rs_sales_count_weekly_2001.getInt(2);
+        sales_count_weekly_2001_x.add(week);
+        sales_count_weekly_2001_y.add(countSalesInWeek);
       }
       List<Integer> sales_count_weekly_2002_x = new ArrayList<Integer>();
       List<Integer> sales_count_weekly_2002_y = new ArrayList<Integer>();
       while(rs_sales_count_weekly_2002.next()){
-        Integer year = rs_sales_count_weekly_2002.getInt(1);
-        Integer countSalesInMonth = rs_sales_count_weekly_2002.getInt(2);
-        sales_count_weekly_2002_x.add(year);
-        sales_count_weekly_2002_y.add(countSalesInMonth);
+        Integer week = rs_sales_count_weekly_2002.getInt(1);
+        Integer countSalesInWeek = rs_sales_count_weekly_2002.getInt(2);
+        sales_count_weekly_2002_x.add(week);
+        sales_count_weekly_2002_y.add(countSalesInWeek);
       }
       List<Integer> sales_count_weekly_2003_x = new ArrayList<Integer>();
       List<Integer> sales_count_weekly_2003_y = new ArrayList<Integer>();
       while(rs_sales_count_weekly_2003.next()){
-        Integer year = rs_sales_count_weekly_2003.getInt(1);
-        Integer countSalesInMonth = rs_sales_count_weekly_2003.getInt(2);
-        sales_count_weekly_2003_x.add(year);
-        sales_count_weekly_2003_y.add(countSalesInMonth);
+        Integer week = rs_sales_count_weekly_2003.getInt(1);
+        Integer countSalesInWeek = rs_sales_count_weekly_2003.getInt(2);
+        sales_count_weekly_2003_x.add(week);
+        sales_count_weekly_2003_y.add(countSalesInWeek);
       }
       List<Integer> sales_count_weekly_2004_x = new ArrayList<Integer>();
       List<Integer> sales_count_weekly_2004_y = new ArrayList<Integer>();
       while(rs_sales_count_weekly_2004.next()){
-        Integer year = rs_sales_count_weekly_2004.getInt(1);
-        Integer countSalesInMonth = rs_sales_count_weekly_2004.getInt(2);
-        sales_count_weekly_2004_x.add(year);
-        sales_count_weekly_2004_y.add(countSalesInMonth);
+        Integer week = rs_sales_count_weekly_2004.getInt(1);
+        Integer countSalesInWeek = rs_sales_count_weekly_2004.getInt(2);
+        sales_count_weekly_2004_x.add(week);
+        sales_count_weekly_2004_y.add(countSalesInWeek);
       }
       dashboard_object.set_sales_count_weekly(sales_count_weekly_2001_x,sales_count_weekly_2001_y,
       sales_count_weekly_2002_x,sales_count_weekly_2002_y,
