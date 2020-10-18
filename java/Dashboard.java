@@ -15,7 +15,13 @@ public class Dashboard{
   JFrame frame; // the pop up window for our dashboard
   // JPanel finalpanel; // the final panel that all the sub panels will be added to it in show_dashboard() function
 
-  JPanel panel1Aa;
+  JPanel panel1Aa; // panel for part 1Aa: customer_count_yearly
+  JPanel panel1Ab; // panel for part 1Ab: customer_count_monthly
+  JPanel panel1Ac; // panel for part 1Ac: customer_count_weekly
+
+  JPanel panel1Ba; // panel for part 1Aa: sales_amount_yearly
+  JPanel panel1Bb; // panel for part 1Ab: sales_amount_monthly
+  JPanel panel1Bc; // panel for part 1Ac: sales_amount_weekly
 
   JPanel panel1Ca; // panel for part 1Ca: sales_count_yearly
   JPanel panel1Cb; // panel for part 1Cb: sales_count_monthly_2004
@@ -36,7 +42,20 @@ public class Dashboard{
   JScrollPane scroll; // added when needed, not being used now
 
   // Part 1A chart members
-  BubbleChart num_customer_yearly_chart;
+  XYChart num_customer_yearly_chart;
+  XYChart num_customer_monthly_chart;
+  XYChart num_customer_weekly_chart;
+
+
+  // Part 1B chart members
+  XYChart sales_amount_yearly_chart;
+  XYChart sales_amount_monthly_chart;
+  XYChart sales_amount_weekly_chart;
+
+  // Part 1C chart members
+  XYChart sales_count_yearly_chart;
+  XYChart sales_count_monthly_chart;
+  XYChart sales_count_weekly_chart;
 
   // Part 4 chart members
   PieChart product_top_10_Jan_to_Mar_chart;
@@ -62,16 +81,136 @@ public class Dashboard{
     this.frame.setVisible(false);
   }
 
-  // Part 1Aa setter: Bubble graph example
+  // Part 1Aa setter: XY graph example
   public void set_num_customer_yearly(List<Integer>x, List<Integer>y) throws Exception {
     try {
-      this.num_customer_yearly_chart = new BubbleChartBuilder().width(400).height(400).title("number of customers each year").build();
-      for(int i = 0; i < x.size(); i++){
-        // this.num_customer_yearly_chart.addSeries(Double.valueOf(x.get(i)), Double.valueOf(y.get(i)));
-      }
+      this.num_customer_yearly_chart = new XYChartBuilder().width(400).height(400).title("number of customers each year").build();
+      this.num_customer_yearly_chart.addSeries("customer_yearly",x,y);
 
       this.panel1Aa = new XChartPanel(this.num_customer_yearly_chart);
+      // hide the legend
+      this.num_customer_yearly_chart.getStyler().setLegendVisible(false);
 
+
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+
+  // Part 1Ab setter: XY graph example
+  public void set_num_customer_monthly(List<Integer>x2001, List<Integer>y2001,List<Integer>x2002, List<Integer>y2002,List<Integer>x2003, List<Integer>y2003,List<Integer>x2004, List<Integer>y2004) throws Exception {
+    try {
+      this.num_customer_monthly_chart = new XYChartBuilder().width(400).height(400).title("number of customers each month").build();
+      this.num_customer_monthly_chart.addSeries("2001",x2001,y2001);
+      this.num_customer_monthly_chart.addSeries("2002",x2002,y2002);
+      this.num_customer_monthly_chart.addSeries("2003",x2003,y2003);
+      this.num_customer_monthly_chart.addSeries("2004",x2004,y2004);
+      this.panel1Ab = new XChartPanel(this.num_customer_monthly_chart);
+
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+
+  // Part 1Ac setter: XY graph example
+  public void set_num_customer_weekly(List<Integer>x2001, List<Integer>y2001,List<Integer>x2002, List<Integer>y2002,List<Integer>x2003, List<Integer>y2003,List<Integer>x2004, List<Integer>y2004) throws Exception {
+    try {
+      this.num_customer_weekly_chart = new XYChartBuilder().width(400).height(400).title("number of customers each week").build();
+      this.num_customer_weekly_chart.addSeries("2001",x2001,y2001);
+      this.num_customer_weekly_chart.addSeries("2002",x2002,y2002);
+      this.num_customer_weekly_chart.addSeries("2003",x2003,y2003);
+      this.num_customer_weekly_chart.addSeries("2004",x2004,y2004);
+      this.panel1Ac = new XChartPanel(this.num_customer_weekly_chart);
+
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+
+  // Part 1Ba setter: XY graph example
+  public void set_sales_amount_yearly(List<Integer>x, List<Double>y) throws Exception {
+    try {
+      this.sales_amount_yearly_chart = new XYChartBuilder().width(400).height(400).title("sales amount each year").build();
+      this.sales_amount_yearly_chart.addSeries("sales_amount_yearly",x,y);
+
+      this.panel1Ba = new XChartPanel(this.sales_amount_yearly_chart);
+      // hide the legend
+      this.sales_amount_yearly_chart.getStyler().setLegendVisible(false);
+
+
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+  // Part 1Bb setter: XY graph example
+  public void set_sales_amount_monthly(List<Integer>x2001, List<Double>y2001,List<Integer>x2002, List<Double>y2002,List<Integer>x2003, List<Double>y2003,List<Integer>x2004, List<Double>y2004) throws Exception {
+    try {
+      this.sales_amount_monthly_chart = new XYChartBuilder().width(400).height(400).title("sales amount each month").build();
+      this.sales_amount_monthly_chart.addSeries("2001",x2001,y2001);
+      this.sales_amount_monthly_chart.addSeries("2002",x2002,y2002);
+      this.sales_amount_monthly_chart.addSeries("2003",x2003,y2003);
+      this.sales_amount_monthly_chart.addSeries("2004",x2004,y2004);
+      this.panel1Bb = new XChartPanel(this.sales_amount_monthly_chart);
+
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+
+  // Part 1Bc setter: XY graph example
+  public void set_sales_amount_weekly(List<Integer>x2001, List<Double>y2001,List<Integer>x2002, List<Double>y2002,List<Integer>x2003, List<Double>y2003,List<Integer>x2004, List<Double>y2004) throws Exception {
+    try {
+      this.sales_amount_weekly_chart = new XYChartBuilder().width(400).height(400).title("sales amount each month").build();
+      this.sales_amount_weekly_chart.addSeries("2001",x2001,y2001);
+      this.sales_amount_weekly_chart.addSeries("2002",x2002,y2002);
+      this.sales_amount_weekly_chart.addSeries("2003",x2003,y2003);
+      this.sales_amount_weekly_chart.addSeries("2004",x2004,y2004);
+      this.panel1Bc = new XChartPanel(this.sales_amount_weekly_chart);
+
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+
+  // Part 1Ca setter: XY graph example
+  public void set_sales_count_yearly(List<Integer>x, List<Integer>y) throws Exception {
+    try {
+      this.sales_count_yearly_chart = new XYChartBuilder().width(400).height(400).title("sales count each year").build();
+      this.sales_count_yearly_chart.addSeries("sales_count_yearly",x,y);
+
+      this.panel1Ca = new XChartPanel(this.sales_count_yearly_chart);
+      // hide the legend
+      this.sales_count_yearly_chart.getStyler().setLegendVisible(false);
+
+
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+  // Part 1Cb setter: XY graph example
+  public void set_sales_count_monthly(List<Integer>x2001, List<Integer>y2001,List<Integer>x2002, List<Integer>y2002,List<Integer>x2003, List<Integer>y2003,List<Integer>x2004, List<Integer>y2004) throws Exception {
+    try {
+      this.sales_count_monthly_chart = new XYChartBuilder().width(400).height(400).title("sales count each month").build();
+      this.sales_count_monthly_chart.addSeries("2001",x2001,y2001);
+      this.sales_count_monthly_chart.addSeries("2002",x2002,y2002);
+      this.sales_count_monthly_chart.addSeries("2003",x2003,y2003);
+      this.sales_count_monthly_chart.addSeries("2004",x2004,y2004);
+      this.panel1Cb = new XChartPanel(this.sales_count_monthly_chart);
+
+    } catch(Exception e){
+      throw new Exception(e);
+    }
+  }
+
+  // Part 1Cc setter: XY graph example
+  public void set_sales_count_weekly(List<Integer>x2001, List<Integer>y2001,List<Integer>x2002, List<Integer>y2002,List<Integer>x2003, List<Integer>y2003,List<Integer>x2004, List<Integer>y2004) throws Exception {
+    try {
+      this.sales_count_weekly_chart = new XYChartBuilder().width(400).height(400).title("sales count each month").build();
+      this.sales_count_weekly_chart.addSeries("2001",x2001,y2001);
+      this.sales_count_weekly_chart.addSeries("2002",x2002,y2002);
+      this.sales_count_weekly_chart.addSeries("2003",x2003,y2003);
+      this.sales_count_weekly_chart.addSeries("2004",x2004,y2004);
+      this.panel1Cc = new XChartPanel(this.sales_count_weekly_chart);
 
     } catch(Exception e){
       throw new Exception(e);
@@ -221,6 +360,16 @@ public class Dashboard{
       this.finalPanel = new JPanel();
       // add sub panels to final panel
       this.finalPanel.add(this.panel1Aa, BorderLayout.NORTH);
+      this.finalPanel.add(this.panel1Ab, BorderLayout.NORTH);
+      this.finalPanel.add(this.panel1Ac, BorderLayout.NORTH);
+
+      this.finalPanel.add(this.panel1Ba, BorderLayout.NORTH);
+      this.finalPanel.add(this.panel1Bb, BorderLayout.NORTH);
+      this.finalPanel.add(this.panel1Bc, BorderLayout.NORTH);
+
+      this.finalPanel.add(this.panel1Ca, BorderLayout.NORTH);
+      this.finalPanel.add(this.panel1Cb, BorderLayout.NORTH);
+      this.finalPanel.add(this.panel1Cc, BorderLayout.NORTH);
 
       this.finalPanel.add(this.panel4A,BorderLayout.NORTH);
       this.finalPanel.add(this.panel4B,BorderLayout.NORTH);
