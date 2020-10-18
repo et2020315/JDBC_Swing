@@ -34,6 +34,9 @@ public class MainFrame extends JFrame {
 	private JButton showTablesButton = new JButton("Show All Tables");
 	private JButton showColumnsButton = new JButton("Show Columns of Table");
 	private JButton joinTablesButton = new JButton("Join Tables");
+	
+	// Dashboard
+	private JButton showDashboardButton = new JButton("Dashboard");
 
 	// Dropdown for predefined commands and button to activate command
 	private String command;
@@ -82,6 +85,15 @@ public class MainFrame extends JFrame {
 		joinTablesButton.addActionListener(new BasicListener());
 		joinTablesButton.setActionCommand("join-tables");
 		phase3Panel.add(joinTablesButton);
+		
+		// Dashboard button
+		showDashboardButton.setBounds(480, 10, 200, 30);
+		showDashboardButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				sendToMainInterface("dashboard");
+			}
+		});
+		phase3Panel.add(showDashboardButton);
 
 		// Dropdown
 		String[] choices = {"Show related tables", "Show all primary keys", "Find column", "Search path", 

@@ -1389,7 +1389,48 @@ public class MainMainInterface{
 
       // Part 2B: employee salary statistics in histogram, using 1 column only
 
-
+      // ------------------------------ Part 3 -------------------------------------
+      
+      // Part 3A
+      // rs_regional_sales_count
+      List<String> states_1 = new ArrayList<String>();
+      List<Integer> sales_count_by_state = new ArrayList<Integer>();
+      while (rs_regional_sales_count.next()) {
+    	  states_1.add(rs_regional_sales_count.getString(1));
+    	  sales_count_by_state.add(rs_regional_sales_count.getInt(2));
+      }
+      dashboard_object.set_regional_sales_count(states_1, sales_count_by_state);
+      
+      // Part 3B
+      // rs_regional_sales_amount
+      List<String> states_2 = new ArrayList<String>();
+      List<Double> sales_amount_by_state = new ArrayList<Double>();
+      while (rs_regional_sales_amount.next()) {
+    	  states_2.add(rs_regional_sales_amount.getString(1));
+    	  sales_amount_by_state.add(rs_regional_sales_amount.getDouble(2));
+      }
+      dashboard_object.set_regional_sales_amount(states_2, sales_amount_by_state);
+      
+      // Part 3C
+      // rs_regional_sales_customer
+      List<String> states_3 = new ArrayList<String>();
+      List<Integer> sales_customers_by_state = new ArrayList<Integer>();
+      while (rs_regional_sales_customer.next()) {
+    	  states_3.add(rs_regional_sales_customer.getString(1));
+    	  sales_customers_by_state.add(rs_regional_sales_customer.getInt(2));
+      }
+      dashboard_object.set_regional_sales_customer(states_3, sales_customers_by_state);
+      
+      // Part 3D
+      // rs_regional_aggregate_sum_rate
+      List<String> states_4 = new ArrayList<String>();
+      List<Double> sales_aggregate_by_state = new ArrayList<Double>();
+      while (rs_regional_aggregate_sum_rate.next()) {
+    	  states_4.add(rs_regional_aggregate_sum_rate.getString(1));
+    	  sales_aggregate_by_state.add(rs_regional_aggregate_sum_rate.getDouble(2));
+      }
+      dashboard_object.set_regional_aggregate_sums(states_4, sales_aggregate_by_state);
+      
       /*** Part 5A: Customer age -- demographics ****/
 
       // create list for customer

@@ -23,6 +23,11 @@ public class Dashboard{
   JPanel panel1Cb; // panel for part 1Cb: sales_count_monthly_2004
   JPanel panel1Cc; // panel for part 1Cc: sales_count_weekly_2004
   JPanel panel2A; // panel for part 2A: employee age histogram
+  
+  JPanel panel3A;
+  JPanel panel3B;
+  JPanel panel3C;
+  JPanel panel3D;
 
   JPanel panel5A; // panel for part 5A : customer birth year
   JPanel panel5B; // panel for part 5B: customer gender
@@ -50,7 +55,11 @@ public class Dashboard{
   BubbleChart sales_count_monthly_2004_chart;
   XYChart sales_count_weekly_2004_chart;
 
-
+  // Part 3 chart members
+  CategoryChart regional_sales_count_chart;
+  CategoryChart regional_sales_amount_chart;
+  CategoryChart regional_sales_customer_chart;
+  CategoryChart regional_aggregate_sum_chart;
 
   // constructor
   Dashboard(){
@@ -197,7 +206,50 @@ public class Dashboard{
         throw new Exception(e);
       }
     }
-
+    
+    // Part 3A setter
+    public void set_regional_sales_count(List<String> states, List<Integer> counts) throws Exception {
+    	try {
+    		regional_sales_count_chart = new CategoryChartBuilder().width(400).height(400).title("Sales Count by Region").xAxisTitle("Region").yAxisTitle("Sales count").build();
+    		regional_sales_count_chart.addSeries("regional_sales_count", states, counts);
+    		panel3A = new XChartPanel(regional_sales_count_chart);
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    }
+    
+    // Part 3B setter
+    public void set_regional_sales_amount(List<String> states, List<Double> amounts) throws Exception {
+    	try {
+    		regional_sales_amount_chart = new CategoryChartBuilder().width(400).height(400).title("Sales Amount by Region").xAxisTitle("Region").yAxisTitle("Sales amount").build();
+    		regional_sales_amount_chart.addSeries("regional_sales_amount", states, amounts);
+    		panel3B = new XChartPanel(regional_sales_amount_chart);
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    }
+    
+    // Part 3C setter
+    public void set_regional_sales_customer(List<String> states, List<Integer> customers) throws Exception {
+    	try {
+    		regional_sales_customer_chart = new CategoryChartBuilder().width(400).height(400).title("Customers by Region").xAxisTitle("Region").yAxisTitle("Number of customers").build();
+    		regional_sales_customer_chart.addSeries("regional_sales_customers", states, customers);
+    		panel3C = new XChartPanel(regional_sales_customer_chart);
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+     }
+    
+    // Part 3D setter
+    public void set_regional_aggregate_sums(List<String> states, List<Double> sums) throws Exception {
+    	try {
+    		regional_aggregate_sum_chart = new CategoryChartBuilder().width(400).height(400).title("Aggregate sum by region").xAxisTitle("Region").yAxisTitle("Sums").build();
+    		regional_aggregate_sum_chart.addSeries("regional_aggregate_sums", states, sums);
+    		panel3D = new XChartPanel(regional_aggregate_sum_chart);
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    }
 
 
   // when finish adding all the plots, call the function below to show it
