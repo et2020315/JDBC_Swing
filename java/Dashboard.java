@@ -50,7 +50,9 @@ public class Dashboard{
   // Part 2 chart members
   Histogram employee_age_histogram; // histogram needs to be added a category chart to display histogram
   CategoryChart employee_age_chart;
-
+  private Histogram employee_salary_histogram;
+  private CategoryChart employee_salary_chart;
+  
   // Part 1C chart member
   BubbleChart sales_count_yearly_chart;
   BubbleChart sales_count_monthly_2004_chart;
