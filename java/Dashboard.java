@@ -510,7 +510,7 @@ public class Dashboard{
       this.frame.setLayout(new BorderLayout());
       this.scroll = new JScrollPane(this.finalPanel);
       this.scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-      this.scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+      this.scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
       this.frame.add(this.scroll);
       this.frame.setVisible(true);
