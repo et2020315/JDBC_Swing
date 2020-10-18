@@ -182,7 +182,7 @@ public class Dashboard{
       	int numBins = (maxHistogram - minHistogram)/500;
       			
         this.employee_salary_histogram = new Histogram(x, numBins, minHistogram, maxHistogram);
-        this.employee_salary_chart = new CategoryChartBuilder().width(400).height(400).title("Employee Total Salary").
+        this.employee_salary_chart = new CategoryChartBuilder().width(400).height(400).title("Employee Total Salary (Median:560, Mean:767)").
       		  xAxisTitle("Salary Range").yAxisTitle("Count").build();
         
         List<String> xSalaryRange = new ArrayList<>();
