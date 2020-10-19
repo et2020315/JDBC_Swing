@@ -1,0 +1,73 @@
+/* test cases */
+
+table: currency
+columnname: 1:2:3
+
+table: location
+columnnames seperated by space: 2:3:4
+
+table: employee
+columnames seperated by space: 1:3
+
+
+Join tables:
+2 tables:
+table: customeraddress
+cond: customeraddress.AddressTypeID = addresstype.AddressTypeID
+table: addresstype
+
+
+2 tables:
+table : product
+cond1: product.ProductID = transactionhistory.ProductID
+table: transactionhistory
+
+3 tables
+
+table1: employee
+condition1: employee.EmployeeID = purchaseorderheader.EmployeeID
+table2: purchaseorderheader
+condition2: purchaseorderheader.VendorID = vendorcontact.VendorID
+table3: vendorcontact
+
+3 tables
+
+table1: store
+cond1: store.CustomerID = storecontact.CustomerID
+table2: storecontact
+cond2: storecontact.ContactID = contact.ContactID
+table3: contact
+
+
+
+4 tables:
+test case 1:
+
+table1: stateprovince
+cond1: stateprovince.TerritoryID = salesterritoryhistory.TerritoryID
+table2: salesterritoryhistory
+cond2:  salesterritoryhistory.SalesPersonID = salesperson.SalesPersonID
+table3: salesperson
+cond3: salesperson.SalesPersonID = salespersonquotahistory.SalesPersonID
+table4: salespersonquotahistory
+
+4 tables test case 2:
+
+table1: customer
+cond1: customer.CustomerID = salesorderheader.CustomerID
+table2: salesorderheader
+cond2: salesorderheader.ContactID = contactcreditcard.ContactID
+table3: contactcreditcard
+cond3:contactcreditcard.CreditCardID = creditcard.CreditCardID
+table4: creditcard
+
+
+4 tables test case 3:
+
+table1: product
+cond1: product.ProductID = salesorderdetail.ProductID
+table2: salesorderdetail
+cond2: salesorderdetail.SalesOrderID = salesorderheadersalesreason.SalesOrderID
+table3: salesorderheadersalesreason
+cond3: salesorderheadersalesreason.SalesReasonID = salesreason.SalesReasonID
+table4: salesreason
