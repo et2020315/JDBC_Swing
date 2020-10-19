@@ -5,6 +5,8 @@ import org.knowm.xchart.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.sql.*; // resultset
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.CategorySeries.CategorySeriesRenderStyle;
@@ -427,8 +429,9 @@ public class Dashboard{
     // Part 3A setter
     public void set_regional_sales_count(List<String> states, List<Integer> counts) throws Exception {
     	try {
-    		regional_sales_count_chart = new CategoryChartBuilder().width(400).height(400).title("Sales Count by Region").xAxisTitle("Region").yAxisTitle("Sales count").build();
+    		regional_sales_count_chart = new CategoryChartBuilder().width(2500).height(400).title("Sales Count by Region").xAxisTitle("Region").yAxisTitle("Sales count").build();
     		regional_sales_count_chart.addSeries("regional_sales_count", states, counts);
+    		regional_sales_count_chart.getStyler().setXAxisLabelRotation(90);
     		panel3A = new XChartPanel(regional_sales_count_chart);
     	} catch(Exception e) {
     		e.printStackTrace();
@@ -438,8 +441,9 @@ public class Dashboard{
     // Part 3B setter
     public void set_regional_sales_amount(List<String> states, List<Double> amounts) throws Exception {
     	try {
-    		regional_sales_amount_chart = new CategoryChartBuilder().width(400).height(400).title("Sales Amount by Region").xAxisTitle("Region").yAxisTitle("Sales amount").build();
+    		regional_sales_amount_chart = new CategoryChartBuilder().width(2500).height(400).title("Sales Amount by Region").xAxisTitle("Region").yAxisTitle("Sales amount").build();
     		regional_sales_amount_chart.addSeries("regional_sales_amount", states, amounts);
+    		regional_sales_amount_chart.getStyler().setXAxisLabelRotation(90);
     		panel3B = new XChartPanel(regional_sales_amount_chart);
     	} catch(Exception e) {
     		e.printStackTrace();
@@ -449,8 +453,9 @@ public class Dashboard{
     // Part 3C setter
     public void set_regional_sales_customer(List<String> states, List<Integer> customers) throws Exception {
     	try {
-    		regional_sales_customer_chart = new CategoryChartBuilder().width(400).height(400).title("Customers by Region").xAxisTitle("Region").yAxisTitle("Number of customers").build();
+    		regional_sales_customer_chart = new CategoryChartBuilder().width(2500).height(400).title("Customers by Region").xAxisTitle("Region").yAxisTitle("Number of customers").build();
     		regional_sales_customer_chart.addSeries("regional_sales_customers", states, customers);
+    		regional_sales_customer_chart.getStyler().setXAxisLabelRotation(90);
     		panel3C = new XChartPanel(regional_sales_customer_chart);
     	} catch(Exception e) {
     		e.printStackTrace();
@@ -460,8 +465,9 @@ public class Dashboard{
     // Part 3D setter
     public void set_regional_aggregate_sums(List<String> states, List<Double> sums) throws Exception {
     	try {
-    		regional_aggregate_sum_chart = new CategoryChartBuilder().width(400).height(400).title("Aggregate sum by region").xAxisTitle("Region").yAxisTitle("Sums").build();
+    		regional_aggregate_sum_chart = new CategoryChartBuilder().width(700).height(400).title("Aggregate sum by region").xAxisTitle("Region").yAxisTitle("Sums").build();
     		regional_aggregate_sum_chart.addSeries("regional_aggregate_sums", states, sums);
+    		regional_aggregate_sum_chart.getStyler().setXAxisLabelRotation(90);
     		panel3D = new XChartPanel(regional_aggregate_sum_chart);
     	} catch(Exception e) {
     		e.printStackTrace();
@@ -486,6 +492,11 @@ public class Dashboard{
       this.finalPanel.add(this.panel1Ca, BorderLayout.NORTH);
       this.finalPanel.add(this.panel1Cb, BorderLayout.NORTH);
       this.finalPanel.add(this.panel1Cc, BorderLayout.NORTH);
+      
+      this.finalPanel.add(this.panel3A, BorderLayout.NORTH);
+      this.finalPanel.add(this.panel3B, BorderLayout.NORTH);
+      this.finalPanel.add(this.panel3C, BorderLayout.NORTH);
+      this.finalPanel.add(this.panel3D, BorderLayout.NORTH);
 
       this.finalPanel.add(this.panel4A,BorderLayout.NORTH);
       this.finalPanel.add(this.panel4B,BorderLayout.NORTH);
