@@ -1,0 +1,3 @@
+## READ ME
+
+Java JDBC PROJECT
