@@ -12,7 +12,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import javax.swing.*;
 
-public class XchartTest {
+public class XchartDemo {
 
   public static void main(String[] args) throws Exception {
 
@@ -20,6 +20,7 @@ public class XchartTest {
     double[] yData = new double[] { 2.0, 1.0, 0.0 };
     List<String> name = new ArrayList<String>(Arrays.asList("TX","LA","CA","MN","UT","ML","FL","AZ","WY"));
     List<Integer> pop = new ArrayList<Integer>(Arrays.asList(31111,23314,21455,21235,47786,14432,34564,11231,75234));
+
 
 
     JFrame frame = new JFrame("XChart Swing Demo");
@@ -37,9 +38,11 @@ public class XchartTest {
     JPanel panel1 = new XChartPanel(chart1);
     JPanel panel2 = new XChartPanel(chart2);
     JPanel panel3 = new JPanel();
+
+    JScrollPane scroll = new JScrollPane(panel3);
     panel3.add(panel1);
     panel3.add(panel2);
-    frame.add(panel3);
+    frame.add(scroll);
     frame.pack();
     frame.setVisible(true);
 

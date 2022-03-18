@@ -19,7 +19,9 @@ https://www.geeksforgeeks.org/arraylist-isempty-java-example/
 https://stackoverflow.com/questions/43508087/break-up-a-string-literal-over-multiple-lines
 https://stackoverflow.com/questions/171952/is-there-a-destructor-for-java
 https://www.geeksforgeeks.org/split-string-java-examples/
+https://github.com/knowm/XChart/issues/278
 
+https://knowm.org/open-source/xchart/xchart-example-code/
 https://stackoverflow.com/questions/5881834/getting-integer-object-from-resultset
 
 https://knowm.org/open-source/xchart/xchart-example-code/

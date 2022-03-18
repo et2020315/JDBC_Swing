@@ -1180,25 +1180,43 @@ public class MainMainInterface{
       // Part 1Aa
       String num_customer_yearly = "select year(orderdate) , count(distinct(customerid)) from salesorderheader group by year(orderdate)";
       // Part 1Ab
+      String num_customer_monthly_2001 = "select month(orderdate) , count(distinct(customerid)) from salesorderheader where year(orderdate)='2001' group by month(orderdate)";
       String num_customer_monthly_2002 = "select month(orderdate) , count(distinct(customerid)) from salesorderheader where year(orderdate)='2002' group by month(orderdate)";
+      String num_customer_monthly_2003 = "select month(orderdate) , count(distinct(customerid)) from salesorderheader where year(orderdate)='2003' group by month(orderdate)";
+      String num_customer_monthly_2004 = "select month(orderdate) , count(distinct(customerid)) from salesorderheader where year(orderdate)='2004' group by month(orderdate)";
       // Part 1Ac
+      String num_customer_weekly_2001 = "select week(orderdate) , count(distinct(customerid)) from salesorderheader where year(orderdate)='2001' group by week(orderdate)";
       String num_customer_weekly_2002 = "select week(orderdate) , count(distinct(customerid)) from salesorderheader where year(orderdate)='2002' group by week(orderdate)";
+      String num_customer_weekly_2003 = "select week(orderdate) , count(distinct(customerid)) from salesorderheader where year(orderdate)='2003' group by week(orderdate)";
+      String num_customer_weekly_2004 = "select week(orderdate) , count(distinct(customerid)) from salesorderheader where year(orderdate)='2004' group by week(orderdate)";
 
 
       // Part 1Ba
       String sales_amount_yearly = "select year(orderdate) , sum(subtotal) from salesorderheader group by year(orderdate)";
       // Part 1Bb
+      String sales_amount_monthly_2001 = "select month(orderdate) , sum(subtotal) from salesorderheader where year(orderdate)='2001' group by month(orderdate)";
+      String sales_amount_monthly_2002 = "select month(orderdate) , sum(subtotal) from salesorderheader where year(orderdate)='2002' group by month(orderdate)";
       String sales_amount_monthly_2003 = "select month(orderdate) , sum(subtotal) from salesorderheader where year(orderdate)='2003' group by month(orderdate)";
+      String sales_amount_monthly_2004 = "select month(orderdate) , sum(subtotal) from salesorderheader where year(orderdate)='2004' group by month(orderdate)";
       // Part 1Bc
+      String sales_amount_weekly_2001 = "select week(orderdate) , sum(subtotal) from salesorderheader where year(orderdate)='2001' group by week(orderdate)";
+      String sales_amount_weekly_2002 = "select week(orderdate) , sum(subtotal) from salesorderheader where year(orderdate)='2002' group by week(orderdate)";
       String sales_amount_weekly_2003 = "select week(orderdate) , sum(subtotal) from salesorderheader where year(orderdate)='2003' group by week(orderdate)";
+      String sales_amount_weekly_2004 = "select week(orderdate) , sum(subtotal) from salesorderheader where year(orderdate)='2004' group by week(orderdate)";
 
 
 
       // Part 1Ca
       String sales_count_yearly = "select year(orderdate), count(distinct(SalesOrderID)) from salesorderheader group by year(orderdate)";
       // Part 1Cb
+      String sales_count_monthly_2001 = "select month(orderdate), count(distinct(SalesorderID)) from salesorderheader where year(orderdate) = '2001' group by month(orderdate)";
+      String sales_count_monthly_2002 = "select month(orderdate), count(distinct(SalesorderID)) from salesorderheader where year(orderdate) = '2002' group by month(orderdate)";
+      String sales_count_monthly_2003 = "select month(orderdate), count(distinct(SalesorderID)) from salesorderheader where year(orderdate) = '2003' group by month(orderdate)";
       String sales_count_monthly_2004 = "select month(orderdate), count(distinct(SalesorderID)) from salesorderheader where year(orderdate) = '2004' group by month(orderdate)";
       // Part 1Cc
+      String sales_count_weekly_2001 = "select week(orderdate) , count(distinct(SalesOrderID)) from salesorderheader where year(orderdate) = '2001' group by week(orderdate)";
+      String sales_count_weekly_2002 = "select week(orderdate) , count(distinct(SalesOrderID)) from salesorderheader where year(orderdate) = '2002' group by week(orderdate)";
+      String sales_count_weekly_2003 = "select week(orderdate) , count(distinct(SalesOrderID)) from salesorderheader where year(orderdate) = '2003' group by week(orderdate)";
       String sales_count_weekly_2004 = "select week(orderdate) , count(distinct(SalesOrderID)) from salesorderheader where year(orderdate) = '2004' group by week(orderdate)";
 
 
@@ -1206,14 +1224,20 @@ public class MainMainInterface{
 
 
       // part 2Aa
-      // 1940-1950, 1950-1960, 1960-1970, 1970-1980, 1980+
-      String employee_birth_year = "select floor(cast(year(birthdate) as signed)/10 )*10 as bucket,count(year(birthdate)) from employee group by bucket";
+      // 1940-1950, 1950-1960, 1960-1970, 1970-1980, 1980+ -- for categorical
+      // String employee_birth_year = "select floor(cast(year(birthdate) as signed)/10 )*10 as bucket,count(year(birthdate)) from employee group by bucket";
+      // employee birth year for histogram,this data contains duplicates so that histogram can count
+      String employee_age = "select (2005 - year(birthdate)) as age from employee order by age";
+
       // note that the historgram below shows:
       // 200 -300, 300-400, ... 3300 - 3400, 5000 - 5100
       // !!! ************ Some of the bins are missing! we need to fill those bin names in this dashboard_function() before passing to GUI and put count to be zero ****//
 
       // part 2Ab
-      String employee_salary_histogram_bin = "select ceil(40*(rate)/100)*100 as r, count(*) from employeepayhistory group by r order by r";
+      // String employee_salary_histogram_bin = "select ceil(40*(rate)/100)*100 as r, count(*) from employeepayhistory group by r order by r";
+      // this will give a column with
+      String employee_salary = "SELECT 40*Rate as pay FROM adventureworks.employeepayhistory eh1 where ModifiedDate= "
+      		+ "(select Max(ModifiedDate) from employeepayhistory  eh2 where eh1.EmployeeID= eh2.EmployeeID)";
 
       // these two below will return result set with 1 column with single value
 
@@ -1221,10 +1245,6 @@ public class MainMainInterface{
       String employee_salary_median = "select avg(medianrate) from (select 40*rate as medianrate from employeepayhistory order by medianrate limit 157,2) as x";
       // Part 2Ab - Same panel, we want to extract 1 number from the result set of the query below
       String employee_salary_mean = "select 40*AVG(rate) as r from employeepayhistory";
-
-
-
-
 
 
       // part 3A
@@ -1265,28 +1285,69 @@ public class MainMainInterface{
       Statement state = this.conn.createStatement();
       ResultSet rs_num_customer_yearly = state.executeQuery(num_customer_yearly);
       state = this.conn.createStatement();
+      ResultSet rs_num_customer_monthly_2001 = state.executeQuery(num_customer_monthly_2001);
+      state = this.conn.createStatement();
       ResultSet rs_num_customer_monthly_2002 = state.executeQuery(num_customer_monthly_2002);
       state = this.conn.createStatement();
+      ResultSet rs_num_customer_monthly_2003 = state.executeQuery(num_customer_monthly_2003);
+      state = this.conn.createStatement();
+      ResultSet rs_num_customer_monthly_2004 = state.executeQuery(num_customer_monthly_2004);
+      state = this.conn.createStatement();
+
+      ResultSet rs_num_customer_weekly_2001 = state.executeQuery(num_customer_weekly_2001);
+      state = this.conn.createStatement();
       ResultSet rs_num_customer_weekly_2002 = state.executeQuery(num_customer_weekly_2002);
+      state = this.conn.createStatement();
+      ResultSet rs_num_customer_weekly_2003 = state.executeQuery(num_customer_weekly_2003);
+      state = this.conn.createStatement();
+      ResultSet rs_num_customer_weekly_2004 = state.executeQuery(num_customer_weekly_2004);
       state = this.conn.createStatement();
       //
       ResultSet rs_sales_amount_yearly = state.executeQuery(sales_amount_yearly);
       state = this.conn.createStatement();
+
+      ResultSet rs_sales_amount_monthly_2001 = state.executeQuery(sales_amount_monthly_2001);
+      state = this.conn.createStatement();
+      ResultSet rs_sales_amount_monthly_2002 = state.executeQuery(sales_amount_monthly_2002);
+      state = this.conn.createStatement();
       ResultSet rs_sales_amount_monthly_2003 = state.executeQuery(sales_amount_monthly_2003);
       state = this.conn.createStatement();
+      ResultSet rs_sales_amount_monthly_2004 = state.executeQuery(sales_amount_monthly_2004);
+      state = this.conn.createStatement();
+
+      ResultSet rs_sales_amount_weekly_2001 = state.executeQuery(sales_amount_weekly_2001);
+      state = this.conn.createStatement();
+      ResultSet rs_sales_amount_weekly_2002 = state.executeQuery(sales_amount_weekly_2002);
+      state = this.conn.createStatement();
       ResultSet rs_sales_amount_weekly_2003 = state.executeQuery(sales_amount_weekly_2003);
+      state = this.conn.createStatement();
+      ResultSet rs_sales_amount_weekly_2004 = state.executeQuery(sales_amount_weekly_2004);
       state = this.conn.createStatement();
       //
       ResultSet rs_sales_count_yearly = state.executeQuery(sales_count_yearly);
       state = this.conn.createStatement();
+
+      ResultSet rs_sales_count_monthly_2001 = state.executeQuery(sales_count_monthly_2001);
+      state = this.conn.createStatement();
+      ResultSet rs_sales_count_monthly_2002 = state.executeQuery(sales_count_monthly_2002);
+      state = this.conn.createStatement();
+      ResultSet rs_sales_count_monthly_2003 = state.executeQuery(sales_count_monthly_2003);
+      state = this.conn.createStatement();
       ResultSet rs_sales_count_monthly_2004 = state.executeQuery(sales_count_monthly_2004);
+      state = this.conn.createStatement();
+
+      ResultSet rs_sales_count_weekly_2001 = state.executeQuery(sales_count_weekly_2001);
+      state = this.conn.createStatement();
+      ResultSet rs_sales_count_weekly_2002 = state.executeQuery(sales_count_weekly_2002);
+      state = this.conn.createStatement();
+      ResultSet rs_sales_count_weekly_2003 = state.executeQuery(sales_count_weekly_2003);
       state = this.conn.createStatement();
       ResultSet rs_sales_count_weekly_2004 = state.executeQuery(sales_count_weekly_2004);
       state = this.conn.createStatement();
       //
-      ResultSet rs_employee_birth_year = state.executeQuery(employee_birth_year);
+      ResultSet rs_employee_age = state.executeQuery(employee_age);
       state = this.conn.createStatement();
-      ResultSet rs_employee_salary_histogram_bin = state.executeQuery(employee_salary_histogram_bin);
+      ResultSet rs_employee_salary = state.executeQuery(employee_salary);
       state = this.conn.createStatement();
       ResultSet rs_employee_salary_median = state.executeQuery(employee_salary_median);
       state = this.conn.createStatement();
@@ -1332,6 +1393,391 @@ public class MainMainInterface{
       Dashboard dashboard_object = new Dashboard();
 
 
+      /*** Part 1Aa: num_customer_yearly ***/
+      List<Integer> num_customer_yearly_x = new ArrayList<Integer>();
+      List<Integer> num_customer_yearly_y = new ArrayList<Integer>();
+      while(rs_num_customer_yearly.next()){
+        Integer year = rs_num_customer_yearly.getInt(1);
+        Integer numCustomerInYear = rs_num_customer_yearly.getInt(2);
+        System.out.println("year: " + year.toString() + " number of customers: " + numCustomerInYear.toString());
+        num_customer_yearly_x.add(year);
+        num_customer_yearly_y.add(numCustomerInYear);
+      }
+      dashboard_object.set_num_customer_yearly(num_customer_yearly_x,num_customer_yearly_y);
+
+      /*** Part 1Ab: num_customer_monthly ***/
+      List<Integer> num_customer_monthly_2001_x = new ArrayList<Integer>();
+      List<Integer> num_customer_monthly_2001_y = new ArrayList<Integer>();
+      while(rs_num_customer_monthly_2001.next()){
+        Integer month = rs_num_customer_monthly_2001.getInt(1);
+        Integer numCustomerInMonth = rs_num_customer_monthly_2001.getInt(2);
+        System.out.println("month: " + month.toString() + " number of customers: " + numCustomerInMonth.toString());
+        num_customer_monthly_2001_x.add(month);
+        num_customer_monthly_2001_y.add(numCustomerInMonth);
+      }
+      List<Integer> num_customer_monthly_2002_x = new ArrayList<Integer>();
+      List<Integer> num_customer_monthly_2002_y = new ArrayList<Integer>();
+      while(rs_num_customer_monthly_2002.next()){
+        Integer month = rs_num_customer_monthly_2002.getInt(1);
+        Integer numCustomerInMonth = rs_num_customer_monthly_2002.getInt(2);
+        System.out.println("month: " + month.toString() + " number of customers: " + numCustomerInMonth.toString());
+        num_customer_monthly_2002_x.add(month);
+        num_customer_monthly_2002_y.add(numCustomerInMonth);
+      }
+      List<Integer> num_customer_monthly_2003_x = new ArrayList<Integer>();
+      List<Integer> num_customer_monthly_2003_y = new ArrayList<Integer>();
+      while(rs_num_customer_monthly_2003.next()){
+        Integer month = rs_num_customer_monthly_2003.getInt(1);
+        Integer numCustomerInMonth = rs_num_customer_monthly_2003.getInt(2);
+        System.out.println("month: " + month.toString() + " number of customers: " + numCustomerInMonth.toString());
+        num_customer_monthly_2003_x.add(month);
+        num_customer_monthly_2003_y.add(numCustomerInMonth);
+      }
+      List<Integer> num_customer_monthly_2004_x = new ArrayList<Integer>();
+      List<Integer> num_customer_monthly_2004_y = new ArrayList<Integer>();
+      while(rs_num_customer_monthly_2004.next()){
+        Integer month = rs_num_customer_monthly_2004.getInt(1);
+        Integer numCustomerInMonth = rs_num_customer_monthly_2004.getInt(2);
+        System.out.println("month: " + month.toString() + " number of customers: " + numCustomerInMonth.toString());
+        num_customer_monthly_2004_x.add(month);
+        num_customer_monthly_2004_y.add(numCustomerInMonth);
+      }
+      dashboard_object.set_num_customer_monthly(num_customer_monthly_2001_x,num_customer_monthly_2001_y,
+      num_customer_monthly_2002_x,num_customer_monthly_2002_y,
+      num_customer_monthly_2003_x,num_customer_monthly_2003_y,
+      num_customer_monthly_2004_x,num_customer_monthly_2004_y);
+
+      /*** Part 1Ac: num_customer_weekly_2002 ***/
+      List<Integer> num_customer_weekly_2001_x = new ArrayList<Integer>();
+      List<Integer> num_customer_weekly_2001_y = new ArrayList<Integer>();
+      while(rs_num_customer_weekly_2001.next()){
+        Integer week = rs_num_customer_weekly_2001.getInt(1);
+        Integer numCustomerInWeek = rs_num_customer_weekly_2001.getInt(2);
+        System.out.println("week: " + week.toString() + " number of customers: " + numCustomerInWeek.toString());
+        num_customer_weekly_2001_x.add(week);
+        num_customer_weekly_2001_y.add(numCustomerInWeek);
+      }
+      List<Integer> num_customer_weekly_2002_x = new ArrayList<Integer>();
+      List<Integer> num_customer_weekly_2002_y = new ArrayList<Integer>();
+      while(rs_num_customer_weekly_2002.next()){
+        Integer week = rs_num_customer_weekly_2002.getInt(1);
+        Integer numCustomerInWeek = rs_num_customer_weekly_2002.getInt(2);
+        System.out.println("week: " + week.toString() + " number of customers: " + numCustomerInWeek.toString());
+        num_customer_weekly_2002_x.add(week);
+        num_customer_weekly_2002_y.add(numCustomerInWeek);
+      }
+      List<Integer> num_customer_weekly_2003_x = new ArrayList<Integer>();
+      List<Integer> num_customer_weekly_2003_y = new ArrayList<Integer>();
+      while(rs_num_customer_weekly_2003.next()){
+        Integer week = rs_num_customer_weekly_2003.getInt(1);
+        Integer numCustomerInWeek = rs_num_customer_weekly_2003.getInt(2);
+        System.out.println("week: " + week.toString() + " number of customers: " + numCustomerInWeek.toString());
+        num_customer_weekly_2003_x.add(week);
+        num_customer_weekly_2003_y.add(numCustomerInWeek);
+      }
+      List<Integer> num_customer_weekly_2004_x = new ArrayList<Integer>();
+      List<Integer> num_customer_weekly_2004_y = new ArrayList<Integer>();
+      while(rs_num_customer_weekly_2004.next()){
+        Integer week = rs_num_customer_weekly_2004.getInt(1);
+        Integer numCustomerInWeek = rs_num_customer_weekly_2004.getInt(2);
+        System.out.println("week: " + week.toString() + " number of customers: " + numCustomerInWeek.toString());
+        num_customer_weekly_2004_x.add(week);
+        num_customer_weekly_2004_y.add(numCustomerInWeek);
+      }
+      dashboard_object.set_num_customer_weekly(num_customer_weekly_2001_x,num_customer_weekly_2001_y,
+      num_customer_weekly_2002_x,num_customer_weekly_2002_y,
+      num_customer_weekly_2003_x,num_customer_weekly_2003_y,
+      num_customer_weekly_2004_x,num_customer_weekly_2004_y);
+
+      /*** Part 1Ba: sales_amount_yearly ***/
+      List<Integer> sales_amount_yearly_x = new ArrayList<Integer>();
+      List<Double> sales_amount_yearly_y = new ArrayList<Double>();
+      while(rs_sales_amount_yearly.next()){
+        Integer year = rs_sales_amount_yearly.getInt(1);
+        Double amountSalesInYear = rs_sales_amount_yearly.getDouble(2);
+        sales_amount_yearly_x.add(year);
+        sales_amount_yearly_y.add(amountSalesInYear);
+      }
+      dashboard_object.set_sales_amount_yearly(sales_amount_yearly_x,sales_amount_yearly_y);
+
+      /*** Part 1Bb: sales_amount_monthly ***/
+      List<Integer> sales_amount_monthly_2001_x = new ArrayList<Integer>();
+      List<Double> sales_amount_monthly_2001_y = new ArrayList<Double>();
+      while(rs_sales_amount_monthly_2001.next()){
+        Integer month = rs_sales_amount_monthly_2001.getInt(1);
+        Double amountSalesInMonth = rs_sales_amount_monthly_2001.getDouble(2);
+        sales_amount_monthly_2001_x.add(month);
+        sales_amount_monthly_2001_y.add(amountSalesInMonth);
+      }
+      List<Integer> sales_amount_monthly_2002_x = new ArrayList<Integer>();
+      List<Double> sales_amount_monthly_2002_y = new ArrayList<Double>();
+      while(rs_sales_amount_monthly_2002.next()){
+        Integer month = rs_sales_amount_monthly_2002.getInt(1);
+        Double amountSalesInMonth = rs_sales_amount_monthly_2002.getDouble(2);
+        sales_amount_monthly_2002_x.add(month);
+        sales_amount_monthly_2002_y.add(amountSalesInMonth);
+      }
+      List<Integer> sales_amount_monthly_2003_x = new ArrayList<Integer>();
+      List<Double> sales_amount_monthly_2003_y = new ArrayList<Double>();
+      while(rs_sales_amount_monthly_2003.next()){
+        Integer month = rs_sales_amount_monthly_2003.getInt(1);
+        Double amountSalesInMonth = rs_sales_amount_monthly_2003.getDouble(2);
+        sales_amount_monthly_2003_x.add(month);
+        sales_amount_monthly_2003_y.add(amountSalesInMonth);
+      }
+      List<Integer> sales_amount_monthly_2004_x = new ArrayList<Integer>();
+      List<Double> sales_amount_monthly_2004_y = new ArrayList<Double>();
+      while(rs_sales_amount_monthly_2004.next()){
+        Integer month = rs_sales_amount_monthly_2004.getInt(1);
+        Double amountSalesInMonth = rs_sales_amount_monthly_2004.getDouble(2);
+        sales_amount_monthly_2004_x.add(month);
+        sales_amount_monthly_2004_y.add(amountSalesInMonth);
+      }
+      dashboard_object.set_sales_amount_monthly(sales_amount_monthly_2001_x,sales_amount_monthly_2001_y,
+      sales_amount_monthly_2002_x,sales_amount_monthly_2002_y,
+      sales_amount_monthly_2003_x,sales_amount_monthly_2003_y,
+      sales_amount_monthly_2004_x,sales_amount_monthly_2004_y);
+
+      /*** Part 1Bc: sales_amount_weekly ***/
+      List<Integer> sales_amount_weekly_2001_x = new ArrayList<Integer>();
+      List<Double> sales_amount_weekly_2001_y = new ArrayList<Double>();
+      while(rs_sales_amount_weekly_2001.next()){
+        Integer week = rs_sales_amount_weekly_2001.getInt(1);
+        Double amountSalesInWeek = rs_sales_amount_weekly_2001.getDouble(2);
+        sales_amount_weekly_2001_x.add(week);
+        sales_amount_weekly_2001_y.add(amountSalesInWeek);
+      }
+      List<Integer> sales_amount_weekly_2002_x = new ArrayList<Integer>();
+      List<Double> sales_amount_weekly_2002_y = new ArrayList<Double>();
+      while(rs_sales_amount_weekly_2002.next()){
+        Integer week = rs_sales_amount_weekly_2002.getInt(1);
+        Double amountSalesInWeek = rs_sales_amount_weekly_2002.getDouble(2);
+        sales_amount_weekly_2002_x.add(week);
+        sales_amount_weekly_2002_y.add(amountSalesInWeek);
+      }
+      List<Integer> sales_amount_weekly_2003_x = new ArrayList<Integer>();
+      List<Double> sales_amount_weekly_2003_y = new ArrayList<Double>();
+      while(rs_sales_amount_weekly_2003.next()){
+        Integer week = rs_sales_amount_weekly_2003.getInt(1);
+        Double amountSalesInWeek = rs_sales_amount_weekly_2003.getDouble(2);
+        sales_amount_weekly_2003_x.add(week);
+        sales_amount_weekly_2003_y.add(amountSalesInWeek);
+      }
+      List<Integer> sales_amount_weekly_2004_x = new ArrayList<Integer>();
+      List<Double> sales_amount_weekly_2004_y = new ArrayList<Double>();
+      while(rs_sales_amount_weekly_2004.next()){
+        Integer week = rs_sales_amount_weekly_2004.getInt(1);
+        Double amountSalesInWeek = rs_sales_amount_weekly_2004.getDouble(2);
+        sales_amount_weekly_2004_x.add(week);
+        sales_amount_weekly_2004_y.add(amountSalesInWeek);
+      }
+      dashboard_object.set_sales_amount_weekly(sales_amount_weekly_2001_x,sales_amount_weekly_2001_y,
+      sales_amount_weekly_2002_x,sales_amount_weekly_2002_y,
+      sales_amount_weekly_2003_x,sales_amount_weekly_2003_y,
+      sales_amount_weekly_2004_x,sales_amount_weekly_2004_y);
+
+      /*** Part 1Ca: sales_count_yearly ***/
+      List<Integer> sales_count_yearly_x = new ArrayList<Integer>();
+      List<Integer> sales_count_yearly_y = new ArrayList<Integer>();
+      while(rs_sales_count_yearly.next()){
+        Integer year = rs_sales_count_yearly.getInt(1);
+        Integer countSalesInYear = rs_sales_count_yearly.getInt(2);
+        sales_count_yearly_x.add(year);
+        sales_count_yearly_y.add(countSalesInYear);
+      }
+      dashboard_object.set_sales_count_yearly(sales_count_yearly_x,sales_count_yearly_y);
+
+      /*** Part 1Cb: sales_count_monthly ***/
+      List<Integer> sales_count_monthly_2001_x = new ArrayList<Integer>();
+      List<Integer> sales_count_monthly_2001_y = new ArrayList<Integer>();
+      while(rs_sales_count_monthly_2001.next()){
+        Integer month = rs_sales_count_monthly_2001.getInt(1);
+        Integer countSalesInMonth = rs_sales_count_monthly_2001.getInt(2);
+        sales_count_monthly_2001_x.add(month);
+        sales_count_monthly_2001_y.add(countSalesInMonth);
+      }
+      List<Integer> sales_count_monthly_2002_x = new ArrayList<Integer>();
+      List<Integer> sales_count_monthly_2002_y = new ArrayList<Integer>();
+      while(rs_sales_count_monthly_2002.next()){
+        Integer month = rs_sales_count_monthly_2002.getInt(1);
+        Integer countSalesInMonth = rs_sales_count_monthly_2002.getInt(2);
+        sales_count_monthly_2002_x.add(month);
+        sales_count_monthly_2002_y.add(countSalesInMonth);
+      }
+      List<Integer> sales_count_monthly_2003_x = new ArrayList<Integer>();
+      List<Integer> sales_count_monthly_2003_y = new ArrayList<Integer>();
+      while(rs_sales_count_monthly_2003.next()){
+        Integer month = rs_sales_count_monthly_2003.getInt(1);
+        Integer countSalesInMonth = rs_sales_count_monthly_2003.getInt(2);
+        sales_count_monthly_2003_x.add(month);
+        sales_count_monthly_2003_y.add(countSalesInMonth);
+      }
+      List<Integer> sales_count_monthly_2004_x = new ArrayList<Integer>();
+      List<Integer> sales_count_monthly_2004_y = new ArrayList<Integer>();
+      while(rs_sales_count_monthly_2004.next()){
+        Integer month = rs_sales_count_monthly_2004.getInt(1);
+        Integer countSalesInMonth = rs_sales_count_monthly_2004.getInt(2);
+        sales_count_monthly_2004_x.add(month);
+        sales_count_monthly_2004_y.add(countSalesInMonth);
+      }
+      dashboard_object.set_sales_count_monthly(sales_count_monthly_2001_x,sales_count_monthly_2001_y,
+      sales_count_monthly_2002_x,sales_count_monthly_2002_y,
+      sales_count_monthly_2003_x,sales_count_monthly_2003_y,
+      sales_count_monthly_2004_x,sales_count_monthly_2004_y);
+
+      /*** Part 1Cc: sales_count_weekly ***/
+      List<Integer> sales_count_weekly_2001_x = new ArrayList<Integer>();
+      List<Integer> sales_count_weekly_2001_y = new ArrayList<Integer>();
+      while(rs_sales_count_weekly_2001.next()){
+        Integer week = rs_sales_count_weekly_2001.getInt(1);
+        Integer countSalesInWeek = rs_sales_count_weekly_2001.getInt(2);
+        sales_count_weekly_2001_x.add(week);
+        sales_count_weekly_2001_y.add(countSalesInWeek);
+      }
+      List<Integer> sales_count_weekly_2002_x = new ArrayList<Integer>();
+      List<Integer> sales_count_weekly_2002_y = new ArrayList<Integer>();
+      while(rs_sales_count_weekly_2002.next()){
+        Integer week = rs_sales_count_weekly_2002.getInt(1);
+        Integer countSalesInWeek = rs_sales_count_weekly_2002.getInt(2);
+        sales_count_weekly_2002_x.add(week);
+        sales_count_weekly_2002_y.add(countSalesInWeek);
+      }
+      List<Integer> sales_count_weekly_2003_x = new ArrayList<Integer>();
+      List<Integer> sales_count_weekly_2003_y = new ArrayList<Integer>();
+      while(rs_sales_count_weekly_2003.next()){
+        Integer week = rs_sales_count_weekly_2003.getInt(1);
+        Integer countSalesInWeek = rs_sales_count_weekly_2003.getInt(2);
+        sales_count_weekly_2003_x.add(week);
+        sales_count_weekly_2003_y.add(countSalesInWeek);
+      }
+      List<Integer> sales_count_weekly_2004_x = new ArrayList<Integer>();
+      List<Integer> sales_count_weekly_2004_y = new ArrayList<Integer>();
+      while(rs_sales_count_weekly_2004.next()){
+        Integer week = rs_sales_count_weekly_2004.getInt(1);
+        Integer countSalesInWeek = rs_sales_count_weekly_2004.getInt(2);
+        sales_count_weekly_2004_x.add(week);
+        sales_count_weekly_2004_y.add(countSalesInWeek);
+      }
+      dashboard_object.set_sales_count_weekly(sales_count_weekly_2001_x,sales_count_weekly_2001_y,
+      sales_count_weekly_2002_x,sales_count_weekly_2002_y,
+      sales_count_weekly_2003_x,sales_count_weekly_2003_y,
+      sales_count_weekly_2004_x,sales_count_weekly_2004_y);
+
+      /*** Part 4A: Product demand by season: top 10 popular products during months 1 to 3 ****/
+      List<String> product_top_10_Jan_to_Mar_x = new ArrayList<String>();
+      List<Integer> product_top_10_Jan_to_Mar_y = new ArrayList<Integer>();
+      while(rs_product_top_10_Jan_to_Mar.next()) {
+        String topProductName = rs_product_top_10_Jan_to_Mar.getString(1);
+        Integer countNumProducts = rs_product_top_10_Jan_to_Mar.getInt(2);
+        System.out.println("product: " + topProductName + " countNum: " + countNumProducts.toString());
+        product_top_10_Jan_to_Mar_x.add(topProductName);
+        product_top_10_Jan_to_Mar_y.add(countNumProducts);
+      }
+      // initiate the chart
+      dashboard_object.set_product_top_10_Jan_to_Mar(product_top_10_Jan_to_Mar_x,product_top_10_Jan_to_Mar_y);
+
+      /*** Part 4B: Product demand by season: top 10 popular products during months 4 to 6 ****/
+      List<String> product_top_10_Apr_to_Jun_x = new ArrayList<String>();
+      List<Integer> product_top_10_Apr_to_Jun_y = new ArrayList<Integer>();
+      while(rs_product_top_10_Apr_to_Jun.next()) {
+        String topProductName = rs_product_top_10_Apr_to_Jun.getString(1);
+        Integer countNumProducts = rs_product_top_10_Apr_to_Jun.getInt(2);
+        System.out.println("product: " + topProductName + " countNum: " + countNumProducts.toString());
+        product_top_10_Apr_to_Jun_x.add(topProductName);
+        product_top_10_Apr_to_Jun_y.add(countNumProducts);
+      }
+      // initiate the chart
+      dashboard_object.set_product_top_10_Apr_to_Jun(product_top_10_Apr_to_Jun_x,product_top_10_Apr_to_Jun_y);
+
+      /*** Part 4C: Product demand by season: top 10 popular products during months 7 to 9 ****/
+      List<String> product_top_10_Jul_to_Sep_x = new ArrayList<String>();
+      List<Integer> product_top_10_Jul_to_Sep_y = new ArrayList<Integer>();
+      while(rs_product_top_10_Jul_to_Sep.next()) {
+        String topProductName = rs_product_top_10_Jul_to_Sep.getString(1);
+        Integer countNumProducts = rs_product_top_10_Jul_to_Sep.getInt(2);
+        System.out.println("product: " + topProductName + " countNum: " + countNumProducts.toString());
+        product_top_10_Jul_to_Sep_x.add(topProductName);
+        product_top_10_Jul_to_Sep_y.add(countNumProducts);
+      }
+      // initiate the chart
+      dashboard_object.set_product_top_10_Jul_to_Sep(product_top_10_Jul_to_Sep_x,product_top_10_Jul_to_Sep_y);
+
+
+      /*** Part 4D: Product demand by season: top 10 popular products during months 10 to 12 ****/
+      List<String> product_top_10_Oct_to_Dec_x = new ArrayList<String>();
+      List<Integer> product_top_10_Oct_to_Dec_y = new ArrayList<Integer>();
+      while(rs_product_top_10_Oct_to_Dec.next()) {
+        String topProductName = rs_product_top_10_Oct_to_Dec.getString(1);
+        Integer countNumProducts = rs_product_top_10_Oct_to_Dec.getInt(2);
+        System.out.println("product: " + topProductName + " countNum: " + countNumProducts.toString());
+        product_top_10_Oct_to_Dec_x.add(topProductName);
+        product_top_10_Oct_to_Dec_y.add(countNumProducts);
+      }
+      // initiate the chart
+      dashboard_object.set_product_top_10_Oct_to_Dec(product_top_10_Oct_to_Dec_x,product_top_10_Oct_to_Dec_y);
+
+
+      // Part 2A: employee age statistics in historgram, using 1 column only
+      List<Double> employee_age_x = new ArrayList<Double>();
+      while(rs_employee_age.next()){
+        Double agestat = rs_employee_age.getDouble(1);
+        System.out.println("stats of employee age: " + agestat);
+        employee_age_x.add(agestat);
+      }
+      dashboard_object.set_employee_age(employee_age_x);
+
+      // Part 2B: employee salary statistics in histogram, using 1 column only
+
+      // ------------------------------ Part 3 -------------------------------------
+
+      // Part 3A
+      // rs_regional_sales_count
+      List<String> states_1 = new ArrayList<String>();
+      List<Integer> sales_count_by_state = new ArrayList<Integer>();
+      while (rs_regional_sales_count.next()) {
+    	  states_1.add(rs_regional_sales_count.getString(1));
+    	  sales_count_by_state.add(rs_regional_sales_count.getInt(2));
+      }
+      dashboard_object.set_regional_sales_count(states_1, sales_count_by_state);
+
+      // Part 3B
+      // rs_regional_sales_amount
+      List<String> states_2 = new ArrayList<String>();
+      List<Double> sales_amount_by_state = new ArrayList<Double>();
+      while (rs_regional_sales_amount.next()) {
+    	  states_2.add(rs_regional_sales_amount.getString(1));
+    	  sales_amount_by_state.add(rs_regional_sales_amount.getDouble(2));
+      }
+      dashboard_object.set_regional_sales_amount(states_2, sales_amount_by_state);
+
+      // Part 3C
+      // rs_regional_sales_customer
+      List<String> states_3 = new ArrayList<String>();
+      List<Integer> sales_customers_by_state = new ArrayList<Integer>();
+      while (rs_regional_sales_customer.next()) {
+    	  states_3.add(rs_regional_sales_customer.getString(1));
+    	  sales_customers_by_state.add(rs_regional_sales_customer.getInt(2));
+      }
+      dashboard_object.set_regional_sales_customer(states_3, sales_customers_by_state);
+
+      // Part 3D
+      // rs_regional_aggregate_sum_rate
+      List<String> states_4 = new ArrayList<String>();
+      List<Double> sales_aggregate_by_state = new ArrayList<Double>();
+      while (rs_regional_aggregate_sum_rate.next()) {
+    	  states_4.add(rs_regional_aggregate_sum_rate.getString(1));
+    	  sales_aggregate_by_state.add(rs_regional_aggregate_sum_rate.getDouble(2));
+      }
+      dashboard_object.set_regional_aggregate_sums(states_4, sales_aggregate_by_state);
+
+      List<Double> employee_salary_x = new ArrayList<Double>();
+      while(rs_employee_salary.next()){
+        Double salarystat = rs_employee_salary.getDouble(1);
+        System.out.println("stats of employee salary: " + salarystat);
+        employee_salary_x.add(salarystat);
+      }
+
+      dashboard_object.set_employee_salary(employee_salary_x);
       /*** Part 5A: Customer age -- demographics ****/
 
       // create list for customer
